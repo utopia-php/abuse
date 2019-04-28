@@ -1,4 +1,4 @@
-# Utopia Framework Abuse
+# Utopia Abuse
 
 Utopia framework abuse library is simple and lite library for managing application usage limits. This library is aiming to be as simple and easy to learn and use.
 
