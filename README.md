@@ -16,8 +16,8 @@ This adapter uses a MySQL / MariaDB to store usage attempts. Before using it cre
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use Abuse\Abuse;
-use Abuse\Adapters\TimeLimit;
+use Utopia\Abuse\Abuse;
+use Utopia\Abuse\Adapters\TimeLimit;
 
 // Limit login attempts to 10 time in 5 minutes time frame
 $adapter    = new TimeLimit('login-attempt-from-{{ip}}', 10, (60 * 5), function () {/* init and return PDO connection... */});
@@ -46,8 +46,8 @@ To use this adapter you need to create an API key from the Google ReCaptcha serv
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use Abuse\Abuse;
-use Abuse\Adapters\ReCaptcha;
+use Utopia\Abuse\Abuse;
+use Utopia\Abuse\Adapters\ReCaptcha;
 
 // Limit login attempts to 10 time in 5 minutes time frame
 $adapter    = new ReCaptcha('secret-api-key', $_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
