@@ -67,8 +67,7 @@ if(!$abuse->check()) {
 }
 ```
 
-    Notice: The code above is for example purpose only. It is always recommended to validate user input before using it in your code.
-    If you are using a load balancer or any proxy server you might need to get user IP from the HTTP_X_FORWARDE‌​D_FOR header.
+*Notice: The code above is for example purpose only. It is always recommended to validate user input before using it in your code. If you are using a load balancer or any proxy server you might need to get user IP from the HTTP_X_FORWARDE‌​D_FOR header.*
 
 ## System Requirements
 
