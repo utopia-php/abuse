@@ -1,5 +1,7 @@
 CREATE DATABASE abuse;
 
+USE abuse;
+
 CREATE TABLE `namespace.abuse.abuse` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `_key` varchar(255) NOT NULL,
