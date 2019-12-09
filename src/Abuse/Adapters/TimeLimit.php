@@ -152,6 +152,8 @@ class TimeLimit implements Adapter
             return 0;
         }
 
+        var_dump('counter');
+
         if(!is_null($this->count)) { // Get fetched result
             return $this->count;
         }
@@ -168,10 +170,10 @@ class TimeLimit implements Adapter
 	
     	$x = $st->fetch();
     	$y = $x['_count'];
-	var_dump($x);
-    var_dump($y);
-    exit();
-	$this->count = (int)$y;
+	    var_dump($x);
+        var_dump($y);
+        exit();
+	    $this->count = (int)$y;
 
         return $this->count;
     }
