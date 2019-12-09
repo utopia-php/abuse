@@ -170,8 +170,8 @@ class TimeLimit implements Adapter
 
 var_dump('stamt', $this->count);
     	$x = $st->fetch();
-    	$y = $x['_count'];
 	    var_dump($x);
+    	$y = $x['_count'];
         var_dump($y);
         exit();
 	    $this->count = (int)$y;
