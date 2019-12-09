@@ -169,7 +169,8 @@ class TimeLimit implements Adapter
     	$x = $st->fetch();
     	$y = $x['_count'];
 	var_dump($x);
-	var_dump($y);
+    var_dump($y);
+    exit();
 	$this->count = (int)$y;
 
         return $this->count;
@@ -216,7 +217,6 @@ class TimeLimit implements Adapter
 
         $key = $this->parseKey();
 
-        return false;
         if($this->limit > $this->count($key, $this->time)) {
             $this->hit($key, $this->time);
             return false;
