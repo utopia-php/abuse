@@ -216,6 +216,7 @@ class TimeLimit implements Adapter
 
         $key = $this->parseKey();
 
+        return false;
         if($this->limit > $this->count($key, $this->time)) {
             $this->hit($key, $this->time);
             return false;
