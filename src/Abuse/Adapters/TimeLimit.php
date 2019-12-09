@@ -168,12 +168,14 @@ class TimeLimit implements Adapter
 
         $st->execute();
 
+        print_r($this->getPDO()->errorInfo());
 var_dump('stamt', $this->count);
     	$x = $st->fetch();
 	    var_dump($x);
     	$y = $x['_count'];
         var_dump($y);
         exit();
+
 	    $this->count = (int)$y;
 
         return $this->count;
