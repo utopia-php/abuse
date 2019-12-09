@@ -152,7 +152,7 @@ class TimeLimit implements Adapter
             return 0;
         }
 
-        var_dump('counter');
+        var_dump('counter', $this->count);
 
         if(!is_null($this->count)) { // Get fetched result
             return $this->count;
