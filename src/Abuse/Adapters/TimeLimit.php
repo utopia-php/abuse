@@ -165,8 +165,12 @@ class TimeLimit implements Adapter
         $st->bindValue(':time',    $time,   PDO::PARAM_STR);
 
         $st->execute();
-
-        $this->count = (int)$st->fetch()['_count'];
+	
+    	$x = $st->fetch();
+    	$y = $x['_count'];
+	var_dump($x);
+	var_dump($y);
+	$this->count = (int)$y;
 
         return $this->count;
     }
