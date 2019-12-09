@@ -155,9 +155,7 @@ class TimeLimit implements Adapter
         if(!is_null($this->count)) { // Get fetched result
             return $this->count;
         }
-        
-        var_dump('counter', $this->count);
-        
+                
         $st = $this->getPDO()->prepare('SELECT _count FROM `' . $this->getNamespace() . '.abuse.abuse`
           WHERE _key = :key AND _time = :time
           LIMIT 1;
@@ -168,15 +166,10 @@ class TimeLimit implements Adapter
 
         $st->execute();
 
-        print_r($this->getPDO()->errorInfo());
-var_dump('stamt', $this->count);
-    	$x = $st->fetch();
-	    var_dump($x);
-    	$y = $x['_count'];
-        var_dump($y);
-        exit();
+    	$result = $st->fetch();
+    	$result = (is_array($result) && isset($result['_count'])) ? $result['_count'] : 0;
 
-	    $this->count = (int)$y;
+	    $this->count = (int)$result;
 
         return $this->count;
     }
