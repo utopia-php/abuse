@@ -162,13 +162,13 @@ class TimeLimit implements Adapter
           WHERE _key = :key AND _time = :time
           LIMIT 1;
 		');
-        var_dump('stamt', $this->count);
 
         $st->bindValue(':key',     $key,    PDO::PARAM_STR);
         $st->bindValue(':time',    $time,   PDO::PARAM_STR);
 
         $st->execute();
-	
+
+var_dump('stamt', $this->count);
     	$x = $st->fetch();
     	$y = $x['_count'];
 	    var_dump($x);
