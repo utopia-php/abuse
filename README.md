@@ -2,11 +2,11 @@
 
 [![Build Status](https://travis-ci.org/utopia-php/abuse.svg?branch=master)](https://travis-ci.org/utopia-php/abuse)
 ![Total Downloads](https://img.shields.io/packagist/dt/utopia-php/abuse.svg)
-[![Chat With Us](https://img.shields.io/gitter/room/utopia-php/community.svg)](https://gitter.im/utopia-php/community?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
+[![Discord](https://img.shields.io/discord/564160730845151244)](https://discord.gg/GSeTUeA)
 
 Utopia framework abuse library is simple and lite library for managing application usage limits. This library is aiming to be as simple and easy to learn and use.
 
-Although this library is part of the [Utopia Framework](https://github.com/utopia-php/framework) project it is dependency free and can be used as standalone with any other PHP project or framework.
+Although this library is part of the [Utopia Framework](https://github.com/utopia-php/framework) project it is dependency free, and can be used as standalone with any other PHP project or framework.
 
 ## Getting Started
 
