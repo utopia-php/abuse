@@ -47,7 +47,7 @@ class TimeLimit implements Adapter
     public function __construct(string $key, int $limit, int $time, callable $connection)
     {
         $this->key          = $key;
-        $this->time         = date('U', floor(time() / $time) * $time);;
+        $this->time         = \date('U', \floor(\time() / $time) * $time);;
         $this->limit        = $limit;
         $this->connection   = $connection;
     }
@@ -130,7 +130,7 @@ class TimeLimit implements Adapter
     protected function parseKey():string
     {
         foreach($this->getParams() as $key => $value) {
-            $this->key = str_replace($key, $value, $this->key);
+            $this->key = \str_replace($key, $value, $this->key);
         }
 
         return $this->key;
@@ -152,7 +152,7 @@ class TimeLimit implements Adapter
             return 0;
         }
 
-        if(!is_null($this->count)) { // Get fetched result
+        if(!\is_null($this->count)) { // Get fetched result
             return $this->count;
         }
                 
@@ -167,7 +167,7 @@ class TimeLimit implements Adapter
         $st->execute();
 
     	$result = $st->fetch();
-    	$result = (is_array($result) && isset($result['_count'])) ? $result['_count'] : 0;
+    	$result = (\is_array($result) && isset($result['_count'])) ? $result['_count'] : 0;
 
 	    $this->count = (int)$result;
 
@@ -263,6 +263,6 @@ class TimeLimit implements Adapter
 
     protected function getPDO():PDO
     {
-        return call_user_func($this->connection);
+        return \call_user_func($this->connection);
     }
 }

@@ -57,25 +57,25 @@ class ReCaptcha implements Adapter
     {
         $url    = 'https://www.google.com/recaptcha/api/siteverify';
         $fields = array(
-            'secret'    => urlencode($this->secret),
-            'response'  => urlencode($this->response),
-            'remoteip'  => urlencode($this->remoteIP),
+            'secret'    => \urlencode($this->secret),
+            'response'  => \urlencode($this->response),
+            'remoteip'  => \urlencode($this->remoteIP),
         );
 
         //open connection
-        $ch = curl_init();
+        $ch = \curl_init();
 
         //set the url, number of POST vars, POST data
-        curl_setopt($ch,CURLOPT_URL, $url);
-        curl_setopt($ch,CURLOPT_POST, count($fields));
-        curl_setopt($ch,CURLOPT_POSTFIELDS, http_build_query($fields));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        \curl_setopt($ch,CURLOPT_URL, $url);
+        \curl_setopt($ch,CURLOPT_POST, \count($fields));
+        \curl_setopt($ch,CURLOPT_POSTFIELDS, \http_build_query($fields));
+        \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         //execute post
-        $result = json_decode(curl_exec($ch), true);
+        $result = \json_decode(\curl_exec($ch), true);
 
         //close connection
-        curl_close($ch);
+        \curl_close($ch);
 
         return $result['success'];
     }
