@@ -1,6 +1,6 @@
 # Utopia Abuse
 
-[![Build Status](https://travis-ci.org/utopia-php/abuse.svg?branch=master)](https://travis-ci.org/utopia-php/abuse)
+[![Build Status](https://travis-ci.org/utopia-php/abuse.svg?branch=master)](https://travis-ci.com/utopia-php/abuse)
 ![Total Downloads](https://img.shields.io/packagist/dt/utopia-php/abuse.svg)
 [![Discord](https://img.shields.io/discord/564160730845151244)](https://discord.gg/GSeTUeA)
 
