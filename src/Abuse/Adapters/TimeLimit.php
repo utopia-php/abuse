@@ -29,7 +29,7 @@ class TimeLimit implements Adapter
     protected $limit = 0;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $count = null;
 
@@ -47,7 +47,7 @@ class TimeLimit implements Adapter
     public function __construct(string $key, int $limit, int $time, callable $connection)
     {
         $this->key          = $key;
-        $this->time         = \date('U', \floor(\time() / $time) * $time);;
+        $this->time         = (int)\date('U', (int)(\floor(\time() / $time)) * $time);
         $this->limit        = $limit;
         $this->connection   = $connection;
     }
@@ -62,11 +62,11 @@ class TimeLimit implements Adapter
      *
      * Set namespace to divide different scope of data sets
      *
-     * @param $namespace
+     * @param string $namespace
      * @throws Exception
      * @return $this
      */
-    public function setNamespace($namespace)
+    public function setNamespace(string $namespace): self
     {
         if(empty($namespace)) {
             throw new Exception('Missing namespace');
@@ -85,7 +85,7 @@ class TimeLimit implements Adapter
      * @throws Exception
      * @return string
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         if(empty($this->namespace)) {
             throw new Exception('Missing namespace');
@@ -100,10 +100,11 @@ class TimeLimit implements Adapter
      * Set custom param for key pattern parsing
      *
      * @param string $key
-     * @param $value
-     * @return TimeLimit
+     * @param string $value
+     * 
+     * @return $this
      */
-    public function setParam($key, $value):self
+    public function setParam(string $key, string $value): self
     {
         $this->params[$key] = $value;
 
@@ -117,7 +118,7 @@ class TimeLimit implements Adapter
      *
      * @return array
      */
-    protected function getParams():array
+    protected function getParams(): array
     {
         return $this->params;
     }
@@ -127,7 +128,7 @@ class TimeLimit implements Adapter
      *
      * @return string
      */
-    protected function parseKey():string
+    protected function parseKey(): string
     {
         foreach($this->getParams() as $key => $value) {
             $this->key = \str_replace($key, $value, $this->key);
@@ -142,11 +143,11 @@ class TimeLimit implements Adapter
      * Checks if number of counts is bigger or smaller than current limit
      *
      * @param string $key
-     * @param int|string $time
+     * @param int $time
      * @return int
      * @throws Exception
      */
-    protected function count(string $key, int $time):int
+    protected function count(string $key, int $time): int
     {
         if(0 == $this->limit) { // No limit no point for counting
             return 0;
@@ -177,13 +178,15 @@ class TimeLimit implements Adapter
     /**
      * @param string $key
      * @param int $time seconds
-     * @return null
+     * 
      * @throws Exception
+     * 
+     * @return void
      */
-    protected function hit(string $key, int $time)
+    protected function hit(string $key, int $time): void
     {
         if(0 == $this->limit) { // No limit no point for counting
-            return null;
+            return;
         }
 
         $st = $this->getPDO()->prepare('INSERT INTO `' . $this->getNamespace() . '.abuse.abuse`
@@ -207,7 +210,7 @@ class TimeLimit implements Adapter
      * @return bool
      * @throws Exception
      */
-    public function check():bool
+    public function check(): bool
     {
         if(0 == $this->limit) {
             return false;
@@ -228,10 +231,11 @@ class TimeLimit implements Adapter
      *
      * Returns the number of current remaining counts
      *
-     * @return int
      * @throws Exception
+     * 
+     * @return int
      */
-    public function remaining():int
+    public function remaining(): int
     {
         $left = $this->limit - ($this->count($this->parseKey(), $this->time) + 1); // Add one because we need to say how many left not how many done
         return (0 > $left) ? 0 : $left;
@@ -244,7 +248,7 @@ class TimeLimit implements Adapter
      *
      * @return int
      */
-    public function limit():int
+    public function limit(): int
     {
         return $this->limit;
     }
@@ -256,12 +260,12 @@ class TimeLimit implements Adapter
      *
      * @return int
      */
-    public function time():int
+    public function time(): int
     {
         return $this->time;
     }
 
-    protected function getPDO():PDO
+    protected function getPDO(): PDO
     {
         return \call_user_func($this->connection);
     }

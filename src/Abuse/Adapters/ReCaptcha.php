@@ -72,7 +72,7 @@ class ReCaptcha implements Adapter
         \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         //execute post
-        $result = \json_decode(\curl_exec($ch), true);
+        $result = \json_decode((string)\curl_exec($ch), true);
 
         //close connection
         \curl_close($ch);

@@ -26,7 +26,7 @@ class AbuseTest extends TestCase
      */
     protected $abuse = null;
 
-    public function setUp()
+    public function setUp():void
     {
         // Limit login attempts to 3 time in 5 minutes time frame
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), function () {
@@ -55,7 +55,7 @@ class AbuseTest extends TestCase
         $this->abuse = new Abuse($adapter);
     }
 
-    public function tearDown()
+    public function tearDown():void
     {
         $this->abuse = null;
     }
