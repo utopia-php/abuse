@@ -79,4 +79,16 @@ class ReCaptcha implements Adapter
 
         return $result['success'];
     }
+
+    /**
+     * Delete logs older than $seconds seconds
+     * 
+     * @param int $seconds 
+     * 
+     * @return bool   
+     */
+    public function deleteLogsOlderThan(int $seconds):bool
+    {
+        return true;
+    }
 }
