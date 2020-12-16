@@ -213,7 +213,7 @@ class TimeLimit implements Adapter
     {
         $st = $this->getPDO()->prepare('DELETE 
         FROM `'.$this->getNamespace().'.abuse.abuse`
-            WHERE (UNIX_TIMESTAMP(NOW()) - CAST(`_time` AS SIGNED)) >  :seconds');
+            WHERE (UNIX_TIMESTAMP(NOW()) - CAST(`_time` AS SIGNED)) > :seconds');
 
         $st->bindValue(':seconds', $seconds, PDO::PARAM_INT);
         $st->execute();
