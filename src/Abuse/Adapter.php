@@ -12,4 +12,14 @@ interface Adapter
      * @return bool
      */
     public function check();
+
+
+    /**
+     * Delete all logs older than $seconds seconds
+     *
+     * @param int $seconds
+     * 
+     * @return bool
+     */
+    public function deleteLogsOlderThan(int $seconds): bool;
 }

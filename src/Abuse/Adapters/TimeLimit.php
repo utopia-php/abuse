@@ -203,6 +203,25 @@ class TimeLimit implements Adapter
     }
 
     /**
+     * Delete logs older than $seconds seconds
+     * 
+     * @param int $seconds 
+     * 
+     * @return bool   
+     */
+    public function deleteLogsOlderThan(int $seconds):bool
+    {
+        $st = $this->getPDO()->prepare('DELETE 
+        FROM `'.$this->getNamespace().'.abuse.abuse`
+            WHERE (UNIX_TIMESTAMP(NOW()) - CAST(`_time` AS SIGNED)) >  :seconds');
+
+        $st->bindValue(':seconds', $seconds, PDO::PARAM_INT);
+        $st->execute();
+
+        return ('00000' == $st->errorCode()) ? true : false;
+    }
+    
+    /**
      * Check
      *
      * Checks if number of counts is bigger or smaller than current limit. limit 0 is equal to unlimited
