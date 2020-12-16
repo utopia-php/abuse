@@ -70,10 +70,10 @@ class AbuseTest extends TestCase
     }
 
     public function testDeleteLogsOlderThan() {
-        sleep(3);
+        sleep(5);
         $status = $this->abuse->deleteLogsOlderThan(1);
         $this->assertEquals($status, true);
 
-        $this->assertEquals($this->abuse->check(), true);
+        $this->assertEquals($this->abuse->check(), false);
     }
 }
