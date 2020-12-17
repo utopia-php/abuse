@@ -203,15 +203,22 @@ class TimeLimit implements Adapter
     }
 
     /**
-     * Get all abuse logs
+     * Get abuse logs
      *
-     * Returns all the abuse logs that are currently in the DB
+     * Returns logs with an offset and limit
      *
+     * @param $offset 
+     * @param $limit
+     * 
      * @return array
      */
-    public function getAllLogs(): array {  
+    public function getLogs(int $offset, int $limit): array {  
 
-        $st = $this->getPDO()->prepare('SELECT * FROM `' . $this->getNamespace() . '.abuse.abuse`;');
+        $st = $this->getPDO()->prepare('SELECT * FROM `' . $this->getNamespace() . '.abuse.abuse`;
+            LIMIT :offset, :limit
+        ');
+        $st->bindValue(':offset',     $offset,    PDO::PARAM_INT);
+        $st->bindValue(':limit',     $limit,    PDO::PARAM_INT);
         $st->execute();
 
     	$result = $st->fetchAll();

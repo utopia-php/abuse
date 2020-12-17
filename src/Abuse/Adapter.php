@@ -14,13 +14,16 @@ interface Adapter
     public function check();
 
     /**
-     * Get all abuse logs
+     * Get abuse logs
      *
-     * Returns all the abuse logs that are currently in the DB
+     * Returns logs with an offset and limit
      *
+     * @param $offset 
+     * @param $limit
+     * 
      * @return array
      */
-    public function getAllLogs(): array;
+    public function getLogs(int $offset, int $limit): array;
 
 
     /**

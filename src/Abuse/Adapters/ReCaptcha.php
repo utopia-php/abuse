@@ -2,6 +2,7 @@
 
 namespace Utopia\Abuse\Adapters;
 
+use Exception;
 use Utopia\Abuse\Adapter;
 
 class ReCaptcha implements Adapter
@@ -85,22 +86,26 @@ class ReCaptcha implements Adapter
      * 
      * @param int $seconds 
      * 
+     * @throws Exception
      * @return bool   
      */
     public function deleteLogsOlderThan(int $seconds):bool
     {
-        return true;
+        throw new Exception('Method not supported');
     }
 
     /**
-     * Get all logs
+     * Get abuse logs
      *
-     * Returns all the logs that are currently in the DB
+     * Returns logs with an offset and limit
      *
+     * @param $offset 
+     * @param $limit
+     * 
      * @return array
      */
-    public function getAllLogs(): array 
+    public function getLogs(int $offset, int $limit): array 
     {  
-       return array(); 
+        throw new Exception('Method not supported');
     }
 }
