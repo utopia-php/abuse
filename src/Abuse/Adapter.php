@@ -13,6 +13,15 @@ interface Adapter
      */
     public function check();
 
+    /**
+     * Get all abuse logs
+     *
+     * Returns all the abuse logs that are currently in the DB
+     *
+     * @return array
+     */
+    public function getAllLogs(): array;
+
 
     /**
      * Delete all logs older than $seconds seconds

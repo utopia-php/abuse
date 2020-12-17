@@ -203,6 +203,24 @@ class TimeLimit implements Adapter
     }
 
     /**
+     * Get all abuse logs
+     *
+     * Returns all the abuse logs that are currently in the DB
+     *
+     * @return array
+     */
+    public function getAllLogs(): array {  
+
+        $st = $this->getPDO()->prepare('SELECT * FROM `' . $this->getNamespace() . '.abuse.abuse`;');
+        $st->execute();
+
+    	$result = $st->fetchAll();
+        
+        return $result;
+    }
+
+
+    /**
      * Delete logs older than $seconds seconds
      * 
      * @param int $seconds 

@@ -30,6 +30,18 @@ class Abuse
     }
 
     /**
+     * Get all abuse logs
+     *
+     * Returns all the abuse logs that are currently in the DB
+     *
+     * @return array
+     */
+    public function getAllLogs(): array
+    {
+        return $this->adapter->getAllLogs();
+    }
+
+    /**
      * Delete all logs older than $seconds seconds
      *
      * @param int $seconds
