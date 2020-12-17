@@ -33,5 +33,5 @@ interface Adapter
      * 
      * @return bool
      */
-    public function deleteLogsOlderThan(int $seconds): bool;
+    public function cleanup(int $seconds): bool;
 }

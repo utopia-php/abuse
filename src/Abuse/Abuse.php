@@ -51,8 +51,8 @@ class Abuse
      * 
      * @return bool
      */
-    public function deleteLogsOlderThan(int $seconds): bool
+    public function cleanup(int $seconds): bool
     {
-        return $this->adapter->deleteLogsOlderThan($seconds);
+        return $this->adapter->cleanup($seconds);
     }
 }

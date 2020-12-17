@@ -69,7 +69,7 @@ class AbuseTest extends TestCase
         $this->assertEquals($this->abuse->check(), true);
     }
 
-    public function testDeleteLogsOlderThan() {
+    public function testCleanup() {
 
         // Check that there is only one log
         $logs = $this->abuse->getLogs(0, 10);
@@ -77,7 +77,7 @@ class AbuseTest extends TestCase
         
         sleep(5);
         // Delete the log 
-        $status = $this->abuse->deleteLogsOlderThan(1);
+        $status = $this->abuse->cleanup(1);
         $this->assertEquals($status, true);
 
         // Check that there are no logs in the DB

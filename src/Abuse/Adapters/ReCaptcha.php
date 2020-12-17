@@ -89,7 +89,7 @@ class ReCaptcha implements Adapter
      * @throws Exception
      * @return bool   
      */
-    public function deleteLogsOlderThan(int $seconds):bool
+    public function cleanup(int $seconds):bool
     {
         throw new Exception('Method not supported');
     }

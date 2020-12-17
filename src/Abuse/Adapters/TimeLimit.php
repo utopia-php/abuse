@@ -234,7 +234,7 @@ class TimeLimit implements Adapter
      * 
      * @return bool   
      */
-    public function deleteLogsOlderThan(int $seconds):bool
+    public function cleanup(int $seconds):bool
     {
         $st = $this->getPDO()->prepare('DELETE 
         FROM `'.$this->getNamespace().'.abuse.abuse`
