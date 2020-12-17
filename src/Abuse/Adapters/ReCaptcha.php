@@ -91,4 +91,15 @@ class ReCaptcha implements Adapter
     {
         return true;
     }
+
+    /**
+     * Get all logs
+     *
+     * Returns all the logs that are currently in the DB
+     *
+     * @return array
+     */
+    public function getAllLogs(): array {  
+       return array(); 
+    }
 }
