@@ -99,7 +99,8 @@ class ReCaptcha implements Adapter
      *
      * @return array
      */
-    public function getAllLogs(): array {  
+    public function getAllLogs(): array 
+    {  
        return array(); 
     }
 }
