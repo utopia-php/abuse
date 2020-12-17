@@ -28,4 +28,31 @@ class Abuse
     {
         return $this->adapter->check();
     }
+
+    /**
+     * Get abuse logs
+     *
+     * Returns logs with an offset and limit
+     *
+     * @param $offset 
+     * @param $limit
+     * 
+     * @return array
+     */
+    public function getLogs(int $offset, int $limit): array
+    {
+        return $this->adapter->getLogs($offset, $limit);
+    }
+
+    /**
+     * Delete all logs older than $seconds seconds
+     *
+     * @param int $seconds
+     * 
+     * @return bool
+     */
+    public function cleanup(int $seconds): bool
+    {
+        return $this->adapter->cleanup($seconds);
+    }
 }

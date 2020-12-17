@@ -203,6 +203,50 @@ class TimeLimit implements Adapter
     }
 
     /**
+     * Get abuse logs
+     *
+     * Returns logs with an offset and limit
+     *
+     * @param $offset 
+     * @param $limit
+     * 
+     * @return array
+     */
+    public function getLogs(int $offset, int $limit): array {  
+
+        $st = $this->getPDO()->prepare('SELECT * FROM `' . $this->getNamespace() . '.abuse.abuse`;
+            LIMIT :offset, :limit
+        ');
+        $st->bindValue(':offset',     $offset,    PDO::PARAM_INT);
+        $st->bindValue(':limit',     $limit,    PDO::PARAM_INT);
+        $st->execute();
+        
+        $result = $st->fetchAll();
+        
+        return $result;
+    }
+
+
+    /**
+     * Delete logs older than $seconds seconds
+     * 
+     * @param int $seconds 
+     * 
+     * @return bool   
+     */
+    public function cleanup(int $seconds):bool
+    {
+        $st = $this->getPDO()->prepare('DELETE 
+        FROM `'.$this->getNamespace().'.abuse.abuse`
+            WHERE (UNIX_TIMESTAMP(NOW()) - CAST(`_time` AS SIGNED)) > :seconds');
+
+        $st->bindValue(':seconds', $seconds, PDO::PARAM_INT);
+        $st->execute();
+
+        return ('00000' == $st->errorCode()) ? true : false;
+    }
+    
+    /**
      * Check
      *
      * Checks if number of counts is bigger or smaller than current limit. limit 0 is equal to unlimited

@@ -68,4 +68,20 @@ class AbuseTest extends TestCase
         $this->assertEquals($this->abuse->check(), false);
         $this->assertEquals($this->abuse->check(), true);
     }
+
+    public function testCleanup() {
+
+        // Check that there is only one log
+        $logs = $this->abuse->getLogs(0, 10);
+        $this->assertEquals(1, \count($logs));
+        
+        sleep(5);
+        // Delete the log 
+        $status = $this->abuse->cleanup(1);
+        $this->assertEquals($status, true);
+
+        // Check that there are no logs in the DB
+        $logs = $this->abuse->getLogs(0, 10);
+        $this->assertEquals(0, \count($logs));
+    }
 }
