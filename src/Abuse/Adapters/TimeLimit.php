@@ -220,8 +220,8 @@ class TimeLimit implements Adapter
         $st->bindValue(':offset',     $offset,    PDO::PARAM_INT);
         $st->bindValue(':limit',     $limit,    PDO::PARAM_INT);
         $st->execute();
-
-    	$result = $st->fetchAll();
+        
+        $result = $st->fetchAll();
         
         return $result;
     }
