@@ -77,7 +77,7 @@ class AbuseTest extends TestCase
         
         sleep(5);
         // Delete the log 
-        $status = $this->abuse->cleanup(1);
+        $status = $this->abuse->cleanup(time()-1);
         $this->assertEquals($status, true);
 
         // Check that there are no logs in the DB

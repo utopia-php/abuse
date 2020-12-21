@@ -228,22 +228,22 @@ class TimeLimit implements Adapter
 
 
     /**
-     * Delete logs older than $seconds seconds
+     * Delete logs older than $timestamp seconds
      * 
-     * @param int $seconds 
+     * @param int $timestamp 
      * 
      * @return bool   
      */
-    public function cleanup(int $seconds):bool
+    public function cleanup(int $timestamp):bool
     {
         $st = $this->getPDO()->prepare('DELETE 
         FROM `'.$this->getNamespace().'.abuse.abuse`
-            WHERE (UNIX_TIMESTAMP(NOW()) - CAST(`_time` AS SIGNED)) > :seconds');
+            WHERE `_time` < :timestamp');
 
-        $st->bindValue(':seconds', $seconds, PDO::PARAM_INT);
-        $st->execute();
+        $st->bindValue(':timestamp', $timestamp, PDO::PARAM_INT);
+        $result = $st->execute();
 
-        return ('00000' == $st->errorCode()) ? true : false;
+        return $result == true; 
     }
     
     /**

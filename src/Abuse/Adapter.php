@@ -27,11 +27,11 @@ interface Adapter
 
 
     /**
-     * Delete all logs older than $seconds seconds
+     * Delete all logs older than $timestamp seconds
      *
-     * @param int $seconds
+     * @param int $timestamp
      * 
      * @return bool
      */
-    public function cleanup(int $seconds): bool;
+    public function cleanup(int $timestamp): bool;
 }
