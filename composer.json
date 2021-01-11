@@ -15,7 +15,7 @@
         "psr-4": {"Utopia\\Abuse\\": "src/Abuse"}
     },
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.4",
         "ext-pdo": "*"
     },
     "require-dev": {
