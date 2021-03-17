@@ -58,7 +58,7 @@ class ReCaptcha implements Adapter
      *
      * @return bool
      */
-    public function check($score):bool
+    public function check($score = 0.5):bool
     {
         $url    = 'https://www.google.com/recaptcha/api/siteverify';
         $fields = array(
