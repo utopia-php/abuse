@@ -52,9 +52,12 @@ class ReCaptcha implements Adapter
     /**
      * Check
      *
-     * Check if user is human or not
+     * Check if user is human or not, compared to score
+     *
+     * @param float $score
+     * @return bool
      */
-    public function check()
+    public function check($score = 0.5):bool
     {
         $url    = 'https://www.google.com/recaptcha/api/siteverify';
         $fields = array(
@@ -77,8 +80,11 @@ class ReCaptcha implements Adapter
 
         //close connection
         \curl_close($ch);
-
-        return $result['success'];
+        if ($result['success'] && $result['score'] < $score ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
