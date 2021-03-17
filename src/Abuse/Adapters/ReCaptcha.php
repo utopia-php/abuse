@@ -52,10 +52,9 @@ class ReCaptcha implements Adapter
     /**
      * Check
      *
-     * Check if user is human or not
+     * Check if user is human or not, compared to score
      *
      * @param float $score
-     *
      * @return bool
      */
     public function check($score = 0.5):bool
