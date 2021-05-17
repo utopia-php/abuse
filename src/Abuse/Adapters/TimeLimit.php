@@ -179,12 +179,11 @@ class TimeLimit implements Adapter
             '_key' => $key,
             '_time' => $time,
             '_count' => 1,
+            '$collection' => TimeLimit::COLLECTION,
         ];
 
         if (count($existing) == 1) {
             //update
-            var_dump($existing);
-            var_dump($existing[0]->getId());
             $this->db->updateDocument(TimeLimit::COLLECTION, $existing[0]->getId(), new Document(array_merge($data, [
                 '_count' => $existing[0]->getAttribute('_count',0) + 1,
                 '$id' => $existing[0]->getId(),
