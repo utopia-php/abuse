@@ -184,6 +184,7 @@ class TimeLimit implements Adapter
         if (count($existing) == 1) {
             //update
             var_dump($existing);
+            var_dump($existing[0]->getId());
             $this->db->updateDocument(TimeLimit::COLLECTION, $existing[0]->getId(), new Document(array_merge($data, [
                 '_count' => $existing[0]->getAttribute('_count',0) + 1,
             ])));
