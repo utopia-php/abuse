@@ -47,7 +47,8 @@ class AbuseTest extends TestCase
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
-
+        $db->setNamespace('namespace');
+        
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
         $adapter->setup();
 

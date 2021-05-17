@@ -59,7 +59,7 @@ class TimeLimit implements Adapter
         $this->db = $db;
     }
 
-    public function setup()
+    public function setup() : void
     {
         if (!$this->db->exists()) {
             $this->db->create();
@@ -143,7 +143,7 @@ class TimeLimit implements Adapter
         Authorization::reset();
 
         if (count($result) == 1) {
-            $result = (\is_array($result[0]) && isset($result[0]['_count'])) ? $result[0]['_count'] : 0;
+            $result = $result[0]->getAttribute('_count',0);
         } else {
             $result = 0;
         }
