@@ -14,10 +14,13 @@
 namespace Utopia\Tests;
 
 use PDO;
+use PHPUnit\Framework\TestCase;
 use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapters\TimeLimit;
-
-use PHPUnit\Framework\TestCase;
+use Utopia\Cache\Adapter\None as NoCache;
+use Utopia\Cache\Cache;
+use Utopia\Database\Adapter\MySQL;
+use Utopia\Database\Database;
 
 class AbuseTest extends TestCase
 {
@@ -26,36 +29,34 @@ class AbuseTest extends TestCase
      */
     protected $abuse = null;
 
-    public function setUp():void
+    public function setUp(): void
     {
         // Limit login attempts to 3 time in 5 minutes time frame
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), function () {
-            $dbHost = '127.0.0.1';
-            $dbUser = 'travis';
-            $dbPass = '';
-            $dbName = 'abuse';
+        $dbHost = '127.0.0.1';
+        $dbUser = 'travis';
+        $dbPass = '';
+        $dbName = 'abuse';
 
-            $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass, array(
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-                PDO::ATTR_TIMEOUT => 5 // Seconds
-            ));
+        $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass, array(
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+            PDO::ATTR_TIMEOUT => 5, // Seconds
+        ));
 
-            // Connection settings
-            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);   // Return arrays
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);        // Handle all errors with exceptions
+        // Connection settings
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // Return arrays
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            return $pdo;
-        });
+        $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
 
-        $adapter
-            ->setNamespace('namespace') // DB table namespace
-            ->setParam('{{ip}}', '127.0.0.1')
-        ;
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
+        $adapter->setup();
+
+        $adapter->setParam('{{ip}}', '127.0.0.1');
 
         $this->abuse = new Abuse($adapter);
     }
 
-    public function tearDown():void
+    public function tearDown(): void
     {
         $this->abuse = null;
     }
@@ -69,15 +70,16 @@ class AbuseTest extends TestCase
         $this->assertEquals($this->abuse->check(), true);
     }
 
-    public function testCleanup() {
+    public function testCleanup()
+    {
 
         // Check that there is only one log
         $logs = $this->abuse->getLogs(0, 10);
         $this->assertEquals(1, \count($logs));
-        
+
         sleep(5);
-        // Delete the log 
-        $status = $this->abuse->cleanup(time()-1);
+        // Delete the log
+        $status = $this->abuse->cleanup(time() - 1);
         $this->assertEquals($status, true);
 
         // Check that there are no logs in the DB

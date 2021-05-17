@@ -4,14 +4,21 @@ namespace Utopia\Abuse\Adapters;
 
 use Exception;
 use PDO;
+use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapter;
+use Utopia\Database\Database;
+use Utopia\Database\Document;
+use Utopia\Database\Query;
+use Utopia\Database\Validator\Authorization;
 
 class TimeLimit implements Adapter
 {
+    const COLLECTION = "abuse";
+
     /**
-     * @var callable
+     * @var Database
      */
-    protected $connection;
+    protected $db;
 
     /**
      * @var string
@@ -44,54 +51,25 @@ class TimeLimit implements Adapter
      * @param int $limit
      * @param callable $connection
      */
-    public function __construct(string $key, int $limit, int $time, callable $connection)
+    public function __construct(string $key, int $limit, int $time, Database $db)
     {
-        $this->key          = $key;
-        $this->time         = (int)\date('U', (int)(\floor(\time() / $time)) * $time);
-        $this->limit        = $limit;
-        $this->connection   = $connection;
+        $this->key = $key;
+        $this->time = (int) \date('U', (int) (\floor(\time() / $time)) * $time);
+        $this->limit = $limit;
+        $this->db = $db;
     }
 
-    /**
-     * @var string
-     */
-    protected $namespace = '';
-
-    /**
-     * Set Namespace
-     *
-     * Set namespace to divide different scope of data sets
-     *
-     * @param string $namespace
-     * @throws Exception
-     * @return $this
-     */
-    public function setNamespace(string $namespace): self
+    public function setup()
     {
-        if(empty($namespace)) {
-            throw new Exception('Missing namespace');
+        if (!$this->db->exists()) {
+            $this->db->create();
+            $this->db->createCollection(TimeLimit::COLLECTION);
+            $this->db->createAttribute(TimeLimit::COLLECTION, '_key', Database::VAR_STRING, 45, true);
+            $this->db->createAttribute(TimeLimit::COLLECTION, '_time', Database::VAR_STRING, 45, true);
+            $this->db->createAttribute(TimeLimit::COLLECTION, '_count', Database::VAR_INTEGER, 11, true);
+            $this->db->createIndex(TimeLimit::COLLECTION, 'unique1', Database::INDEX_UNIQUE, ['_key', '_time']);
+            $this->db->createIndex(TimeLimit::COLLECTION, 'index1', Database::INDEX_KEY, ['_key', '_time']);
         }
-
-        $this->namespace = $namespace;
-
-        return $this;
-    }
-
-    /**
-     * Get Namespace
-     *
-     * Get namespace of current set scope
-     *
-     * @throws Exception
-     * @return string
-     */
-    public function getNamespace(): string
-    {
-        if(empty($this->namespace)) {
-            throw new Exception('Missing namespace');
-        }
-
-        return $this->namespace;
     }
 
     /**
@@ -101,7 +79,7 @@ class TimeLimit implements Adapter
      *
      * @param string $key
      * @param string $value
-     * 
+     *
      * @return $this
      */
     public function setParam(string $key, string $value): self
@@ -130,7 +108,7 @@ class TimeLimit implements Adapter
      */
     protected function parseKey(): string
     {
-        foreach($this->getParams() as $key => $value) {
+        foreach ($this->getParams() as $key => $value) {
             $this->key = \str_replace($key, $value, $this->key);
         }
 
@@ -149,28 +127,28 @@ class TimeLimit implements Adapter
      */
     protected function count(string $key, int $time): int
     {
-        if(0 == $this->limit) { // No limit no point for counting
+        if (0 == $this->limit) { // No limit no point for counting
             return 0;
         }
 
-        if(!\is_null($this->count)) { // Get fetched result
+        if (!\is_null($this->count)) { // Get fetched result
             return $this->count;
         }
-                
-        $st = $this->getPDO()->prepare('SELECT _count FROM `' . $this->getNamespace() . '.abuse.abuse`
-          WHERE _key = :key AND _time = :time
-          LIMIT 1;
-		');
 
-        $st->bindValue(':key',     $key,    PDO::PARAM_STR);
-        $st->bindValue(':time',    $time,   PDO::PARAM_STR);
+        Authorization::disable();
+        $result = $this->db->find(TimeLimit::COLLECTION, [
+            new Query('_key', Query::TYPE_EQUAL, [$key]),
+            new Query('_time', Query::TYPE_EQUAL, [$time]),
+        ], 1);
+        Authorization::reset();
 
-        $st->execute();
+        if (count($result) == 1) {
+            $result = (\is_array($result[0]) && isset($result[0]['_count'])) ? $result[0]['_count'] : 0;
+        } else {
+            $result = 0;
+        }
 
-    	$result = $st->fetch();
-    	$result = (\is_array($result) && isset($result['_count'])) ? $result['_count'] : 0;
-
-	    $this->count = (int)$result;
+        $this->count = (int) $result;
 
         return $this->count;
     }
@@ -178,26 +156,41 @@ class TimeLimit implements Adapter
     /**
      * @param string $key
      * @param int $time seconds
-     * 
+     *
      * @throws Exception
-     * 
+     *
      * @return void
      */
     protected function hit(string $key, int $time): void
     {
-        if(0 == $this->limit) { // No limit no point for counting
+        if (0 == $this->limit) { // No limit no point for counting
             return;
         }
 
-        $st = $this->getPDO()->prepare('INSERT INTO `' . $this->getNamespace() . '.abuse.abuse`
-            SET _key = :key, _time = :time, _count = 1
-            ON DUPLICATE KEY UPDATE _count = _count + 1;
-		');
+        $existing = $this->db->find(TimeLimit::COLLECTION, [
+            new Query('_key', Query::TYPE_EQUAL, [$key]),
+            new Query('_time', Query::TYPE_EQUAL, [$time]),
+        ], 1);
 
-        $st->bindValue(':key',     $key,    PDO::PARAM_STR);
-        $st->bindValue(':time',    $time,   PDO::PARAM_STR);
+        $data = [
+            '$read' => [],
+            '$write' => [],
+            '_key' => $key,
+            '_time' => $time,
+            '_count' => 1,
+        ];
 
-        $st->execute();
+        Authorization::disable();
+        if (count($existing) == 1) {
+            //update
+            $this->db->updateDocument(TimeLimit::COLLECTION, $existing[0]['$id'], new Document(array_merge($data, [
+                '_count' => $existing[0]['_count'] + 1,
+            ])));
+        } else {
+            //create
+            $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+        }
+        Authorization::reset();
 
         $this->count++;
     }
@@ -207,45 +200,41 @@ class TimeLimit implements Adapter
      *
      * Returns logs with an offset and limit
      *
-     * @param $offset 
+     * @param $offset
      * @param $limit
-     * 
+     *
      * @return array
      */
-    public function getLogs(int $offset, int $limit): array {  
-
-        $st = $this->getPDO()->prepare('SELECT * FROM `' . $this->getNamespace() . '.abuse.abuse`;
-            LIMIT :offset, :limit
-        ');
-        $st->bindValue(':offset',     $offset,    PDO::PARAM_INT);
-        $st->bindValue(':limit',     $limit,    PDO::PARAM_INT);
-        $st->execute();
-        
-        $result = $st->fetchAll();
-        
+    public function getLogs(int $offset, int $limit): array
+    {
+        Authorization::disable();
+        $result = $this->db->find(TimeLimit::COLLECTION, [], $limit, $offset);
+        Authorization::reset();
         return $result;
     }
 
-
     /**
      * Delete logs older than $timestamp seconds
-     * 
-     * @param int $timestamp 
-     * 
-     * @return bool   
+     *
+     * @param int $timestamp
+     *
+     * @return bool
      */
-    public function cleanup(int $timestamp):bool
+    public function cleanup(int $timestamp): bool
     {
-        $st = $this->getPDO()->prepare('DELETE 
-        FROM `'.$this->getNamespace().'.abuse.abuse`
-            WHERE `_time` < :timestamp');
+        Authorization::disable();
+        $documents = $this->db->find(TimeLimit::COLLECTION, [
+            new Query('_time', Query::TYPE_LESSER, [$timestamp]),
+        ]);
 
-        $st->bindValue(':timestamp', $timestamp, PDO::PARAM_INT);
-        $result = $st->execute();
+        foreach ($documents as $document) {
+            $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
+        }
+        Authorization::reset();
 
-        return $result == true; 
+        return true;
     }
-    
+
     /**
      * Check
      *
@@ -256,13 +245,13 @@ class TimeLimit implements Adapter
      */
     public function check(): bool
     {
-        if(0 == $this->limit) {
+        if (0 == $this->limit) {
             return false;
         }
 
         $key = $this->parseKey();
 
-        if($this->limit > $this->count($key, $this->time)) {
+        if ($this->limit > $this->count($key, $this->time)) {
             $this->hit($key, $this->time);
             return false;
         }
@@ -276,7 +265,7 @@ class TimeLimit implements Adapter
      * Returns the number of current remaining counts
      *
      * @throws Exception
-     * 
+     *
      * @return int
      */
     public function remaining(): int
