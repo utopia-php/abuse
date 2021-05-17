@@ -167,6 +167,7 @@ class TimeLimit implements Adapter
             return;
         }
 
+        Authorization::disable();
         $existing = $this->db->find(TimeLimit::COLLECTION, [
             new Query('_key', Query::TYPE_EQUAL, [$key]),
             new Query('_time', Query::TYPE_EQUAL, [$time]),
@@ -180,10 +181,9 @@ class TimeLimit implements Adapter
             '_count' => 1,
         ];
 
-        Authorization::disable();
         if (count($existing) == 1) {
             //update
-            $this->db->updateDocument(TimeLimit::COLLECTION, $existing[0]['$id'], new Document(array_merge($data, [
+            $this->db->updateDocument(TimeLimit::COLLECTION, $existing[0]->getAttribute('id'), new Document(array_merge($data, [
                 '_count' => $existing[0]->getAttribute('_count',0) + 1,
             ])));
         } else {
