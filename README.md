@@ -27,9 +27,29 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapters\TimeLimit;
+use Utopia\Cache\Adapter\None as NoCache;
+use Utopia\Cache\Cache;
+use Utopia\Database\Adapter\MySQL;
+use Utopia\Database\Database;
+
+$dbHost = '127.0.0.1';
+$dbUser = 'travis';
+$dbPass = '';
+
+$pdo = new PDO("mysql:host={$dbHost};", $dbUser, $dbPass, array(
+    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+    PDO::ATTR_TIMEOUT => 5, // Seconds
+));
+
+// Connection settings
+$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // Return arrays
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+$db = new Database(new MySQL($pdo), new Cache(new NoCache()));
+$db->setNamespace('namespace');
 
 // Limit login attempts to 10 time in 5 minutes time frame
-$adapter    = new TimeLimit('login-attempt-from-{{ip}}', 10, (60 * 5), function () {/* init and return PDO connection... */});
+$adapter    = new TimeLimit('login-attempt-from-{{ip}}', 10, (60 * 5), $db);
 
 $adapter
     ->setNamespace('namespace') // DB table namespace
