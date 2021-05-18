@@ -51,9 +51,8 @@ $db->setNamespace('namespace');
 // Limit login attempts to 10 time in 5 minutes time frame
 $adapter    = new TimeLimit('login-attempt-from-{{ip}}', 10, (60 * 5), $db);
 
-$adapter
-    ->setNamespace('namespace') // DB table namespace
-    ->setParam('{{ip}}', '127.0.0.1')
+$adapter->setup(); //setup database as required
+$adapter->setParam('{{ip}}', '127.0.0.1')
 ;
 
 $abuse      = new Abuse($adapter);
