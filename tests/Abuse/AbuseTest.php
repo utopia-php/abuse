@@ -35,9 +35,8 @@ class AbuseTest extends TestCase
         $dbHost = '127.0.0.1';
         $dbUser = 'travis';
         $dbPass = '';
-        $dbName = 'abuse';
 
-        $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass, array(
+        $pdo = new PDO("mysql:host={$dbHost};", $dbUser, $dbPass, array(
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
             PDO::ATTR_TIMEOUT => 5, // Seconds
         ));
