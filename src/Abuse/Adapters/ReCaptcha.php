@@ -80,7 +80,7 @@ class ReCaptcha implements Adapter
 
         //close connection
         \curl_close($ch);
-        if ($result['success'] && $result['score'] < $score ) {
+        if ($result['success'] && $result['score'] >= $score ) {
             return true;
         } else {
             return false;
