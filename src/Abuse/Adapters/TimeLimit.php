@@ -63,13 +63,13 @@ class TimeLimit implements Adapter
     {
         if (!$this->db->exists()) {
             $this->db->create();
-            $this->db->createCollection(TimeLimit::COLLECTION);
-            $this->db->createAttribute(TimeLimit::COLLECTION, '_key', Database::VAR_STRING, Database::LENGTH_KEY, true);
-            $this->db->createAttribute(TimeLimit::COLLECTION, '_time', Database::VAR_INTEGER, Database::LENGTH_KEY, true);
-            $this->db->createAttribute(TimeLimit::COLLECTION, '_count', Database::VAR_INTEGER, 11, true);
-            $this->db->createIndex(TimeLimit::COLLECTION, 'unique1', Database::INDEX_UNIQUE, ['_key', '_time']);
-            $this->db->createIndex(TimeLimit::COLLECTION, 'index1', Database::INDEX_KEY, ['_key', '_time']);
         }
+        $this->db->createCollection(TimeLimit::COLLECTION);
+        $this->db->createAttribute(TimeLimit::COLLECTION, '_key', Database::VAR_STRING, Database::LENGTH_KEY, true);
+        $this->db->createAttribute(TimeLimit::COLLECTION, '_time', Database::VAR_INTEGER, Database::LENGTH_KEY, true);
+        $this->db->createAttribute(TimeLimit::COLLECTION, '_count', Database::VAR_INTEGER, 11, true);
+        $this->db->createIndex(TimeLimit::COLLECTION, 'unique1', Database::INDEX_UNIQUE, ['_key', '_time']);
+        $this->db->createIndex(TimeLimit::COLLECTION, 'index1', Database::INDEX_KEY, ['_key', '_time']);
     }
 
     /**
