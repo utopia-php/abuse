@@ -233,7 +233,7 @@ class TimeLimit implements Adapter
             foreach ($documents as $document) {
                 $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
             }
-        } while(\count($documents) > 0);
+        } while(!empty($documents) > 0);
         Authorization::reset();
 
         return true;
