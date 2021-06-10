@@ -70,6 +70,7 @@ class TimeLimit implements Adapter
         $this->db->createAttribute(TimeLimit::COLLECTION, '_count', Database::VAR_INTEGER, 11, true);
         $this->db->createIndex(TimeLimit::COLLECTION, 'unique1', Database::INDEX_UNIQUE, ['_key', '_time']);
         $this->db->createIndex(TimeLimit::COLLECTION, 'index1', Database::INDEX_KEY, ['_key', '_time']);
+        $this->db->createIndex(TimeLimit::COLLECTION, 'index2', Database::INDEX_KEY, ['_time']);
     }
 
     /**
