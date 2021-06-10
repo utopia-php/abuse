@@ -28,7 +28,6 @@ class AbuseTest extends TestCase
      * @var Abuse
      */
     protected $abuse = null;
-    protected $initialized = false;
 
     public function setUp(): void
     {
@@ -48,12 +47,11 @@ class AbuseTest extends TestCase
 
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
         $db->setNamespace('namespace');
-        
+
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
-        if(!$this->initialized) {
+        if(!$db->exists()) {
             $db->create();
             $adapter->setup();
-            $this->initialized = true;
         }
 
         $adapter->setParam('{{ip}}', '127.0.0.1');

@@ -64,12 +64,12 @@ class TimeLimit implements Adapter
             throw new Exception("You need to create database before running timelimit setup");
         }
         $this->db->createCollection(TimeLimit::COLLECTION);
-        $this->db->createAttribute(TimeLimit::COLLECTION, '_key', Database::VAR_STRING, Database::LENGTH_KEY, true);
-        $this->db->createAttribute(TimeLimit::COLLECTION, '_time', Database::VAR_INTEGER, Database::LENGTH_KEY, true);
+        $this->db->createAttribute(TimeLimit::COLLECTION, 'key', Database::VAR_STRING, Database::LENGTH_KEY, true);
+        $this->db->createAttribute(TimeLimit::COLLECTION, 'time', Database::VAR_INTEGER, Database::LENGTH_KEY, true);
         $this->db->createAttribute(TimeLimit::COLLECTION, '_count', Database::VAR_INTEGER, 11, true);
-        $this->db->createIndex(TimeLimit::COLLECTION, 'unique1', Database::INDEX_UNIQUE, ['_key', '_time']);
-        $this->db->createIndex(TimeLimit::COLLECTION, 'index1', Database::INDEX_KEY, ['_key', '_time']);
-        $this->db->createIndex(TimeLimit::COLLECTION, 'index2', Database::INDEX_KEY, ['_time']);
+        $this->db->createIndex(TimeLimit::COLLECTION, 'unique1', Database::INDEX_UNIQUE, ['key', 'time']);
+        $this->db->createIndex(TimeLimit::COLLECTION, 'index1', Database::INDEX_KEY, ['key', 'time']);
+        $this->db->createIndex(TimeLimit::COLLECTION, 'index2', Database::INDEX_KEY, ['time']);
     }
 
     /**
@@ -137,8 +137,8 @@ class TimeLimit implements Adapter
 
         Authorization::disable();
         $result = $this->db->find(TimeLimit::COLLECTION, [
-            new Query('_key', Query::TYPE_EQUAL, [$key]),
-            new Query('_time', Query::TYPE_EQUAL, [$time]),
+            new Query('key', Query::TYPE_EQUAL, [$key]),
+            new Query('time', Query::TYPE_EQUAL, [$time]),
         ], 1);
         Authorization::reset();
 
@@ -169,15 +169,15 @@ class TimeLimit implements Adapter
 
         Authorization::disable();
         $existing = $this->db->find(TimeLimit::COLLECTION, [
-            new Query('_key', Query::TYPE_EQUAL, [$key]),
-            new Query('_time', Query::TYPE_EQUAL, [$time]),
+            new Query('key', Query::TYPE_EQUAL, [$key]),
+            new Query('time', Query::TYPE_EQUAL, [$time]),
         ], 1);
 
         $data = [
             '$read' => [],
             '$write' => [],
-            '_key' => $key,
-            '_time' => $time,
+            'key' => $key,
+            'time' => $time,
             '_count' => 1,
             '$collection' => TimeLimit::COLLECTION,
         ];
@@ -227,7 +227,7 @@ class TimeLimit implements Adapter
         Authorization::disable();
         do {
             $documents = $this->db->find(TimeLimit::COLLECTION, [
-                new Query('_time', Query::TYPE_LESSER, [$timestamp]),
+                new Query('time', Query::TYPE_LESSER, [$timestamp]),
             ]);
     
             foreach ($documents as $document) {
