@@ -225,13 +225,15 @@ class TimeLimit implements Adapter
     public function cleanup(int $timestamp): bool
     {
         Authorization::disable();
-        $documents = $this->db->find(TimeLimit::COLLECTION, [
-            new Query('_time', Query::TYPE_LESSER, [$timestamp]),
-        ]);
-
-        foreach ($documents as $document) {
-            $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
-        }
+        do {
+            $documents = $this->db->find(TimeLimit::COLLECTION, [
+                new Query('_time', Query::TYPE_LESSER, [$timestamp]),
+            ]);
+    
+            foreach ($documents as $document) {
+                $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
+            }
+        } while(\count($documents) > 0);
         Authorization::reset();
 
         return true;
