@@ -50,9 +50,10 @@ class AbuseTest extends TestCase
         $db->setNamespace('namespace');
         
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
-        if(! $this->initialized) {
+        if(!$this->initialized) {
             $db->create();
             $adapter->setup();
+            $this->initialized = true;
         }
 
         $adapter->setParam('{{ip}}', '127.0.0.1');
