@@ -2,14 +2,13 @@
 
 namespace Utopia\Abuse\Adapters;
 
-use Exception;
 use PDO;
-use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapter;
 use Utopia\Database\Database;
 use Utopia\Database\Document;
 use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
+use Utopia\Exception;
 
 class TimeLimit implements Adapter
 {
@@ -62,7 +61,7 @@ class TimeLimit implements Adapter
     public function setup() : void
     {
         if (!$this->db->exists()) {
-            $this->db->create();
+            throw new Exception("You need to create database before running timelimit setup");
         }
         $this->db->createCollection(TimeLimit::COLLECTION);
         $this->db->createAttribute(TimeLimit::COLLECTION, '_key', Database::VAR_STRING, Database::LENGTH_KEY, true);

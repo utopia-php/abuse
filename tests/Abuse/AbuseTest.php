@@ -28,6 +28,7 @@ class AbuseTest extends TestCase
      * @var Abuse
      */
     protected $abuse = null;
+    protected $initialized = false;
 
     public function setUp(): void
     {
@@ -49,7 +50,10 @@ class AbuseTest extends TestCase
         $db->setNamespace('namespace');
         
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
-        $adapter->setup();
+        if(! $this->initialized) {
+            $db->create();
+            $adapter->setup();
+        }
 
         $adapter->setParam('{{ip}}', '127.0.0.1');
 
