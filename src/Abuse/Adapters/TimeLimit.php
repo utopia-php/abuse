@@ -66,7 +66,7 @@ class TimeLimit implements Adapter
         $this->db->createCollection(TimeLimit::COLLECTION);
         $this->db->createAttribute(TimeLimit::COLLECTION, 'key', Database::VAR_STRING, Database::LENGTH_KEY, true);
         $this->db->createAttribute(TimeLimit::COLLECTION, 'time', Database::VAR_INTEGER, Database::LENGTH_KEY, true);
-        $this->db->createAttribute(TimeLimit::COLLECTION, '_count', Database::VAR_INTEGER, 11, true);
+        $this->db->createAttribute(TimeLimit::COLLECTION, 'count', Database::VAR_INTEGER, 11, true);
         $this->db->createIndex(TimeLimit::COLLECTION, 'unique1', Database::INDEX_UNIQUE, ['key', 'time']);
         $this->db->createIndex(TimeLimit::COLLECTION, 'index1', Database::INDEX_KEY, ['key', 'time']);
         $this->db->createIndex(TimeLimit::COLLECTION, 'index2', Database::INDEX_KEY, ['time']);
@@ -143,7 +143,7 @@ class TimeLimit implements Adapter
         Authorization::reset();
 
         if (\count($result) === 1) {
-            $result = $result[0]->getAttribute('_count',0);
+            $result = $result[0]->getAttribute('count',0);
         } else {
             $result = 0;
         }
@@ -178,14 +178,14 @@ class TimeLimit implements Adapter
             '$write' => [],
             'key' => $key,
             'time' => $time,
-            '_count' => 1,
+            'count' => 1,
             '$collection' => TimeLimit::COLLECTION,
         ];
 
         if (\count($existing) === 1) {
             //update
             $this->db->updateDocument(TimeLimit::COLLECTION, $existing[0]->getId(), new Document(array_merge($data, [
-                '_count' => $existing[0]->getAttribute('_count',0) + 1,
+                'count' => $existing[0]->getAttribute('count',0) + 1,
                 '$id' => $existing[0]->getId(),
             ])));
         } else {
