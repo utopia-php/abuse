@@ -142,7 +142,7 @@ class TimeLimit implements Adapter
         ], 1);
         Authorization::reset();
 
-        if (count($result) == 1) {
+        if (\count($result) === 1) {
             $result = $result[0]->getAttribute('_count',0);
         } else {
             $result = 0;
@@ -182,7 +182,7 @@ class TimeLimit implements Adapter
             '$collection' => TimeLimit::COLLECTION,
         ];
 
-        if (count($existing) == 1) {
+        if (\count($existing) === 1) {
             //update
             $this->db->updateDocument(TimeLimit::COLLECTION, $existing[0]->getId(), new Document(array_merge($data, [
                 '_count' => $existing[0]->getAttribute('_count',0) + 1,
