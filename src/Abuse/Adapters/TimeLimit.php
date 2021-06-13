@@ -139,7 +139,7 @@ class TimeLimit implements Adapter
         $result = $this->db->find(TimeLimit::COLLECTION, [
             new Query('key', Query::TYPE_EQUAL, [$key]),
             new Query('time', Query::TYPE_EQUAL, [$time]),
-        ], 1);
+        ], 1, 0, ['_id'], ['DESC']);
         Authorization::reset();
 
         if (\count($result) === 1) {
@@ -171,7 +171,7 @@ class TimeLimit implements Adapter
         $existing = $this->db->find(TimeLimit::COLLECTION, [
             new Query('key', Query::TYPE_EQUAL, [$key]),
             new Query('time', Query::TYPE_EQUAL, [$time]),
-        ], 1);
+        ], 1, 0, ['_id'], ['DESC']);
 
         $data = [
             '$read' => [],
@@ -210,7 +210,7 @@ class TimeLimit implements Adapter
     public function getLogs(int $offset, int $limit): array
     {
         Authorization::disable();
-        $result = $this->db->find(TimeLimit::COLLECTION, [], $limit, $offset);
+        $result = $this->db->find(TimeLimit::COLLECTION, [], $limit, $offset, ['_id'], ['DESC']);
         Authorization::reset();
         return $result;
     }
