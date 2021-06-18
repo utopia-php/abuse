@@ -1,19 +1,28 @@
-language: php
+dist: xenial
 
-php:
-- 7.4
-- 8.0
-- nightly
+arch:
+  - amd64
+
+os: linux
+
+language: shell
 
 services:
-- mysql
+- docker
 
 notifications:
   email:
   - team@appwrite.io
 
-before_script: composer install --ignore-platform-reqs
+before_script: docker run --rm --interactive --tty --volume "$(pwd)":/app composer update --ignore-platform-reqs --optimize-autoloader --no-plugins --no-scripts --prefer-dist
+
+install:
+- docker-compose up -d
+- sleep 10
 
 script:
-- vendor/bin/phpunit --configuration phpunit.xml
-- vendor/bin/psalm --show-info=true
+- docker ps
+- docker-compose exec php7.4 vendor/bin/phpunit --configuration phpunit.xml tests
+- docker-compose exec php7.4 vendor/bin/psalm --show-info=true
+- docker-compose exec php8 vendor/bin/phpunit --configuration phpunit.xml tests
+- docker-compose exec php8 vendor/bin/psalm --show-info=true

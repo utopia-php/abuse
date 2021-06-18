@@ -32,13 +32,15 @@ class AbuseTest extends TestCase
     public function setUp(): void
     {
         // Limit login attempts to 3 time in 5 minutes time frame
-        $dbHost = '127.0.0.1';
-        $dbUser = 'travis';
-        $dbPass = '';
+        $dbHost = 'mysql';
+        $dbUser = 'root';
+        $dbPort = '3306';
+        $dbPass = 'password';
 
-        $pdo = new PDO("mysql:host={$dbHost};", $dbUser, $dbPass, array(
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-            PDO::ATTR_TIMEOUT => 5, // Seconds
+        $pdo = new PDO("mysql:host={$dbHost};port={$dbPort};charset=utf8mb4", $dbUser, $dbPass, array(
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
+            PDO::ATTR_TIMEOUT => 3, // Seconds
+            PDO::ATTR_PERSISTENT => true
         ));
 
         // Connection settings

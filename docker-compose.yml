@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:8
+    environment: 
+      - MYSQL_ROOT_PASSWORD=password
+    networks:
+      - abuse
+  
+  php7.4:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-php7
+    networks:
+      - abuse
+    depends_on:
+      - mysql
+
+  php8:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-php8
+    networks:
+      - abuse
+    depends_on:
+      - mysql
+
+networks:
+  abuse:
