@@ -309,6 +309,11 @@ class TimeLimit implements Adapter
         return $this->time;
     }
 
+    /**
+     * Get PDO connection.
+     * 
+     * @return PDO 
+     */
     protected function getPDO()
     {
         return \call_user_func($this->connection);
