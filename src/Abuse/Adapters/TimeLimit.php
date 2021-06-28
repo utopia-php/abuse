@@ -9,9 +9,9 @@ use Utopia\Abuse\Adapter;
 class TimeLimit implements Adapter
 {
     /**
-     * @var callable
+     * @var PDO
      */
-    protected $connection;
+    protected $db;
 
     /**
      * @var string
@@ -42,14 +42,14 @@ class TimeLimit implements Adapter
      * @param string $key
      * @param int $time
      * @param int $limit
-     * @param callable $connection
+     * @param PDO $db
      */
-    public function __construct(string $key, int $limit, int $time, callable $connection)
+    public function __construct(string $key, int $limit, int $time, $db)
     {
         $this->key          = $key;
         $this->time         = (int)\date('U', (int)(\floor(\time() / $time)) * $time);
         $this->limit        = $limit;
-        $this->connection   = $connection;
+        $this->db           = $db;
     }
 
     /**
@@ -157,7 +157,7 @@ class TimeLimit implements Adapter
             return $this->count;
         }
                 
-        $st = $this->getPDO()->prepare('SELECT _count FROM `' . $this->getNamespace() . '.abuse.abuse`
+        $st = $this->db->prepare('SELECT _count FROM `' . $this->getNamespace() . '.abuse.abuse`
           WHERE _key = :key AND _time = :time
           LIMIT 1;
 		');
@@ -189,7 +189,7 @@ class TimeLimit implements Adapter
             return;
         }
 
-        $st = $this->getPDO()->prepare('INSERT INTO `' . $this->getNamespace() . '.abuse.abuse`
+        $st = $this->db->prepare('INSERT INTO `' . $this->getNamespace() . '.abuse.abuse`
             SET _key = :key, _time = :time, _count = 1
             ON DUPLICATE KEY UPDATE _count = _count + 1;
 		');
@@ -214,7 +214,7 @@ class TimeLimit implements Adapter
      */
     public function getLogs(int $offset, int $limit): array {  
 
-        $st = $this->getPDO()->prepare('SELECT * FROM `' . $this->getNamespace() . '.abuse.abuse`;
+        $st = $this->db->prepare('SELECT * FROM `' . $this->getNamespace() . '.abuse.abuse`;
             LIMIT :offset, :limit
         ');
         $st->bindValue(':offset',     $offset,    PDO::PARAM_INT);
@@ -236,7 +236,7 @@ class TimeLimit implements Adapter
      */
     public function cleanup(int $timestamp):bool
     {
-        $st = $this->getPDO()->prepare('DELETE 
+        $st = $this->db->prepare('DELETE 
         FROM `'.$this->getNamespace().'.abuse.abuse`
             WHERE `_time` < :timestamp');
 
@@ -307,15 +307,5 @@ class TimeLimit implements Adapter
     public function time(): int
     {
         return $this->time;
-    }
-
-    /**
-     * Get PDO connection.
-     * 
-     * @return PDO 
-     */
-    protected function getPDO()
-    {
-        return \call_user_func($this->connection);
     }
 }
