@@ -49,7 +49,7 @@ class TimeLimit implements Adapter
         $this->key          = $key;
         $this->time         = (int)\date('U', (int)(\floor(\time() / $time)) * $time);
         $this->limit        = $limit;
-        $this->db           = db;
+        $this->db           = $db;
     }
 
     /**
