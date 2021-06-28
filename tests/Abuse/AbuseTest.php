@@ -28,24 +28,22 @@ class AbuseTest extends TestCase
 
     public function setUp():void
     {
+        $dbHost = '127.0.0.1';
+        $dbUser = 'travis';
+        $dbPass = '';
+        $dbName = 'abuse';
+
+        $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass, array(
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+            PDO::ATTR_TIMEOUT => 5 // Seconds
+        ));
+
+        // Connection settings
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);   // Return arrays
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);        // Handle all errors with exceptions
+
         // Limit login attempts to 3 time in 5 minutes time frame
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), function () {
-            $dbHost = '127.0.0.1';
-            $dbUser = 'travis';
-            $dbPass = '';
-            $dbName = 'abuse';
-
-            $pdo = new PDO("mysql:host={$dbHost};dbname={$dbName}", $dbUser, $dbPass, array(
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-                PDO::ATTR_TIMEOUT => 5 // Seconds
-            ));
-
-            // Connection settings
-            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);   // Return arrays
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);        // Handle all errors with exceptions
-
-            return $pdo;
-        });
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $pdo);
 
         $adapter
             ->setNamespace('namespace') // DB table namespace
