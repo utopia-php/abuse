@@ -48,7 +48,7 @@ class TimeLimit implements Adapter
      * @param string $key
      * @param int $time
      * @param int $limit
-     * @param callable $connection
+     * @param Database $db
      */
     public function __construct(string $key, int $limit, int $time, Database $db)
     {
@@ -168,6 +168,7 @@ class TimeLimit implements Adapter
         }
 
         Authorization::disable();
+      
         $existing = $this->db->find(TimeLimit::COLLECTION, [
             new Query('key', Query::TYPE_EQUAL, [$key]),
             new Query('time', Query::TYPE_EQUAL, [$time]),
@@ -192,6 +193,7 @@ class TimeLimit implements Adapter
             //create
             $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
         }
+      
         Authorization::reset();
 
         $this->count++;
@@ -212,6 +214,7 @@ class TimeLimit implements Adapter
         Authorization::disable();
         $result = $this->db->find(TimeLimit::COLLECTION, [], $limit, $offset, ['_id'], ['DESC']);
         Authorization::reset();
+
         return $result;
     }
 
@@ -225,6 +228,7 @@ class TimeLimit implements Adapter
     public function cleanup(int $timestamp): bool
     {
         Authorization::disable();
+      
         do {
             $documents = $this->db->find(TimeLimit::COLLECTION, [
                 new Query('time', Query::TYPE_LESSER, [$timestamp]),
@@ -234,6 +238,7 @@ class TimeLimit implements Adapter
                 $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
             }
         } while(!empty($documents));
+      
         Authorization::reset();
 
         return true;
