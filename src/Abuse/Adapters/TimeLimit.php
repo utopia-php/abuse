@@ -63,13 +63,62 @@ class TimeLimit implements Adapter
         if (!$this->db->exists()) {
             throw new Exception("You need to create database before running timelimit setup");
         }
-        $this->db->createCollection(TimeLimit::COLLECTION);
-        $this->db->createAttribute(TimeLimit::COLLECTION, 'key', Database::VAR_STRING, Database::LENGTH_KEY, true);
-        $this->db->createAttribute(TimeLimit::COLLECTION, 'time', Database::VAR_INTEGER, Database::LENGTH_KEY, true);
-        $this->db->createAttribute(TimeLimit::COLLECTION, 'count', Database::VAR_INTEGER, 11, true);
-        $this->db->createIndex(TimeLimit::COLLECTION, 'unique1', Database::INDEX_UNIQUE, ['key', 'time']);
-        $this->db->createIndex(TimeLimit::COLLECTION, 'index1', Database::INDEX_KEY, ['key', 'time']);
-        $this->db->createIndex(TimeLimit::COLLECTION, 'index2', Database::INDEX_KEY, ['time']);
+
+        $attributes = [
+            new Document([
+                '$id' => 'key',
+                'type' => Database::VAR_STRING,
+                'size' => Database::LENGTH_KEY,
+                'required' => true,
+                'signed' => true,
+                'array' => false,
+                'filters' => [],
+            ]),
+            new Document([
+                '$id' => 'time',
+                'type' => Database::VAR_INTEGER,
+                'size' => 0,
+                'required' => true,
+                'signed' => false,
+                'array' => false,
+                'filters' => [],
+            ]),
+            new Document([
+                '$id' => 'count',
+                'type' => Database::VAR_INTEGER,
+                'size' => 11,
+                'required' => true,
+                'signed' => false,
+                'array' => false,
+                'filters' => [],
+            ]),
+        ];
+
+        $indexes = [
+            new Document([
+                '$Id' => 'unique1',
+                'type' => Database::INDEX_UNIQUE,
+                'attributes' => ['key', 'time'],
+                'lengths' => [],
+                'orders' => [],
+            ]),
+            new Document([
+                '$Id' => 'index1',
+                'type' => Database::INDEX_KEY,
+                'attributes' => ['key', 'time'],
+                'lengths' => [],
+                'orders' => [],
+            ]),
+            new Document([
+                '$Id' => 'index2',
+                'type' => Database::INDEX_KEY,
+                'attributes' => ['time'],
+                'lengths' => [],
+                'orders' => [],
+            ]),
+        ];
+
+        $this->db->createCollection(TimeLimit::COLLECTION, $attributes, $indexes);
     }
 
     /**
