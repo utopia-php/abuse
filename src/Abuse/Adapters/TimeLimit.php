@@ -96,21 +96,21 @@ class TimeLimit implements Adapter
 
         $indexes = [
             new Document([
-                '$Id' => 'unique1',
+                '$id' => 'unique1',
                 'type' => Database::INDEX_UNIQUE,
                 'attributes' => ['key', 'time'],
                 'lengths' => [],
                 'orders' => [],
             ]),
             new Document([
-                '$Id' => 'index1',
+                '$id' => 'index1',
                 'type' => Database::INDEX_KEY,
                 'attributes' => ['key', 'time'],
                 'lengths' => [],
                 'orders' => [],
             ]),
             new Document([
-                '$Id' => 'index2',
+                '$id' => 'index2',
                 'type' => Database::INDEX_KEY,
                 'attributes' => ['time'],
                 'lengths' => [],
