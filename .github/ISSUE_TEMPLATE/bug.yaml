@@ -35,7 +35,7 @@ body:
     id: abuse-version
     attributes:
       label: "🎲 Utopia Abuse version"
-      description: "What version of Appwrite are you running?"
+      description: "What version of Utopia Abuse are you running?"
       options:
         - Version 0.6.x
         - Version 0.5.x
