@@ -32,9 +32,9 @@ body:
       description: "What did actually happen? Add screenshots, if applicable."
       placeholder: "It actually ..."
   - type: dropdown
-    id: php-clamav-version
+    id: abuse-version
     attributes:
-      label: "🎲 Appwrite ClamAV PHP Client version"
+      label: "🎲 Utopia Abuse version"
       description: "What version of Appwrite are you running?"
       options:
         - Version 0.6.x
