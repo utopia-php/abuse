@@ -8,15 +8,6 @@ services:
     networks:
       - abuse
   
-  php7.4:
-    build:
-      context: .
-      dockerfile: ./Dockerfile-php7
-    networks:
-      - abuse
-    depends_on:
-      - mysql
-
   php8:
     build:
       context: .
