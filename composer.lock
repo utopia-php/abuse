@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b29a70743916a44ea12f633cb28e4802",
+    "content-hash": "1b6651a4fddc462f63d3aaa50f6aa3ca",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -340,16 +340,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "dev-feat-database-and-namespace",
+            "version": "0.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "f4e02988c2dc4385c08dbb318c81462d5188ed8e"
+                "reference": "2e13987364f4966ec8a36784d4fb5df3a84e4e78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/f4e02988c2dc4385c08dbb318c81462d5188ed8e",
-                "reference": "f4e02988c2dc4385c08dbb318c81462d5188ed8e",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/2e13987364f4966ec8a36784d4fb5df3a84e4e78",
+                "reference": "2e13987364f4966ec8a36784d4fb5df3a84e4e78",
                 "shasum": ""
             },
             "require": {
@@ -397,9 +397,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/feat-database-and-namespace"
+                "source": "https://github.com/utopia-php/database/tree/0.13.0"
             },
-            "time": "2021-12-23T20:51:18+00:00"
+            "time": "2021-12-27T12:59:50+00:00"
         },
         {
             "name": "utopia-php/framework",
@@ -1846,16 +1846,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.5.10",
+            "version": "9.5.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c814a05837f2edb0d1471d6e3f4ab3501ca3899a"
+                "reference": "2406855036db1102126125537adb1406f7242fdd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c814a05837f2edb0d1471d6e3f4ab3501ca3899a",
-                "reference": "c814a05837f2edb0d1471d6e3f4ab3501ca3899a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2406855036db1102126125537adb1406f7242fdd",
+                "reference": "2406855036db1102126125537adb1406f7242fdd",
                 "shasum": ""
             },
             "require": {
@@ -1933,11 +1933,11 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.10"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.11"
             },
             "funding": [
                 {
-                    "url": "https://phpunit.de/donate.html",
+                    "url": "https://phpunit.de/sponsors.html",
                     "type": "custom"
                 },
                 {
@@ -1945,7 +1945,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-09-25T07:38:51+00:00"
+            "time": "2021-12-25T07:07:57+00:00"
         },
         {
             "name": "psr/container",
@@ -4060,18 +4060,9 @@
             "time": "2015-12-17T08:42:14+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "utopia-php/database",
-            "version": "dev-feat-database-and-namespace",
-            "alias": "0.13.0",
-            "alias_normalized": "0.13.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "utopia-php/database": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
