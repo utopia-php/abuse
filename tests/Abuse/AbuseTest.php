@@ -48,11 +48,12 @@ class AbuseTest extends TestCase
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
+        $db->setDefaultDatabase('utopiaTests');
         $db->setNamespace('namespace');
 
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
-        if(!$db->exists()) {
-            $db->create();
+        if(!$db->exists('utopiaTests')) {
+            $db->create('utopiaTests');
             $adapter->setup();
         }
 

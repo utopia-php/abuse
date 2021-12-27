@@ -60,7 +60,7 @@ class TimeLimit implements Adapter
 
     public function setup() : void
     {
-        if (!$this->db->exists()) {
+        if (!$this->db->exists($this->db->getDefaultDatabase())) {
             throw new Exception("You need to create database before running timelimit setup");
         }
 
