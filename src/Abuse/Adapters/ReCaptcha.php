@@ -88,14 +88,13 @@ class ReCaptcha implements Adapter
     }
 
     /**
-     * Delete logs older than $timestamp seconds
-     * 
-     * @param int $timestamp 
-     * 
+     * Delete logs older than $datetime
+     *
+     * @param string $datetime
+     * @return bool
      * @throws Exception
-     * @return bool   
      */
-    public function cleanup(int $timestamp):bool
+    public function cleanup(string $datetime):bool
     {
         throw new Exception('Method not supported');
     }
@@ -105,10 +104,11 @@ class ReCaptcha implements Adapter
      *
      * Returns logs with an offset and limit
      *
-     * @param $offset 
-     * @param $limit
-     * 
+     * @param int $offset
+     * @param int $limit
+     *
      * @return array
+     * @throws Exception
      */
     public function getLogs(int $offset, int $limit): array 
     {  

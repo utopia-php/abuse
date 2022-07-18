@@ -35,15 +35,16 @@ use Utopia\Database\Database;
 $dbHost = '127.0.0.1';
 $dbUser = 'travis';
 $dbPass = '';
+$dbPort = '3306';
 
-$pdo = new PDO("mysql:host={$dbHost};", $dbUser, $dbPass, array(
-    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-    PDO::ATTR_TIMEOUT => 5, // Seconds
-));
-
-// Connection settings
-$pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // Return arrays
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$pdo = new PDO("mysql:host={$dbHost};port={$dbPort};charset=utf8mb4", $dbUser, $dbPass, [
+    PDO::ATTR_TIMEOUT => 3, // Seconds
+    PDO::ATTR_PERSISTENT => true,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_EMULATE_PREPARES => true,
+    PDO::ATTR_STRINGIFY_FETCHES => true,
+]);
 
 $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
 $db->setNamespace('namespace');
