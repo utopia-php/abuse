@@ -210,16 +210,12 @@ class TimeLimit implements Adapter
 
         Authorization::disable();
 
-        $existing = $this->db->find(TimeLimit::COLLECTION, [
+        $data = $this->db->findOne(TimeLimit::COLLECTION, [
             new Query('key', Query::TYPE_EQUAL, [$key]),
             new Query('time', Query::TYPE_EQUAL, [$datetime]),
         ]);
 
-        if (\count($existing) === 1) {
-            $data = $existing[0];
-            $data->setAttribute('count', $existing[0]->getAttribute('count',0) + 1);
-            $this->db->updateDocument(TimeLimit::COLLECTION, $existing[0]->getId(), $data);
-        } else {
+        if ($data === false) {
             $data = [
                 '$read' => [],
                 '$write' => [],
@@ -229,6 +225,9 @@ class TimeLimit implements Adapter
                 '$collection' => TimeLimit::COLLECTION,
             ];
             $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+        } else {
+            $data->setAttribute('count', $data->getAttribute('count',0) + 1);
+            $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
         }
       
         Authorization::reset();
