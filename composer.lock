@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "372f2a1d94e9c44faacc219797d1bf38",
+    "content-hash": "9e5cae3746a2d97fa9eafa58568a1b7f",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -344,12 +344,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "c6f3671766127aa8c8bef853494a4059d3076b20"
+                "reference": "407c0e95a4f5cf9b8932dc5b314a93b634339c09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/c6f3671766127aa8c8bef853494a4059d3076b20",
-                "reference": "c6f3671766127aa8c8bef853494a4059d3076b20",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/407c0e95a4f5cf9b8932dc5b314a93b634339c09",
+                "reference": "407c0e95a4f5cf9b8932dc5b314a93b634339c09",
                 "shasum": ""
             },
             "require": {
@@ -400,7 +400,7 @@
                 "issues": "https://github.com/utopia-php/database/issues",
                 "source": "https://github.com/utopia-php/database/tree/feat-attr-datetime"
             },
-            "time": "2022-07-13T13:01:13+00:00"
+            "time": "2022-07-19T10:06:50+00:00"
         },
         {
             "name": "utopia-php/framework",
@@ -4086,7 +4086,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.0",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-curl": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.2.0"
