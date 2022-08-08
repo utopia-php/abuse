@@ -11,27 +11,26 @@ interface Adapter
      *
      * @return bool
      */
-    public function check();
+    public function check(): bool;
 
     /**
      * Get abuse logs
      *
      * Returns logs with an offset and limit
      *
-     * @param $offset 
-     * @param $limit
-     * 
+     * @param int $offset
+     * @param int $limit
+     *
      * @return array
      */
     public function getLogs(int $offset, int $limit): array;
 
 
     /**
-     * Delete all logs older than $timestamp seconds
+     * Delete all logs older than $datetime
      *
-     * @param int $timestamp
-     * 
+     * @param string $datetime
      * @return bool
      */
-    public function cleanup(int $timestamp): bool;
+    public function cleanup(string $datetime): bool;
 }

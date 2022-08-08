@@ -7,7 +7,7 @@ class Abuse
     /**
      * @var Adapter
      */
-    protected $adapter;
+    protected Adapter $adapter;
 
     /**
      * @param Adapter $adapter
@@ -45,14 +45,14 @@ class Abuse
     }
 
     /**
-     * Delete all logs older than $timestamp seconds
+     * Delete all logs older than $datetime
      *
-     * @param int $timestamp
-     * 
+     * @param string $datetime
+     *
      * @return bool
      */
-    public function cleanup(int $timestamp): bool
+    public function cleanup(string $datetime): bool
     {
-        return $this->adapter->cleanup($timestamp);
+        return $this->adapter->cleanup($datetime);
     }
 }

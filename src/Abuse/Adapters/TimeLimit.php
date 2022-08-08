@@ -2,9 +2,9 @@
 
 namespace Utopia\Abuse\Adapters;
 
-use PDO;
 use Utopia\Abuse\Adapter;
 use Utopia\Database\Database;
+use Utopia\Database\DateTime;
 use Utopia\Database\Document;
 use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
@@ -17,43 +17,44 @@ class TimeLimit implements Adapter
     /**
      * @var Database
      */
-    protected $db;
+    protected Database $db;
 
     /**
      * @var string
      */
-    protected $key = '';
+    protected string $key = '';
+
+    /**
+     * @var string
+     */
+    protected string $time;
 
     /**
      * @var int
      */
-    protected $time = 0;
-
-    /**
-     * @var int
-     */
-    protected $limit = 0;
+    protected int $limit = 0;
 
     /**
      * @var int|null
      */
-    protected $count = null;
+    protected ?int $count = null;
 
     /**
      * @var array
      */
-    protected $params = array();
+    protected array $params = [];
 
     /**
      * @param string $key
-     * @param int $time
+     * @param int $seconds
      * @param int $limit
      * @param Database $db
      */
-    public function __construct(string $key, int $limit, int $time, Database $db)
+    public function __construct(string $key, int $limit, int $seconds, Database $db)
     {
         $this->key = $key;
-        $this->time = (int) \date('U', (int) (\floor(\time() / $time)) * $time);
+        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
+        $this->time = DateTime::format((new \DateTime())->setTimestamp($time));
         $this->limit = $limit;
         $this->db = $db;
     }
@@ -76,7 +77,7 @@ class TimeLimit implements Adapter
             ]),
             new Document([
                 '$id' => 'time',
-                'type' => Database::VAR_INTEGER,
+                'type' => Database::VAR_DATETIME,
                 'size' => 0,
                 'required' => true,
                 'signed' => false,
@@ -98,13 +99,6 @@ class TimeLimit implements Adapter
             new Document([
                 '$id' => 'unique1',
                 'type' => Database::INDEX_UNIQUE,
-                'attributes' => ['key', 'time'],
-                'lengths' => [],
-                'orders' => [],
-            ]),
-            new Document([
-                '$id' => 'index1',
-                'type' => Database::INDEX_KEY,
                 'attributes' => ['key', 'time'],
                 'lengths' => [],
                 'orders' => [],
@@ -170,11 +164,11 @@ class TimeLimit implements Adapter
      * Checks if number of counts is bigger or smaller than current limit
      *
      * @param string $key
-     * @param int $time
+     * @param string $datetime
      * @return int
-     * @throws Exception
+     * @throws \Exception
      */
-    protected function count(string $key, int $time): int
+    protected function count(string $key, string $datetime): int
     {
         if (0 == $this->limit) { // No limit no point for counting
             return 0;
@@ -187,8 +181,8 @@ class TimeLimit implements Adapter
         Authorization::disable();
         $result = $this->db->find(TimeLimit::COLLECTION, [
             new Query('key', Query::TYPE_EQUAL, [$key]),
-            new Query('time', Query::TYPE_EQUAL, [$time]),
-        ], 1, 0, ['_id'], ['DESC']);
+            new Query('time', Query::TYPE_EQUAL, [$datetime]),
+        ]);
         Authorization::reset();
 
         if (\count($result) === 1) {
@@ -204,43 +198,36 @@ class TimeLimit implements Adapter
 
     /**
      * @param string $key
-     * @param int $time seconds
-     *
-     * @throws Exception
+     * @param string $datetime
      *
      * @return void
      */
-    protected function hit(string $key, int $time): void
+    protected function hit(string $key, string $datetime): void
     {
         if (0 == $this->limit) { // No limit no point for counting
             return;
         }
 
         Authorization::disable();
-      
-        $existing = $this->db->find(TimeLimit::COLLECTION, [
+
+        $data = $this->db->findOne(TimeLimit::COLLECTION, [
             new Query('key', Query::TYPE_EQUAL, [$key]),
-            new Query('time', Query::TYPE_EQUAL, [$time]),
-        ], 1, 0, ['_id'], ['DESC']);
+            new Query('time', Query::TYPE_EQUAL, [$datetime]),
+        ]);
 
-        $data = [
-            '$read' => [],
-            '$write' => [],
-            'key' => $key,
-            'time' => $time,
-            'count' => 1,
-            '$collection' => TimeLimit::COLLECTION,
-        ];
-
-        if (\count($existing) === 1) {
-            //update
-            $this->db->updateDocument(TimeLimit::COLLECTION, $existing[0]->getId(), new Document(array_merge($data, [
-                'count' => $existing[0]->getAttribute('count',0) + 1,
-                '$id' => $existing[0]->getId(),
-            ])));
-        } else {
-            //create
+        if ($data === false) {
+            $data = [
+                '$read' => [],
+                '$write' => [],
+                'key' => $key,
+                'time' => $datetime,
+                'count' => 1,
+                '$collection' => TimeLimit::COLLECTION,
+            ];
             $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+        } else {
+            $data->setAttribute('count', $data->getAttribute('count',0) + 1);
+            $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
         }
       
         Authorization::reset();
@@ -270,17 +257,18 @@ class TimeLimit implements Adapter
     /**
      * Delete logs older than $timestamp seconds
      *
-     * @param int $timestamp
+     * @param string $datetime
      *
      * @return bool
+     * @throws \Utopia\Database\Exception\Authorization
      */
-    public function cleanup(int $timestamp): bool
+    public function cleanup(string $datetime): bool
     {
         Authorization::disable();
       
         do {
             $documents = $this->db->find(TimeLimit::COLLECTION, [
-                new Query('time', Query::TYPE_LESSER, [$timestamp]),
+                new Query('time', Query::TYPE_LESSER, [$datetime]),
             ]);
     
             foreach ($documents as $document) {
@@ -347,11 +335,11 @@ class TimeLimit implements Adapter
     /**
      * Time
      *
-     * Return the unix time
+     * Return the Datetime
      *
-     * @return int
+     * @return string
      */
-    public function time(): int
+    public function time(): string
     {
         return $this->time;
     }

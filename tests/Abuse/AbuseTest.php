@@ -19,8 +19,10 @@ use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Cache\Adapter\None as NoCache;
 use Utopia\Cache\Cache;
+use Utopia\Database\Adapter\MariaDB;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
+use Utopia\Database\DateTime;
 
 class AbuseTest extends TestCase
 {
@@ -37,15 +39,7 @@ class AbuseTest extends TestCase
         $dbPort = '3306';
         $dbPass = 'password';
 
-        $pdo = new PDO("mysql:host={$dbHost};port={$dbPort};charset=utf8mb4", $dbUser, $dbPass, array(
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4',
-            PDO::ATTR_TIMEOUT => 3, // Seconds
-            PDO::ATTR_PERSISTENT => true
-        ));
-
-        // Connection settings
-        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC); // Return arrays
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = new PDO("mysql:host={$dbHost};port={$dbPort};charset=utf8mb4", $dbUser, $dbPass, MariaDB::getPdoAttributes());
 
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
         $db->setDefaultDatabase('utopiaTests');
@@ -85,7 +79,7 @@ class AbuseTest extends TestCase
 
         sleep(5);
         // Delete the log
-        $status = $this->abuse->cleanup(time() - 1);
+        $status = $this->abuse->cleanup(DateTime::addSeconds(new \DateTime(), -1));
         $this->assertEquals($status, true);
 
         // Check that there are no logs in the DB

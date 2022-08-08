@@ -7,6 +7,8 @@ services:
       - MYSQL_ROOT_PASSWORD=password
     networks:
       - abuse
+    ports:
+      - "9307:3306"
   
   php8:
     build:
