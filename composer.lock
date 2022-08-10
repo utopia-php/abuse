@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1b6651a4fddc462f63d3aaa50f6aa3ca",
+    "content-hash": "fb1ac7b869309cf3b3961911571e09a2",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -340,16 +340,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.13.0",
+            "version": "dev-refactor-permissions",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "2e13987364f4966ec8a36784d4fb5df3a84e4e78"
+                "reference": "2e33ddd74c9950abdacabd5f0745564674c6d74f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/2e13987364f4966ec8a36784d4fb5df3a84e4e78",
-                "reference": "2e13987364f4966ec8a36784d4fb5df3a84e4e78",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/2e33ddd74c9950abdacabd5f0745564674c6d74f",
+                "reference": "2e33ddd74c9950abdacabd5f0745564674c6d74f",
                 "shasum": ""
             },
             "require": {
@@ -397,9 +397,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.13.0"
+                "source": "https://github.com/utopia-php/database/tree/refactor-permissions"
             },
-            "time": "2021-12-27T12:59:50+00:00"
+            "time": "2022-08-09T00:27:04+00:00"
         },
         {
             "name": "utopia-php/framework",
@@ -4062,13 +4062,16 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "utopia-php/database": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.0",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-curl": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.3.0"
 }
