@@ -208,29 +208,26 @@ class TimeLimit implements Adapter
             return;
         }
 
-        Authorization::disable();
+        Authorization::skip(function () use ($datetime, $key) {
+            $data = $this->db->findOne(TimeLimit::COLLECTION, [
+                new Query('key', Query::TYPE_EQUAL, [$key]),
+                new Query('time', Query::TYPE_EQUAL, [$datetime]),
+            ]);
 
-        $data = $this->db->findOne(TimeLimit::COLLECTION, [
-            new Query('key', Query::TYPE_EQUAL, [$key]),
-            new Query('time', Query::TYPE_EQUAL, [$datetime]),
-        ]);
-
-        if ($data === false) {
-            $data = [
-                '$read' => [],
-                '$write' => [],
-                'key' => $key,
-                'time' => $datetime,
-                'count' => 1,
-                '$collection' => TimeLimit::COLLECTION,
-            ];
-            $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
-        } else {
-            $data->setAttribute('count', $data->getAttribute('count',0) + 1);
-            $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
-        }
-      
-        Authorization::reset();
+            if ($data === false) {
+                $data = [
+                    '$permissions' => [],
+                    'key' => $key,
+                    'time' => $datetime,
+                    'count' => 1,
+                    '$collection' => TimeLimit::COLLECTION,
+                ];
+                $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+            } else {
+                $data->setAttribute('count', $data->getAttribute('count', 0) + 1);
+                $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
+            }
+        });
 
         $this->count++;
     }
