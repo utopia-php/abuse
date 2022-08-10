@@ -59,7 +59,7 @@ class TimeLimit implements Adapter
         $this->db = $db;
     }
 
-    public function setup() : void
+    public function setup(): void
     {
         if (!$this->db->exists($this->db->getDefaultDatabase())) {
             throw new Exception("You need to create database before running timelimit setup");
@@ -180,13 +180,13 @@ class TimeLimit implements Adapter
 
         Authorization::disable();
         $result = $this->db->find(TimeLimit::COLLECTION, [
-            new Query('key', Query::TYPE_EQUAL, [$key]),
-            new Query('time', Query::TYPE_EQUAL, [$datetime]),
+            Query::equal('key', [$key]),
+            Query::equal('time', [$datetime]),
         ]);
         Authorization::reset();
 
         if (\count($result) === 1) {
-            $result = $result[0]->getAttribute('count',0);
+            $result = $result[0]->getAttribute('count', 0);
         } else {
             $result = 0;
         }
@@ -211,8 +211,8 @@ class TimeLimit implements Adapter
         Authorization::disable();
 
         $data = $this->db->findOne(TimeLimit::COLLECTION, [
-            new Query('key', Query::TYPE_EQUAL, [$key]),
-            new Query('time', Query::TYPE_EQUAL, [$datetime]),
+            Query::equal('key', [$key]),
+            Query::equal('time', [$datetime]),
         ]);
 
         if ($data === false) {
@@ -226,10 +226,10 @@ class TimeLimit implements Adapter
             ];
             $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
         } else {
-            $data->setAttribute('count', $data->getAttribute('count',0) + 1);
+            $data->setAttribute('count', $data->getAttribute('count', 0) + 1);
             $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
         }
-      
+
         Authorization::reset();
 
         $this->count++;
@@ -265,17 +265,17 @@ class TimeLimit implements Adapter
     public function cleanup(string $datetime): bool
     {
         Authorization::disable();
-      
+
         do {
             $documents = $this->db->find(TimeLimit::COLLECTION, [
-                new Query('time', Query::TYPE_LESSER, [$datetime]),
+                Query::lessThan('time', $datetime),
             ]);
-    
+
             foreach ($documents as $document) {
                 $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
             }
-        } while(!empty($documents));
-      
+        } while (!empty($documents));
+
         Authorization::reset();
 
         return true;
