@@ -216,17 +216,17 @@ class TimeLimit implements Adapter
             return;
         }
 
-        Authorization::skip(function () use ($datetime, $key) {
+        Authorization::skip(function () use ($time, $key) {
             $data = $this->db->findOne(TimeLimit::COLLECTION, [
                 new Query('key', Query::TYPE_EQUAL, [$key]),
-                new Query('time', Query::TYPE_EQUAL, [$datetime]),
+                new Query('time', Query::TYPE_EQUAL, [$time]),
             ]);
 
             if ($data === false) {
                 $data = [
                     '$permissions' => [],
                     'key' => $key,
-                    'time' => $datetime,
+                    'time' => $time,
                     'count' => 1,
                     '$collection' => TimeLimit::COLLECTION,
                 ];
