@@ -77,7 +77,7 @@ class TimeLimit implements Adapter
             ]),
             new Document([
                 '$id' => 'time',
-                'type' => Database::VAR_INTEGER,
+                'type' => Database::VAR_DATETIME,
                 'size' => 0,
                 'required' => true,
                 'signed' => false,
