@@ -19,6 +19,12 @@
         "ext-pdo": "*",
         "utopia-php/database": "dev-refactor-permissions"
     },
+    "repositories": [
+        {
+            "url": "https://github.com/utopia-php/database.git",
+            "type": "git"
+        }
+    ],
     "require-dev": {
         "phpunit/phpunit": "^9.4",
         "vimeo/psalm": "4.0.1"

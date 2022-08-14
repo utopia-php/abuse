@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1dde2801965d70be3dc4c1259498d944",
+    "content-hash": "fd1185706fb2ba7a86255e7b46f2da4e",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -344,13 +344,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "33557bdd6ea9e884f583c288d0711be18cbd15f9"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/33557bdd6ea9e884f583c288d0711be18cbd15f9",
-                "reference": "33557bdd6ea9e884f583c288d0711be18cbd15f9",
-                "shasum": ""
+                "reference": "75ac6965dea2ddada8ecb6bb7ede2e8a7f2249c2"
             },
             "require": {
                 "ext-mongodb": "*",
@@ -374,7 +368,11 @@
                     "Utopia\\Database\\": "src/Database"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Utopia\\Tests\\": "tests/Database"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -396,11 +394,7 @@
                 "upf",
                 "utopia"
             ],
-            "support": {
-                "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/refactor-permissions"
-            },
-            "time": "2022-08-14T03:11:23+00:00"
+            "time": "2022-08-14T09:23:08+00:00"
         },
         {
             "name": "utopia-php/framework",
