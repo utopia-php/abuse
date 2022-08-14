@@ -6,6 +6,10 @@ use Utopia\Abuse\Adapter;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
 use Utopia\Database\Document;
+use Utopia\Database\Exception\Authorization as AuthorizationException;
+use Utopia\Database\Exception\Duplicate;
+use Utopia\Database\Exception\Limit;
+use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
 use Utopia\Exception;
@@ -53,13 +57,18 @@ class TimeLimit implements Adapter
     public function __construct(string $key, int $limit, int $seconds, Database $db)
     {
         $this->key = $key;
-        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
+        $time = (int)\date('U', (int)(\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
         $this->time = DateTime::format((new \DateTime())->setTimestamp($time));
         $this->limit = $limit;
         $this->db = $db;
     }
 
-    public function setup() : void
+    /**
+     * @throws Limit
+     * @throws Duplicate
+     * @throws Exception|\Exception
+     */
+    public function setup(): void
     {
         if (!$this->db->exists($this->db->getDefaultDatabase())) {
             throw new Exception("You need to create database before running timelimit setup");
@@ -178,20 +187,20 @@ class TimeLimit implements Adapter
             return $this->count;
         }
 
-        Authorization::disable();
-        $result = $this->db->find(TimeLimit::COLLECTION, [
-            new Query('key', Query::TYPE_EQUAL, [$key]),
-            new Query('time', Query::TYPE_EQUAL, [$datetime]),
-        ]);
-        Authorization::reset();
+        $result = Authorization::skip(function () use ($key, $datetime) {
+            return $this->db->find(TimeLimit::COLLECTION, [
+                new Query('key', Query::TYPE_EQUAL, [$key]),
+                new Query('time', Query::TYPE_EQUAL, [$datetime]),
+            ]);
+        });
 
         if (\count($result) === 1) {
-            $result = $result[0]->getAttribute('count',0);
+            $result = $result[0]->getAttribute('count', 0);
         } else {
             $result = 0;
         }
 
-        $this->count = (int) $result;
+        $this->count = (int)$result;
 
         return $this->count;
     }
@@ -201,6 +210,7 @@ class TimeLimit implements Adapter
      * @param string $datetime
      *
      * @return void
+     * @throws AuthorizationException|Structure|\Exception
      */
     protected function hit(string $key, string $datetime): void
     {
@@ -208,29 +218,27 @@ class TimeLimit implements Adapter
             return;
         }
 
-        Authorization::disable();
+        Authorization::skip(function () use ($key, $datetime) {
+            $data = $this->db->findOne(TimeLimit::COLLECTION, [
+                new Query('key', Query::TYPE_EQUAL, [$key]),
+                new Query('time', Query::TYPE_EQUAL, [$datetime]),
+            ]);
 
-        $data = $this->db->findOne(TimeLimit::COLLECTION, [
-            new Query('key', Query::TYPE_EQUAL, [$key]),
-            new Query('time', Query::TYPE_EQUAL, [$datetime]),
-        ]);
-
-        if ($data === false) {
-            $data = [
-                '$read' => [],
-                '$write' => [],
-                'key' => $key,
-                'time' => $datetime,
-                'count' => 1,
-                '$collection' => TimeLimit::COLLECTION,
-            ];
-            $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
-        } else {
-            $data->setAttribute('count', $data->getAttribute('count',0) + 1);
-            $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
-        }
-      
-        Authorization::reset();
+            if ($data === false) {
+                $data = [
+                    '$read' => [],
+                    '$write' => [],
+                    'key' => $key,
+                    'time' => $datetime,
+                    'count' => 1,
+                    '$collection' => TimeLimit::COLLECTION,
+                ];
+                $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+            } else {
+                $data->setAttribute('count', $data->getAttribute('count', 0) + 1);
+                $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
+            }
+        });
 
         $this->count++;
     }
@@ -238,20 +246,19 @@ class TimeLimit implements Adapter
     /**
      * Get abuse logs
      *
-     * Returns logs with an offset and limit
+     * Return logs with an offset and limit
      *
-     * @param $offset
-     * @param $limit
+     * @param int $offset
+     * @param int $limit
      *
      * @return array
+     * @throws \Exception
      */
     public function getLogs(int $offset, int $limit): array
     {
-        Authorization::disable();
-        $result = $this->db->find(TimeLimit::COLLECTION, [], $limit, $offset, ['_id'], ['DESC']);
-        Authorization::reset();
-
-        return $result;
+        return Authorization::skip(function () use ($offset, $limit) {
+            return $this->db->find(TimeLimit::COLLECTION, [], $limit, $offset, ['_id'], ['DESC']);
+        });
     }
 
     /**
@@ -260,23 +267,22 @@ class TimeLimit implements Adapter
      * @param string $datetime
      *
      * @return bool
-     * @throws \Utopia\Database\Exception\Authorization
+     * @throws AuthorizationException|\Exception
      */
     public function cleanup(string $datetime): bool
     {
-        Authorization::disable();
-      
-        do {
-            $documents = $this->db->find(TimeLimit::COLLECTION, [
-                new Query('time', Query::TYPE_LESSER, [$datetime]),
-            ]);
-    
-            foreach ($documents as $document) {
-                $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
-            }
-        } while(!empty($documents));
-      
-        Authorization::reset();
+        Authorization::skip(function () use ($datetime) {
+            do {
+                $documents = $this->db->find(TimeLimit::COLLECTION, [
+                    new Query('time', Query::TYPE_LESSER, [$datetime]),
+                ]);
+
+                foreach ($documents as $document) {
+                    $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
+                }
+            } while (!empty($documents));
+
+        });
 
         return true;
     }
@@ -287,7 +293,7 @@ class TimeLimit implements Adapter
      * Checks if number of counts is bigger or smaller than current limit. limit 0 is equal to unlimited
      *
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     public function check(): bool
     {
@@ -310,9 +316,9 @@ class TimeLimit implements Adapter
      *
      * Returns the number of current remaining counts
      *
-     * @throws Exception
-     *
      * @return int
+     * @throws \Exception
+     *
      */
     public function remaining(): int
     {
