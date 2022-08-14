@@ -13,21 +13,21 @@ class ReCaptcha implements Adapter
      *
      * @var string
      */
-    protected $secret = '';
+    protected string $secret = '';
 
     /**
      * The value of 'g-recaptcha-response'.
      *
      * @var string
      */
-    protected $response = '';
+    protected string $response = '';
 
     /**
      * The end user's ip address
      *
      * @var string
      */
-    protected $remoteIP = '';
+    protected string $remoteIP = '';
 
     /**
      * ReCaptcha Adapter
@@ -42,7 +42,7 @@ class ReCaptcha implements Adapter
      * @param string $response
      * @param string $remoteIP
      */
-    public function __construct($secret, $response, $remoteIP)
+    public function __construct(string $secret, string $response, string $remoteIP)
     {
         $this->secret   = $secret;
         $this->response = $response;
@@ -57,7 +57,7 @@ class ReCaptcha implements Adapter
      * @param float $score
      * @return bool
      */
-    public function check($score = 0.5):bool
+    public function check(float $score = 0.5):bool
     {
         $url    = 'https://www.google.com/recaptcha/api/siteverify';
         $fields = array(
@@ -102,7 +102,7 @@ class ReCaptcha implements Adapter
     /**
      * Get abuse logs
      *
-     * Returns logs with an offset and limit
+     * Return logs with an offset and limit
      *
      * @param int $offset
      * @param int $limit

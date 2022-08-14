@@ -24,7 +24,7 @@ class Abuse
      *
      * @return bool
      */
-    public function check()
+    public function check(): bool
     {
         return $this->adapter->check();
     }
@@ -32,11 +32,11 @@ class Abuse
     /**
      * Get abuse logs
      *
-     * Returns logs with an offset and limit
+     * Return logs with an offset and limit
      *
-     * @param $offset 
-     * @param $limit
-     * 
+     * @param int $offset
+     * @param int $limit
+     *
      * @return array
      */
     public function getLogs(int $offset, int $limit): array

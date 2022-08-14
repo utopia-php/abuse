@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd1185706fb2ba7a86255e7b46f2da4e",
+    "content-hash": "586e74326f3098413e921f3af9364e13",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -340,11 +340,11 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "dev-refactor-permissions",
+            "version": "0.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "75ac6965dea2ddada8ecb6bb7ede2e8a7f2249c2"
+                "reference": "cd89b41564223cddf7d87a41bbaf736a0c89f327"
             },
             "require": {
                 "ext-mongodb": "*",
@@ -394,7 +394,7 @@
                 "upf",
                 "utopia"
             ],
-            "time": "2022-08-14T09:23:08+00:00"
+            "time": "2022-08-14T15:22:34+00:00"
         },
         {
             "name": "utopia-php/framework",
@@ -4066,14 +4066,13 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "utopia-php/database": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.0",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-curl": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

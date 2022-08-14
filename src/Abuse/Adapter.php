@@ -16,7 +16,7 @@ interface Adapter
     /**
      * Get abuse logs
      *
-     * Returns logs with an offset and limit
+     * Return logs with an offset and limit
      *
      * @param int $offset
      * @param int $limit
