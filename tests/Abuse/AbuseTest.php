@@ -75,7 +75,6 @@ class AbuseTest extends TestCase
 
         // Check that there is only one log
         $logs = $this->abuse->getLogs(0, 10);
-        var_dump($logs);
         $this->assertEquals(1, \count($logs));
 
         sleep(5);
