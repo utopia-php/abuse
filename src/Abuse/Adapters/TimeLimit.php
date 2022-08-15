@@ -256,7 +256,7 @@ class TimeLimit implements Adapter
     public function getLogs(int $offset, int $limit): array
     {
         return Authorization::skip(function () use ($offset, $limit) {
-            return $this->db->find(TimeLimit::COLLECTION, [], $limit, $offset, ['_id'], ['DESC']);
+            return $this->db->find(TimeLimit::COLLECTION, [Query::limit($limit), Query::offset($offset), Query::orderDesc('')]);
         });
     }
 
