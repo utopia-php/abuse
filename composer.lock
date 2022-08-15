@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1b6651a4fddc462f63d3aaa50f6aa3ca",
+    "content-hash": "40bdabe1101476f1d49b18279e5a1a03",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -287,16 +287,16 @@
         },
         {
             "name": "utopia-php/cache",
-            "version": "0.6.0",
+            "version": "0.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/cache.git",
-                "reference": "8ea1353a4bbab617e23c865a7c97b60d8074aee3"
+                "reference": "9889235a6d3da6cbb1f435201529da4d27c30e79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/cache/zipball/8ea1353a4bbab617e23c865a7c97b60d8074aee3",
-                "reference": "8ea1353a4bbab617e23c865a7c97b60d8074aee3",
+                "url": "https://api.github.com/repos/utopia-php/cache/zipball/9889235a6d3da6cbb1f435201529da4d27c30e79",
+                "reference": "9889235a6d3da6cbb1f435201529da4d27c30e79",
                 "shasum": ""
             },
             "require": {
@@ -334,22 +334,22 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/cache/issues",
-                "source": "https://github.com/utopia-php/cache/tree/0.6.0"
+                "source": "https://github.com/utopia-php/cache/tree/0.6.1"
             },
-            "time": "2022-04-04T12:30:05+00:00"
+            "time": "2022-08-10T08:12:46+00:00"
         },
         {
             "name": "utopia-php/database",
-            "version": "0.19.0",
+            "version": "0.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "207d9f2665bf2124797351dfdcc928a46a301b04"
+                "reference": "cd89b41564223cddf7d87a41bbaf736a0c89f327"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/207d9f2665bf2124797351dfdcc928a46a301b04",
-                "reference": "207d9f2665bf2124797351dfdcc928a46a301b04",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/cd89b41564223cddf7d87a41bbaf736a0c89f327",
+                "reference": "cd89b41564223cddf7d87a41bbaf736a0c89f327",
                 "shasum": ""
             },
             "require": {
@@ -398,22 +398,22 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.19.0"
+                "source": "https://github.com/utopia-php/database/tree/0.20.0"
             },
-            "time": "2022-08-01T11:51:01+00:00"
+            "time": "2022-08-14T15:22:34+00:00"
         },
         {
             "name": "utopia-php/framework",
-            "version": "0.20.0",
+            "version": "0.21.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/framework.git",
-                "reference": "beb5e861c7d0a6256a1272e6b9d70b060ca8629a"
+                "reference": "5aa5431788460a782065e42b0e8a35e7f139af2f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/framework/zipball/beb5e861c7d0a6256a1272e6b9d70b060ca8629a",
-                "reference": "beb5e861c7d0a6256a1272e6b9d70b060ca8629a",
+                "url": "https://api.github.com/repos/utopia-php/framework/zipball/5aa5431788460a782065e42b0e8a35e7f139af2f",
+                "reference": "5aa5431788460a782065e42b0e8a35e7f139af2f",
                 "shasum": ""
             },
             "require": {
@@ -447,9 +447,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/framework/issues",
-                "source": "https://github.com/utopia-php/framework/tree/0.20.0"
+                "source": "https://github.com/utopia-php/framework/tree/0.21.0"
             },
-            "time": "2022-07-30T09:55:28+00:00"
+            "time": "2022-08-12T11:37:21+00:00"
         }
     ],
     "packages-dev": [
@@ -4077,8 +4077,9 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.0",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-curl": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }

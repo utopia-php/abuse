@@ -189,8 +189,8 @@ class TimeLimit implements Adapter
 
         $result = Authorization::skip(function () use ($key, $datetime) {
             return $this->db->find(TimeLimit::COLLECTION, [
-                new Query('key', Query::TYPE_EQUAL, [$key]),
-                new Query('time', Query::TYPE_EQUAL, [$datetime]),
+                Query::equal('key', [$key]),
+                Query::equal('time', [$datetime]),
             ]);
         });
 
@@ -218,16 +218,15 @@ class TimeLimit implements Adapter
             return;
         }
 
-        Authorization::skip(function () use ($key, $datetime) {
+        Authorization::skip(function () use ($datetime, $key) {
             $data = $this->db->findOne(TimeLimit::COLLECTION, [
-                new Query('key', Query::TYPE_EQUAL, [$key]),
-                new Query('time', Query::TYPE_EQUAL, [$datetime]),
+                Query::equal('key', [$key]),
+                Query::equal('time', [$datetime]),
             ]);
 
             if ($data === false) {
                 $data = [
-                    '$read' => [],
-                    '$write' => [],
+                    '$permissions' => [],
                     'key' => $key,
                     'time' => $datetime,
                     'count' => 1,
@@ -274,7 +273,7 @@ class TimeLimit implements Adapter
         Authorization::skip(function () use ($datetime) {
             do {
                 $documents = $this->db->find(TimeLimit::COLLECTION, [
-                    new Query('time', Query::TYPE_LESSER, [$datetime]),
+                    Query::lessThan('time', $datetime),
                 ]);
 
                 foreach ($documents as $document) {
