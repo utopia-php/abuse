@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "586e74326f3098413e921f3af9364e13",
+    "content-hash": "40bdabe1101476f1d49b18279e5a1a03",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -346,6 +346,12 @@
                 "url": "https://github.com/utopia-php/database.git",
                 "reference": "cd89b41564223cddf7d87a41bbaf736a0c89f327"
             },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/cd89b41564223cddf7d87a41bbaf736a0c89f327",
+                "reference": "cd89b41564223cddf7d87a41bbaf736a0c89f327",
+                "shasum": ""
+            },
             "require": {
                 "ext-mongodb": "*",
                 "ext-pdo": "*",
@@ -368,11 +374,7 @@
                     "Utopia\\Database\\": "src/Database"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Utopia\\Tests\\": "tests/Database"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -394,6 +396,10 @@
                 "upf",
                 "utopia"
             ],
+            "support": {
+                "issues": "https://github.com/utopia-php/database/issues",
+                "source": "https://github.com/utopia-php/database/tree/0.20.0"
+            },
             "time": "2022-08-14T15:22:34+00:00"
         },
         {
