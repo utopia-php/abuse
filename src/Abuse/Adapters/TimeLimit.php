@@ -91,7 +91,7 @@ class TimeLimit implements Adapter
                 'required' => true,
                 'signed' => false,
                 'array' => false,
-                'filters' => [],
+                'filters' => ['datetime'],
             ]),
             new Document([
                 '$id' => 'count',
