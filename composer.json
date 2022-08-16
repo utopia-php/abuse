@@ -18,7 +18,7 @@
         "php": ">=8.0",
         "ext-pdo": "*",
         "ext-curl": "*",
-        "utopia-php/database": "0.20.0"
+        "utopia-php/database": "dev-refactor-permissions"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.4",
