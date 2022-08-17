@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a963025f8709ab052c26f0860403bf27",
+    "content-hash": "8dc54e5af137cd6e57a5b03de53f24cb",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -340,16 +340,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "dev-datetime-tz-filter",
+            "version": "0.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "8e4e9a02f829440811cfb2e0a56f40c29519049b"
+                "reference": "22c45ae83612e907203b7571cd8e3115ae3ae4c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/8e4e9a02f829440811cfb2e0a56f40c29519049b",
-                "reference": "8e4e9a02f829440811cfb2e0a56f40c29519049b",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/22c45ae83612e907203b7571cd8e3115ae3ae4c5",
+                "reference": "22c45ae83612e907203b7571cd8e3115ae3ae4c5",
                 "shasum": ""
             },
             "require": {
@@ -398,9 +398,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/datetime-tz-filter"
+                "source": "https://github.com/utopia-php/database/tree/0.22.0"
             },
-            "time": "2022-08-15T13:48:34+00:00"
+            "time": "2022-08-17T12:55:37+00:00"
         },
         {
             "name": "utopia-php/framework",
@@ -4070,18 +4070,9 @@
             "time": "2015-12-17T08:42:14+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "utopia-php/database",
-            "version": "dev-datetime-tz-filter",
-            "alias": "0.20.0",
-            "alias_normalized": "0.20.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "utopia-php/database": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
