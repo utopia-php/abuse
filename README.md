@@ -11,6 +11,7 @@ Although this library is part of the [Utopia Framework](https://github.com/utopi
 ## Getting Started
 
 Install using composer:
+
 ```bash
 composer require utopia-php/abuse
 ```
@@ -87,18 +88,11 @@ if(!$abuse->check()) {
 }
 ```
 
-*Notice: The code above is for example purpose only. It is always recommended to validate user input before using it in your code. If you are using a load balancer or any proxy server you might need to get user IP from the HTTP_X_FORWARDE‌​D_FOR header.*
+_Notice: The code above is for example purpose only. It is always recommended to validate user input before using it in your code. If you are using a load balancer or any proxy server you might need to get user IP from the HTTP_X_FORWARDE‌​D_FOR header._
 
 ## System Requirements
 
 Utopia Framework requires PHP 8.0 or later. We recommend using the latest PHP version whenever possible.
-
-## Authors
-
-**Eldad Fux**
-
-+ [https://twitter.com/eldadfux](https://twitter.com/eldadfux)
-+ [https://github.com/eldadfux](https://github.com/eldadfux)
 
 ## Copyright and license
 
