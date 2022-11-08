@@ -23,7 +23,6 @@ use Utopia\Database\Adapter\MariaDB;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
-use Utopia\Database\Exception\Duplicate;
 use Utopia\Database\Exception\Limit;
 use Utopia\Exception;
 
@@ -35,7 +34,6 @@ class AbuseTest extends TestCase
     /**
      * @throws Limit
      * @throws Exception
-     * @throws Duplicate
      * @throws \Exception
      */
     public function setUp(): void
