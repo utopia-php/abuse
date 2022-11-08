@@ -23,14 +23,21 @@ use Utopia\Database\Adapter\MariaDB;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
+use Utopia\Database\Exception\Duplicate;
+use Utopia\Database\Exception\Limit;
+use Utopia\Exception;
 
 class AbuseTest extends TestCase
 {
-    /**
-     * @var Abuse
-     */
-    protected $abuse = null;
+    protected ?Abuse $abuse = null;
+    protected ?Abuse $abuseRace = null;
 
+    /**
+     * @throws Limit
+     * @throws Exception
+     * @throws Duplicate
+     * @throws \Exception
+     */
     public function setUp(): void
     {
         // Limit login attempts to 3 time in 5 minutes time frame
@@ -52,8 +59,9 @@ class AbuseTest extends TestCase
         }
 
         $adapter->setParam('{{ip}}', '127.0.0.1');
-
         $this->abuse = new Abuse($adapter);
+
+        $this->abuseRace = new Abuse(new TimeLimit('increase', 999, 60 * 5, $db));
     }
 
     public function tearDown(): void
@@ -70,12 +78,21 @@ class AbuseTest extends TestCase
         $this->assertEquals($this->abuse->check(), true);
     }
 
+    public function testAbuse()
+    {
+        for($i = 0 ; $i < 999 ; $i++){
+            $this->assertEquals($this->abuseRace->check(), false);
+        }
+
+        $this->assertEquals($this->abuseRace->check(), true);
+    }
+
     public function testCleanup()
     {
 
         // Check that there is only one log
         $logs = $this->abuse->getLogs(0, 10);
-        $this->assertEquals(1, \count($logs));
+        $this->assertEquals(2, \count($logs));
 
         sleep(5);
         // Delete the log
@@ -86,4 +103,6 @@ class AbuseTest extends TestCase
         $logs = $this->abuse->getLogs(0, 10);
         $this->assertEquals(0, \count($logs));
     }
+
+
 }

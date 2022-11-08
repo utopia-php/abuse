@@ -234,8 +234,7 @@ class TimeLimit implements Adapter
                 ];
                 $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
             } else {
-                $data->setAttribute('count', $data->getAttribute('count', 0) + 1);
-                $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
+                $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(),'count');
             }
         });
 
