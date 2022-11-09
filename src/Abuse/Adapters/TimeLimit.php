@@ -301,8 +301,25 @@ class TimeLimit implements Adapter
         }
 
         $key = $this->parseKey();
+        $time = $this->time;
 
-        if ($this->limit > $this->count($key, $this->time)) {
+        /**
+         * @var $result Document
+         */
+        $result = Authorization::skip(function () use ($key, $time) {
+            return $this->db->findOne(TimeLimit::COLLECTION, [
+                Query::equal('key', [$key]),
+                Query::equal('time', [$time]),
+            ]);
+        });
+
+        $count = 0;
+        if(!empty($result)){
+            $count = (int)$result->getAttribute('count', 0);
+            var_dump($count);
+        }
+
+        if ($this->limit > $count) {
             $this->hit($key, $this->time);
             return false;
         }
