@@ -208,22 +208,14 @@ class TimeLimit implements Adapter
     /**
      * @param string $key
      * @param string $datetime
-     *
+     * @param Document|false $data
      * @return void
-     * @throws AuthorizationException|Structure|\Exception
+     * @throws AuthorizationException
+     * @throws Structure
      */
-    protected function hit(string $key, string $datetime): void
+    protected function hit(string $key, string $datetime, Document|false $data): void
     {
-        if (0 == $this->limit) { // No limit no point for counting
-            return;
-        }
-
-        Authorization::skip(function () use ($datetime, $key) {
-            $data = $this->db->findOne(TimeLimit::COLLECTION, [
-                Query::equal('key', [$key]),
-                Query::equal('time', [$datetime]),
-            ]);
-
+        Authorization::skip(function () use ($datetime, $key, $data) {
             if ($data === false) {
                 $data = [
                     '$permissions' => [],
@@ -304,9 +296,9 @@ class TimeLimit implements Adapter
         $time = $this->time;
 
         /**
-         * @var $result Document
+         * @var $data Document
          */
-        $result = Authorization::skip(function () use ($key, $time) {
+        $data = Authorization::skip(function () use ($key, $time) {
             return $this->db->findOne(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$time]),
@@ -314,13 +306,12 @@ class TimeLimit implements Adapter
         });
 
         $count = 0;
-        if(!empty($result)){
-            $count = (int)$result->getAttribute('count', 0);
-            var_dump($count);
+        if(!empty($data)){
+            $count = (int)$data->getAttribute('count', 0);
         }
 
         if ($this->limit > $count) {
-            $this->hit($key, $this->time);
+            $this->hit($key, $this->time, $data);
             return false;
         }
 
