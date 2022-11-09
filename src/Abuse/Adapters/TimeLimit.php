@@ -39,9 +39,9 @@ class TimeLimit implements Adapter
     protected int $limit = 0;
 
     /**
-     * @var int|null
+     * @var Document|null
      */
-    protected ?int $count = null;
+    protected ?Document $document = null;
 
     /**
      * @var array
@@ -64,7 +64,6 @@ class TimeLimit implements Adapter
     }
 
     /**
-     * @throws Limit
      * @throws Duplicate
      * @throws Exception|\Exception
      */
@@ -182,56 +181,48 @@ class TimeLimit implements Adapter
         if (0 == $this->limit) { // No limit no point for counting
             return 0;
         }
-
-        if (!\is_null($this->count)) { // Get fetched result
-            return $this->count;
+        if (!\is_null($this->document)) { // Get fetched result
+            return (int)$this->document['count'];
         }
 
-        $result = Authorization::skip(function () use ($key, $datetime) {
-            return $this->db->find(TimeLimit::COLLECTION, [
-                Query::equal('key', [$key]),
-                Query::equal('time', [$datetime]),
-            ]);
-        });
+        $this->document = $this->getDocument($key, $datetime);
 
-        if (\count($result) === 1) {
-            $result = $result[0]->getAttribute('count', 0);
-        } else {
-            $result = 0;
+        if (\is_null($this->document)) {
+            return 0;
         }
 
-        $this->count = (int)$result;
-
-        return $this->count;
+        return $this->document->getAttribute('count', 0);
     }
 
     /**
      * @param string $key
      * @param string $datetime
-     * @param Document|false $data
+     *
      * @return void
-     * @throws AuthorizationException
-     * @throws Structure
+     * @throws AuthorizationException|Structure|\Exception
      */
-    protected function hit(string $key, string $datetime, Document|false $data): void
+    protected function hit(string $key, string $datetime): void
     {
+        $data = $this->getDocument($key, $datetime);
+
         Authorization::skip(function () use ($datetime, $key, $data) {
-            if ($data === false) {
-                $data = [
+            if (empty($data)) {
+                $document = new Document([
                     '$permissions' => [],
                     'key' => $key,
                     'time' => $datetime,
                     'count' => 1,
                     '$collection' => TimeLimit::COLLECTION,
-                ];
-                $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+                ]);
+
+                $this->db->createDocument(TimeLimit::COLLECTION, $document);
+                $this->document = $document;
+
             } else {
-                $data->setAttribute('count', $data->getAttribute('count', 0) + 1);
-                $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
+                $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(),'count');
+                $this->document['count']++;
             }
         });
-
-        $this->count++;
     }
 
     /**
@@ -293,25 +284,9 @@ class TimeLimit implements Adapter
         }
 
         $key = $this->parseKey();
-        $time = $this->time;
 
-        /**
-         * @var $data Document
-         */
-        $data = Authorization::skip(function () use ($key, $time) {
-            return $this->db->findOne(TimeLimit::COLLECTION, [
-                Query::equal('key', [$key]),
-                Query::equal('time', [$time]),
-            ]);
-        });
-
-        $count = 0;
-        if(!empty($data)){
-            $count = (int)$data->getAttribute('count', 0);
-        }
-
-        if ($this->limit > $count) {
-            $this->hit($key, $this->time, $data);
+        if ($this->limit > $this->count($key, $this->time)) {
+            $this->hit($key, $this->time);
             return false;
         }
 
@@ -356,4 +331,28 @@ class TimeLimit implements Adapter
     {
         return $this->time;
     }
+
+    /**
+     * @param $key
+     * @param $datetime
+     * @return Document|null
+     * @throws \Exception
+     */
+    protected function getDocument($key, $datetime): ?Document
+    {
+        if(!empty($this->document)){
+            return $this->document;
+        }
+
+        $result = Authorization::skip(function () use ($key, $datetime) {
+            return $this->db->findOne(TimeLimit::COLLECTION, [
+                Query::equal('key', [$key]),
+                Query::equal('time', [$datetime]),
+            ]);
+        });
+
+        $this->document = $result === false ? null :$result;
+        return $this->document;
+    }
+
 }
