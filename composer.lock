@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a62cb0b4e78a919c5e3ede9f1d0eb8f1",
+    "content-hash": "7931149eb908213613f6e4ddff7f7efb",
     "packages": [
         {
             "name": "utopia-php/cache",
@@ -57,26 +57,26 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.28.0",
+            "version": "dev-increment",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "ef6506af1c09c22f5dc1e7859159d323f7fafa94"
+                "reference": "051078fa6ec1bdbc3d35c170096656180976cb04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/ef6506af1c09c22f5dc1e7859159d323f7fafa94",
-                "reference": "ef6506af1c09c22f5dc1e7859159d323f7fafa94",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/051078fa6ec1bdbc3d35c170096656180976cb04",
+                "reference": "051078fa6ec1bdbc3d35c170096656180976cb04",
                 "shasum": ""
             },
             "require": {
+                "ext-pdo": "*",
                 "php": ">=8.0",
                 "utopia-php/cache": "0.8.*",
                 "utopia-php/framework": "0.*.*"
             },
             "require-dev": {
                 "ext-mongodb": "*",
-                "ext-pdo": "*",
                 "ext-redis": "*",
                 "fakerphp/faker": "^1.14",
                 "mongodb/mongodb": "1.8.0",
@@ -105,22 +105,22 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.28.0"
+                "source": "https://github.com/utopia-php/database/tree/increment"
             },
-            "time": "2022-10-31T09:58:46+00:00"
+            "time": "2022-11-08T13:56:09+00:00"
         },
         {
             "name": "utopia-php/framework",
-            "version": "0.23.4",
+            "version": "0.25.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/framework.git",
-                "reference": "97f64aa1732af92b967c3576f16967dc762ad47b"
+                "reference": "c524f681254255c8204fbf7919c53bf3b4982636"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/framework/zipball/97f64aa1732af92b967c3576f16967dc762ad47b",
-                "reference": "97f64aa1732af92b967c3576f16967dc762ad47b",
+                "url": "https://api.github.com/repos/utopia-php/framework/zipball/c524f681254255c8204fbf7919c53bf3b4982636",
+                "reference": "c524f681254255c8204fbf7919c53bf3b4982636",
                 "shasum": ""
             },
             "require": {
@@ -148,9 +148,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/framework/issues",
-                "source": "https://github.com/utopia-php/framework/tree/0.23.4"
+                "source": "https://github.com/utopia-php/framework/tree/0.25.0"
             },
-            "time": "2022-10-31T11:57:14+00:00"
+            "time": "2022-11-02T09:49:57+00:00"
         }
     ],
     "packages-dev": [
@@ -3865,9 +3865,18 @@
             "time": "2015-12-17T08:42:14+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "utopia-php/database",
+            "version": "dev-increment",
+            "alias": "0.28.99",
+            "alias_normalized": "0.28.99.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "utopia-php/database": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
