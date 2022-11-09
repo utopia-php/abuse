@@ -181,12 +181,12 @@ class TimeLimit implements Adapter
         if (0 == $this->limit) { // No limit no point for counting
             return 0;
         }
+
         if (!\is_null($this->document)) { // Get fetched result
             return (int)$this->document['count'];
         }
 
         $this->document = $this->getDocument($key, $datetime);
-
         if (\is_null($this->document)) {
             return 0;
         }
@@ -333,6 +333,7 @@ class TimeLimit implements Adapter
     }
 
     /**
+     * Return the Unique document from database
      * @param $key
      * @param $datetime
      * @return Document|null
