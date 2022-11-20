@@ -236,10 +236,16 @@ class TimeLimit implements Adapter
                 try {
                     $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
                 } catch (Duplicate $e){
-                    // In case of race Condition
-                    var_dump($e->getCode());
-                    var_dump($e->getMessage());
-                    die;
+                    // In case of race condition
+                    $data = $this->db->findOne(TimeLimit::COLLECTION, [
+                        Query::equal('key', [$key]),
+                        Query::equal('time', [$datetime]),
+                    ]);
+
+                    if($data){
+                        $this->count = $data->getAttribute('count');
+                        $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(),'count');
+                    }
                 }
 
             } else {
