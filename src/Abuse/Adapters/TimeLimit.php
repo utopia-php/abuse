@@ -223,7 +223,7 @@ class TimeLimit implements Adapter
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
             ]);
-            $data=false;
+
             if ($data === false) {
                 $data = [
                     '$permissions' => [],
