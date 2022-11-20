@@ -8,7 +8,6 @@ use Utopia\Database\DateTime;
 use Utopia\Database\Document;
 use Utopia\Database\Exception\Authorization as AuthorizationException;
 use Utopia\Database\Exception\Duplicate;
-use Utopia\Database\Exception\Limit;
 use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
@@ -204,8 +203,9 @@ class TimeLimit implements Adapter
     protected function hit(string $key, string $datetime): void
     {
         $data = $this->getDocument($key, $datetime);
-
+        $data = null;
         Authorization::skip(function () use ($datetime, $key, $data) {
+
             if (empty($data)) {
                 $document = new Document([
                     '$permissions' => [],
@@ -215,8 +215,15 @@ class TimeLimit implements Adapter
                     '$collection' => TimeLimit::COLLECTION,
                 ]);
 
-                $this->db->createDocument(TimeLimit::COLLECTION, $document);
-                $this->document = $document;
+                try {
+                    $this->db->createDocument(TimeLimit::COLLECTION, $document);
+                    $this->document = $document;
+                } catch (Duplicate $e){
+                    // In case of race Condition
+                    var_dump($e->getCode());
+                    var_dump($e->getMessage());
+                    die;
+                }
 
             } else {
                 $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(),'count');
