@@ -223,7 +223,7 @@ class TimeLimit implements Adapter
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
             ]);
-
+            $data=false;
             if ($data === false) {
                 $data = [
                     '$permissions' => [],
@@ -232,7 +232,16 @@ class TimeLimit implements Adapter
                     'count' => 1,
                     '$collection' => TimeLimit::COLLECTION,
                 ];
-                $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+
+                try {
+                    $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+                } catch (Duplicate $e){
+                    // In case of race Condition
+                    var_dump($e->getCode());
+                    var_dump($e->getMessage());
+                    die;
+                }
+
             } else {
                 $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(),'count');
             }
