@@ -64,7 +64,6 @@ class TimeLimit implements Adapter
     }
 
     /**
-     * @throws Limit
      * @throws Duplicate
      * @throws Exception|\Exception
      */
@@ -236,7 +235,7 @@ class TimeLimit implements Adapter
                 try {
                     $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
                 } catch (Duplicate $e){
-                    // In case of race condition
+                    // Duplicate in case of race condition
                     $data = $this->db->findOne(TimeLimit::COLLECTION, [
                         Query::equal('key', [$key]),
                         Query::equal('time', [$datetime]),
@@ -245,6 +244,8 @@ class TimeLimit implements Adapter
                     if($data){
                         $this->count = $data->getAttribute('count');
                         $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(),'count');
+                    } else {
+                        Throw new \Exception('Document Not Found');
                     }
                 }
 
