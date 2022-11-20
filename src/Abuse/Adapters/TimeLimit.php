@@ -222,7 +222,7 @@ class TimeLimit implements Adapter
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
             ]);
-            
+
             if ($data === false) {
                 $data = [
                     '$permissions' => [],
@@ -240,7 +240,7 @@ class TimeLimit implements Adapter
                         Query::equal('key', [$key]),
                         Query::equal('time', [$datetime]),
                     ]);
-var_dump($data);
+
                     if($data){
                         $this->count = $data->getAttribute('count');
                         $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(),'count');
