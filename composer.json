@@ -5,6 +5,12 @@
     "keywords": ["php","framework", "upf", "utopia", "abuse"],
     "license": "MIT",
     "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Eldad Fux",
+            "email": "eldad@appwrite.io"
+        }
+    ],
     "autoload": {
         "psr-4": {"Utopia\\Abuse\\": "src/Abuse"}
     },
