@@ -44,7 +44,7 @@ class TimeLimit implements Adapter
     protected ?int $count = null;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected array $params = [];
 
@@ -145,7 +145,7 @@ class TimeLimit implements Adapter
      *
      * Return array of all key params
      *
-     * @return array
+     * @return array<string, string>
      */
     protected function getParams(): array
     {
@@ -187,6 +187,7 @@ class TimeLimit implements Adapter
             return $this->count;
         }
 
+        /** @var array<int, Document> $result */
         $result = Authorization::skip(function () use ($key, $datetime) {
             return $this->db->find(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
@@ -194,10 +195,9 @@ class TimeLimit implements Adapter
             ]);
         });
 
+        $this->count = 0;
         if (\count($result) === 1) {
-            $result = $result[0]->getAttribute('count', 0);
-        } else {
-            $result = 0;
+            $this->count = intval($result[0]->getAttribute('count', 0));
         }
 
         $this->count = (int) $result;
@@ -234,6 +234,7 @@ class TimeLimit implements Adapter
                 ];
                 $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
             } else {
+                /** @var Document $data */
                 $data->setAttribute('count', $data->getAttribute('count', 0) + 1);
                 $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
             }
@@ -249,12 +250,13 @@ class TimeLimit implements Adapter
      *
      * @param  int  $offset
      * @param  int  $limit
-     * @return array
+     * @return array<string,mixed>
      *
      * @throws \Exception
      */
     public function getLogs(int $offset, int $limit): array
     {
+        /** @phpstan-ignore-next-line */
         return Authorization::skip(function () use ($offset, $limit) {
             return $this->db->find(TimeLimit::COLLECTION, [Query::limit($limit), Query::offset($offset), Query::orderDesc('')]);
         });
@@ -276,6 +278,7 @@ class TimeLimit implements Adapter
                     Query::lessThan('time', $datetime),
                 ]);
 
+                /** @var array<string, string> $document */
                 foreach ($documents as $document) {
                     $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
                 }

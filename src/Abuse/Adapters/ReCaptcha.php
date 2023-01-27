@@ -77,6 +77,7 @@ class ReCaptcha implements Adapter
         \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         //execute post
+        /** @var array<string, mixed> $result */
         $result = \json_decode((string) \curl_exec($ch), true);
 
         //close connection
@@ -108,7 +109,7 @@ class ReCaptcha implements Adapter
      *
      * @param  int  $offset
      * @param  int  $limit
-     * @return array
+     * @return array<string, mixed>
      *
      * @throws Exception
      */

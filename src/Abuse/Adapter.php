@@ -20,7 +20,9 @@ interface Adapter
      *
      * @param  int  $offset
      * @param  int  $limit
-     * @return array
+     * @param  int  $offset
+     * @param  int  $limit
+     * @return array<string, mixed>
      */
     public function getLogs(int $offset, int $limit): array;
 
