@@ -35,7 +35,7 @@ class AbuseTest extends TestCase
         $db->setNamespace('namespace');
 
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
-        if (!$db->exists('utopiaTests')) {
+        if (! $db->exists('utopiaTests')) {
             $db->create('utopiaTests');
             $adapter->setup();
         }
@@ -61,7 +61,6 @@ class AbuseTest extends TestCase
 
     public function testCleanup()
     {
-
         // Check that there is only one log
         $logs = $this->abuse->getLogs(0, 10);
         $this->assertEquals(1, \count($logs));

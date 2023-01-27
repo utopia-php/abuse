@@ -14,14 +14,19 @@
     "autoload": {
         "psr-4": {"Utopia\\Abuse\\": "src/Abuse"}
     },
+    "scripts": {
+        "lint": "./vendor/bin/pint --test",
+        "format": "./vendor/bin/pint"
+    },
     "require": {
         "php": ">=8.0",
         "ext-pdo": "*",
         "ext-curl": "*",
-        "utopia-php/database": "0.26.*"
+        "utopia-php/database": "0.29.*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.4",
-        "vimeo/psalm": "4.0.1"
+        "vimeo/psalm": "4.0.1",
+        "laravel/pint": "1.2.*"
     }
 }
