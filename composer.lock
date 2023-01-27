@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f1267c9905b8e3f4e2d0dcc635931db",
+    "content-hash": "a79252f27730fa740dee27166b6e6d9a",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -287,24 +287,26 @@
         },
         {
             "name": "utopia-php/cache",
-            "version": "0.6.1",
+            "version": "0.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/cache.git",
-                "reference": "9889235a6d3da6cbb1f435201529da4d27c30e79"
+                "reference": "212e66100a1f32e674fca5d9bc317cc998303089"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/cache/zipball/9889235a6d3da6cbb1f435201529da4d27c30e79",
-                "reference": "9889235a6d3da6cbb1f435201529da4d27c30e79",
+                "url": "https://api.github.com/repos/utopia-php/cache/zipball/212e66100a1f32e674fca5d9bc317cc998303089",
+                "reference": "212e66100a1f32e674fca5d9bc317cc998303089",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
+                "ext-memcached": "*",
                 "ext-redis": "*",
                 "php": ">=8.0"
             },
             "require-dev": {
+                "laravel/pint": "1.2.*",
                 "phpunit/phpunit": "^9.3",
                 "vimeo/psalm": "4.13.1"
             },
@@ -318,12 +320,6 @@
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "Eldad Fux",
-                    "email": "eldad@appwrite.io"
-                }
-            ],
             "description": "A simple cache library to manage application cache storing, loading and purging",
             "keywords": [
                 "cache",
@@ -334,35 +330,36 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/cache/issues",
-                "source": "https://github.com/utopia-php/cache/tree/0.6.1"
+                "source": "https://github.com/utopia-php/cache/tree/0.8.0"
             },
-            "time": "2022-08-10T08:12:46+00:00"
+            "time": "2022-10-16T16:48:09+00:00"
         },
         {
             "name": "utopia-php/database",
-            "version": "0.26.0",
+            "version": "0.29.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "d172af2541137c83a86d066f82f48914b5a3a610"
+                "reference": "d4449bca6a6ca620588df6575beff35c7e8dcadd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/d172af2541137c83a86d066f82f48914b5a3a610",
-                "reference": "d172af2541137c83a86d066f82f48914b5a3a610",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/d4449bca6a6ca620588df6575beff35c7e8dcadd",
+                "reference": "d4449bca6a6ca620588df6575beff35c7e8dcadd",
                 "shasum": ""
             },
             "require": {
+                "php": ">=8.0",
+                "utopia-php/cache": "0.8.*",
+                "utopia-php/framework": "0.*.*",
+                "utopia-php/mongo": "0.0.2"
+            },
+            "require-dev": {
                 "ext-mongodb": "*",
                 "ext-pdo": "*",
                 "ext-redis": "*",
-                "mongodb/mongodb": "1.8.0",
-                "php": ">=8.0",
-                "utopia-php/cache": "0.6.*",
-                "utopia-php/framework": "0.*.*"
-            },
-            "require-dev": {
                 "fakerphp/faker": "^1.14",
+                "mongodb/mongodb": "1.8.0",
                 "phpunit/phpunit": "^9.4",
                 "swoole/ide-helper": "4.8.0",
                 "utopia-php/cli": "^0.11.0",
@@ -378,16 +375,6 @@
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "Eldad Fux",
-                    "email": "eldad@appwrite.io"
-                },
-                {
-                    "name": "Brandon Leckemby",
-                    "email": "brandon@appwrite.io"
-                }
-            ],
             "description": "A simple library to manage application persistency using multiple database adapters",
             "keywords": [
                 "database",
@@ -398,9 +385,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.26.0"
+                "source": "https://github.com/utopia-php/database/tree/0.29.0"
             },
-            "time": "2022-10-03T17:12:01+00:00"
+            "time": "2023-01-15T23:51:06+00:00"
         },
         {
             "name": "utopia-php/framework",
@@ -445,6 +432,66 @@
                 "source": "https://github.com/utopia-php/framework/tree/0.26.0"
             },
             "time": "2023-01-13T08:14:43+00:00"
+        },
+        {
+            "name": "utopia-php/mongo",
+            "version": "0.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/utopia-php/mongo.git",
+                "reference": "62f9a9c0201af91b6d0dd4f0aa8a335ec9b56a1e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/utopia-php/mongo/zipball/62f9a9c0201af91b6d0dd4f0aa8a335ec9b56a1e",
+                "reference": "62f9a9c0201af91b6d0dd4f0aa8a335ec9b56a1e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mongodb": "*",
+                "mongodb/mongodb": "1.8.0",
+                "php": ">=8.0"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.14",
+                "laravel/pint": "1.2.*",
+                "phpstan/phpstan": "1.8.*",
+                "phpunit/phpunit": "^9.4",
+                "swoole/ide-helper": "4.8.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Utopia\\Mongo\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Eldad Fux",
+                    "email": "eldad@appwrite.io"
+                },
+                {
+                    "name": "Wess",
+                    "email": "wess@appwrite.io"
+                }
+            ],
+            "description": "A simple library to manage Mongo database",
+            "keywords": [
+                "database",
+                "mongo",
+                "php",
+                "upf",
+                "utopia"
+            ],
+            "support": {
+                "issues": "https://github.com/utopia-php/mongo/issues",
+                "source": "https://github.com/utopia-php/mongo/tree/0.0.2"
+            },
+            "time": "2022-11-08T11:58:46+00:00"
         }
     ],
     "packages-dev": [
@@ -968,6 +1015,72 @@
             "time": "2022-03-02T22:36:06+00:00"
         },
         {
+            "name": "laravel/pint",
+            "version": "v1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/pint.git",
+                "reference": "e60e2112ee779ce60f253695b273d1646a17d6f1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/e60e2112ee779ce60f253695b273d1646a17d6f1",
+                "reference": "e60e2112ee779ce60f253695b273d1646a17d6f1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-tokenizer": "*",
+                "ext-xml": "*",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.11.0",
+                "illuminate/view": "^9.32.0",
+                "laravel-zero/framework": "^9.2.0",
+                "mockery/mockery": "^1.5.1",
+                "nunomaduro/larastan": "^2.2.0",
+                "nunomaduro/termwind": "^1.14.0",
+                "pestphp/pest": "^1.22.1"
+            },
+            "bin": [
+                "builds/pint"
+            ],
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "App\\": "app/",
+                    "Database\\Seeders\\": "database/seeders/",
+                    "Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nuno Maduro",
+                    "email": "enunomaduro@gmail.com"
+                }
+            ],
+            "description": "An opinionated code formatter for PHP.",
+            "homepage": "https://laravel.com",
+            "keywords": [
+                "format",
+                "formatter",
+                "lint",
+                "linter",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/pint/issues",
+                "source": "https://github.com/laravel/pint"
+            },
+            "time": "2022-11-29T16:25:20+00:00"
+        },
+        {
             "name": "myclabs/deep-copy",
             "version": "1.11.0",
             "source": {
@@ -1461,65 +1574,6 @@
                 "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.6.2"
             },
             "time": "2022-10-14T12:47:21+00:00"
-        },
-        {
-            "name": "phpstan/phpstan",
-            "version": "1.9.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "81b8cc491a8900946b732d922a0e581b2913a359"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/81b8cc491a8900946b732d922a0e581b2913a359",
-                "reference": "81b8cc491a8900946b732d922a0e581b2913a359",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.2|^8.0"
-            },
-            "conflict": {
-                "phpstan/phpstan-shim": "*"
-            },
-            "bin": [
-                "phpstan",
-                "phpstan.phar"
-            ],
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "PHPStan - PHP Static Analysis Tool",
-            "keywords": [
-                "dev",
-                "static analysis"
-            ],
-            "support": {
-                "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.9.x"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/ondrejmirtes",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/phpstan",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2023-01-26T12:21:06+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

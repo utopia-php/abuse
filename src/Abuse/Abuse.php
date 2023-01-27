@@ -10,11 +10,11 @@ class Abuse
     protected Adapter $adapter;
 
     /**
-     * @param Adapter $adapter
+     * @param  Adapter  $adapter
      */
     public function __construct(Adapter $adapter)
     {
-        $this->adapter  = $adapter;
+        $this->adapter = $adapter;
     }
 
     /**
@@ -34,10 +34,9 @@ class Abuse
      *
      * Return logs with an offset and limit
      *
-     * @param int $offset
-     * @param int $limit
-     *
-     * @return array<string, mixed>
+     * @param  int  $offset
+     * @param  int  $limit
+     * @return array
      */
     public function getLogs(int $offset, int $limit): array
     {
@@ -47,8 +46,7 @@ class Abuse
     /**
      * Delete all logs older than $datetime
      *
-     * @param string $datetime
-     *
+     * @param  string  $datetime
      * @return bool
      */
     public function cleanup(string $datetime): bool
