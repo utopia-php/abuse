@@ -57,7 +57,7 @@ class ReCaptcha implements Adapter
      * @param float $score
      * @return bool
      */
-    public function check(float $score = 0.5):bool
+    public function check(float $score = 0.5): bool
     {
         $url    = 'https://www.google.com/recaptcha/api/siteverify';
         $fields = array(
@@ -76,6 +76,7 @@ class ReCaptcha implements Adapter
         \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         //execute post
+        /** @var array<string, mixed> $result */
         $result = \json_decode((string)\curl_exec($ch), true);
 
         //close connection
@@ -107,7 +108,7 @@ class ReCaptcha implements Adapter
      * @param int $offset
      * @param int $limit
      *
-     * @return array
+     * @return array<string, mixed>
      * @throws Exception
      */
     public function getLogs(int $offset, int $limit): array 
