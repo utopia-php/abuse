@@ -36,7 +36,7 @@ class AbuseTest extends TestCase
 
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
         if (! $db->exists('utopiaTests')) {
-            $db->create('utopiaTests');
+            $db->create();
             $adapter->setup();
         }
 

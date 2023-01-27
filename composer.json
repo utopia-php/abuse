@@ -9,6 +9,7 @@
         "psr-4": {"Utopia\\Abuse\\": "src/Abuse"}
     },
     "scripts": {
+        "check": "./vendor/bin/phpstan analyse --level max src tests",
         "lint": "./vendor/bin/pint --test",
         "format": "./vendor/bin/pint"
     },

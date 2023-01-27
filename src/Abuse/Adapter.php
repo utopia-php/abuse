@@ -18,14 +18,11 @@ interface Adapter
      *
      * Return logs with an offset and limit
      *
-<<<<<<< HEAD
      * @param  int  $offset
      * @param  int  $limit
      * @param  int  $offset
      * @param  int  $limit
      * @return array<string, mixed>
-     * @return array
->>>>>>> b27dfba4584aefab7e5434eadfb0befd2de2066c
      */
     public function getLogs(int $offset, int $limit): array;
 

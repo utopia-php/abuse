@@ -36,7 +36,7 @@ class Abuse
      *
      * @param  int  $offset
      * @param  int  $limit
-     * @return array
+     * @return array<string, mixed>
      */
     public function getLogs(int $offset, int $limit): array
     {

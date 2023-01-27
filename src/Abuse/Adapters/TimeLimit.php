@@ -250,7 +250,7 @@ class TimeLimit implements Adapter
      *
      * @param  int  $offset
      * @param  int  $limit
-     * @return array
+     * @return array<string,mixed>
      *
      * @throws \Exception
      */
