@@ -33,18 +33,19 @@ class ReCaptcha implements Adapter
      * ReCaptcha Adapter
      *
      * See more information about the implementation instructions
+     *
      * @see https://developers.google.com/recaptcha/docs/verify
      *
      * Admin Panel
      * @see https://www.google.com/recaptcha/admin
      *
-     * @param string $secret
-     * @param string $response
-     * @param string $remoteIP
+     * @param  string  $secret
+     * @param  string  $response
+     * @param  string  $remoteIP
      */
     public function __construct(string $secret, string $response, string $remoteIP)
     {
-        $this->secret   = $secret;
+        $this->secret = $secret;
         $this->response = $response;
         $this->remoteIP = $remoteIP;
     }
@@ -54,33 +55,34 @@ class ReCaptcha implements Adapter
      *
      * Check if user is human or not, compared to score
      *
-     * @param float $score
+     * @param  float  $score
      * @return bool
      */
-    public function check(float $score = 0.5):bool
+    public function check(float $score = 0.5): bool
     {
-        $url    = 'https://www.google.com/recaptcha/api/siteverify';
-        $fields = array(
-            'secret'    => \urlencode($this->secret),
-            'response'  => \urlencode($this->response),
-            'remoteip'  => \urlencode($this->remoteIP),
-        );
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $fields = [
+            'secret' => \urlencode($this->secret),
+            'response' => \urlencode($this->response),
+            'remoteip' => \urlencode($this->remoteIP),
+        ];
 
         //open connection
         $ch = \curl_init();
 
         //set the url, number of POST vars, POST data
-        \curl_setopt($ch,CURLOPT_URL, $url);
-        \curl_setopt($ch,CURLOPT_POST, \count($fields));
-        \curl_setopt($ch,CURLOPT_POSTFIELDS, \http_build_query($fields));
+        \curl_setopt($ch, CURLOPT_URL, $url);
+        \curl_setopt($ch, CURLOPT_POST, \count($fields));
+        \curl_setopt($ch, CURLOPT_POSTFIELDS, \http_build_query($fields));
         \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         //execute post
-        $result = \json_decode((string)\curl_exec($ch), true);
+        /** @var array<string, mixed> $result */
+        $result = \json_decode((string) \curl_exec($ch), true);
 
         //close connection
         \curl_close($ch);
-        if ($result['success'] && $result['score'] >= $score ) {
+        if ($result['success'] && $result['score'] >= $score) {
             return true;
         } else {
             return false;
@@ -90,11 +92,12 @@ class ReCaptcha implements Adapter
     /**
      * Delete logs older than $datetime
      *
-     * @param string $datetime
+     * @param  string  $datetime
      * @return bool
+     *
      * @throws Exception
      */
-    public function cleanup(string $datetime):bool
+    public function cleanup(string $datetime): bool
     {
         throw new Exception('Method not supported');
     }
@@ -104,14 +107,14 @@ class ReCaptcha implements Adapter
      *
      * Return logs with an offset and limit
      *
-     * @param int $offset
-     * @param int $limit
+     * @param  int  $offset
+     * @param  int  $limit
+     * @return array<string, mixed>
      *
-     * @return array
      * @throws Exception
      */
-    public function getLogs(int $offset, int $limit): array 
-    {  
+    public function getLogs(int $offset, int $limit): array
+    {
         throw new Exception('Method not supported');
     }
 }

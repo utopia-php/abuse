@@ -16,7 +16,7 @@ use Utopia\Exception;
 
 class TimeLimit implements Adapter
 {
-    const COLLECTION = "abuse";
+    const COLLECTION = 'abuse';
 
     /**
      * @var Database
@@ -44,20 +44,20 @@ class TimeLimit implements Adapter
     protected ?int $count = null;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected array $params = [];
 
     /**
-     * @param string $key
-     * @param int $seconds
-     * @param int $limit
-     * @param Database $db
+     * @param  string  $key
+     * @param  int  $seconds
+     * @param  int  $limit
+     * @param  Database  $db
      */
     public function __construct(string $key, int $limit, int $seconds, Database $db)
     {
         $this->key = $key;
-        $time = (int)\date('U', (int)(\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
+        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
         $this->time = DateTime::format((new \DateTime())->setTimestamp($time));
         $this->limit = $limit;
         $this->db = $db;
@@ -69,8 +69,8 @@ class TimeLimit implements Adapter
      */
     public function setup(): void
     {
-        if (!$this->db->exists($this->db->getDefaultDatabase())) {
-            throw new Exception("You need to create database before running timelimit setup");
+        if (! $this->db->exists($this->db->getDefaultDatabase())) {
+            throw new Exception('You need to create database before running timelimit setup');
         }
 
         $attributes = [
@@ -128,9 +128,8 @@ class TimeLimit implements Adapter
      *
      * Set custom param for key pattern parsing
      *
-     * @param string $key
-     * @param string $value
-     *
+     * @param  string  $key
+     * @param  string  $value
      * @return $this
      */
     public function setParam(string $key, string $value): self
@@ -145,7 +144,7 @@ class TimeLimit implements Adapter
      *
      * Return array of all key params
      *
-     * @return array
+     * @return array<string, string>
      */
     protected function getParams(): array
     {
@@ -171,9 +170,10 @@ class TimeLimit implements Adapter
      *
      * Checks if number of counts is bigger or smaller than current limit
      *
-     * @param string $key
-     * @param string $datetime
+     * @param  string  $key
+     * @param  string  $datetime
      * @return int
+     *
      * @throws \Exception
      */
     protected function count(string $key, string $datetime): int
@@ -182,10 +182,11 @@ class TimeLimit implements Adapter
             return 0;
         }
 
-        if (!\is_null($this->count)) { // Get fetched result
+        if (! \is_null($this->count)) { // Get fetched result
             return $this->count;
         }
 
+        /** @var array<int, Document> $result */
         $result = Authorization::skip(function () use ($key, $datetime) {
             return $this->db->find(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
@@ -193,22 +194,21 @@ class TimeLimit implements Adapter
             ]);
         });
 
+        $this->count = 0;
         if (\count($result) === 1) {
-            $result = $result[0]->getAttribute('count', 0);
-        } else {
-            $result = 0;
+            $this->count = intval($result[0]->getAttribute('count', 0));
         }
 
-        $this->count = (int)$result;
+        $this->count = (int) $result;
 
         return $this->count;
     }
 
     /**
-     * @param string $key
-     * @param string $datetime
-     *
+     * @param  string  $key
+     * @param  string  $datetime
      * @return void
+     *
      * @throws AuthorizationException|Structure|\Exception
      */
     protected function hit(string $key, string $datetime): void
@@ -262,14 +262,15 @@ class TimeLimit implements Adapter
      *
      * Return logs with an offset and limit
      *
-     * @param int $offset
-     * @param int $limit
+     * @param  int  $offset
+     * @param  int  $limit
+     * @return array<string,mixed>
      *
-     * @return array
      * @throws \Exception
      */
     public function getLogs(int $offset, int $limit): array
     {
+        /** @phpstan-ignore-next-line */
         return Authorization::skip(function () use ($offset, $limit) {
             return $this->db->find(TimeLimit::COLLECTION, [Query::limit($limit), Query::offset($offset), Query::orderDesc('')]);
         });
@@ -278,9 +279,9 @@ class TimeLimit implements Adapter
     /**
      * Delete logs older than $timestamp seconds
      *
-     * @param string $datetime
-     *
+     * @param  string  $datetime
      * @return bool
+     *
      * @throws AuthorizationException|\Exception
      */
     public function cleanup(string $datetime): bool
@@ -291,11 +292,11 @@ class TimeLimit implements Adapter
                     Query::lessThan('time', $datetime),
                 ]);
 
+                /** @var array<string, string> $document */
                 foreach ($documents as $document) {
                     $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
                 }
-            } while (!empty($documents));
-
+            } while (! empty($documents));
         });
 
         return true;
@@ -307,6 +308,7 @@ class TimeLimit implements Adapter
      * Checks if number of counts is bigger or smaller than current limit. limit 0 is equal to unlimited
      *
      * @return bool
+     *
      * @throws \Exception
      */
     public function check(): bool
@@ -319,6 +321,7 @@ class TimeLimit implements Adapter
 
         if ($this->limit > $this->count($key, $this->time)) {
             $this->hit($key, $this->time);
+
             return false;
         }
 
@@ -331,12 +334,13 @@ class TimeLimit implements Adapter
      * Returns the number of current remaining counts
      *
      * @return int
-     * @throws \Exception
      *
+     * @throws \Exception
      */
     public function remaining(): int
     {
         $left = $this->limit - ($this->count($this->parseKey(), $this->time) + 1); // Add one because we need to say how many left not how many done
+
         return (0 > $left) ? 0 : $left;
     }
 
