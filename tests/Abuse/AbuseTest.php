@@ -17,12 +17,10 @@ use Utopia\Exception;
 
 class AbuseTest extends TestCase
 {
-    protected ?Abuse $abuse = null;
-
-    protected ?Abuse $abuseRace = null;
+    protected Abuse $abuse;
+    protected Abuse $abuseRace;
 
     /**
-     * @throws Limit
      * @throws Exception
      * @throws \Exception
      */
@@ -66,7 +64,7 @@ class AbuseTest extends TestCase
         $this->assertEquals($this->abuse->check(), true);
     }
 
-    public function testAbuse()
+    public function testAbuse(): void
     {
         for ($i = 0; $i < 999; $i++) {
             $this->assertEquals($this->abuseRace->check(), false);
