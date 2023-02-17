@@ -10,10 +10,10 @@ services:
     ports:
       - "9307:3306"
   
-  php8:
+  tests:
     build:
       context: .
-      dockerfile: ./Dockerfile-php8
+      dockerfile: ./Dockerfile
     networks:
       - abuse
     depends_on:
