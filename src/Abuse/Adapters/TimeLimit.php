@@ -50,15 +50,13 @@ class TimeLimit implements Adapter
 
     /**
      * @param  string  $key
-     * @param  int  $seconds
      * @param  int  $limit
      * @param  Database  $db
      */
     public function __construct(string $key, int $limit, int $seconds, Database $db)
     {
         $this->key = $key;
-        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
-        $this->time = DateTime::format((new \DateTime())->setTimestamp($time));
+        $this->time = DateTime::now();
         $this->limit = $limit;
         $this->db = $db;
     }
