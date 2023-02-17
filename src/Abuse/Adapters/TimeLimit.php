@@ -53,7 +53,7 @@ class TimeLimit implements Adapter
      * @param  int  $limit
      * @param  Database  $db
      */
-    public function __construct(string $key, int $limit, int $seconds, Database $db)
+    public function __construct(string $key, int $limit, Database $db)
     {
         $this->key = $key;
         $this->time = DateTime::now();

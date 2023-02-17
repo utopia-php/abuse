@@ -38,7 +38,7 @@ class AbuseTest extends TestCase
         $db->setDefaultDatabase('utopiaTests');
         $db->setNamespace('namespace');
 
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, $db);
         if (! $db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();
@@ -47,7 +47,7 @@ class AbuseTest extends TestCase
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $this->abuse = new Abuse($adapter);
 
-        $this->abuseRace = new Abuse(new TimeLimit('increase', 999, 60 * 5, $db));
+        $this->abuseRace = new Abuse(new TimeLimit('increase', 999, $db));
     }
 
     public function tearDown(): void
