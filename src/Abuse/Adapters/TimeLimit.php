@@ -187,18 +187,13 @@ class TimeLimit implements Adapter
             return $this->count;
         }
 
-        /** @var array<int, Document> $result */
+        /** @var array<Document> $result */
         $result = Authorization::skip(function () use ($key, $datetime) {
             return $this->db->find(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
             ]);
         });
-
-        $this->count = 0;
-        if (\count($result) === 1) {
-            $this->count = intval($result[0]->getAttribute('count', 0));
-        }
 
         $this->count = (int) $result;
 
@@ -210,7 +205,7 @@ class TimeLimit implements Adapter
      * @param  string  $datetime
      * @return void
      *
-     * @throws AuthorizationException|Structure|\Exception
+     * @throws AuthorizationException|Structure|\Exception|\Throwable
      */
     protected function hit(string $key, string $datetime): void
     {
@@ -246,20 +241,31 @@ class TimeLimit implements Adapter
     /**
      * Get abuse logs
      *
-     * Return logs with an offset and limit
+     * Return logs with an optional offset and limit
      *
-     * @param  int  $offset
-     * @param  int  $limit
-     * @return array<string,mixed>
+     * @param  int|null  $offset
+     * @param  int|null  $limit
+     * @return array<Document>
      *
      * @throws \Exception
      */
-    public function getLogs(int $offset, int $limit): array
+    public function getLogs(?int $offset = null, ?int $limit = null): array
     {
-        /** @phpstan-ignore-next-line */
-        return Authorization::skip(function () use ($offset, $limit) {
-            return $this->db->find(TimeLimit::COLLECTION, [Query::limit($limit), Query::offset($offset), Query::orderDesc('')]);
+        /** @var array<Document> $results */
+        $results = Authorization::skip(function () use ($offset, $limit) {
+            $queries = [];
+
+            if (! \is_null($offset)) {
+                $queries[] = Query::offset($offset);
+            }
+            if (! \is_null($limit)) {
+                $queries[] = Query::limit($limit);
+            }
+
+            return $this->db->find(TimeLimit::COLLECTION, $queries);
         });
+
+        return $results;
     }
 
     /**
@@ -278,9 +284,8 @@ class TimeLimit implements Adapter
                     Query::lessThan('time', $datetime),
                 ]);
 
-                /** @var array<string, string> $document */
                 foreach ($documents as $document) {
-                    $this->db->deleteDocument(TimeLimit::COLLECTION, $document['$id']);
+                    $this->db->deleteDocument(TimeLimit::COLLECTION, $document->getId());
                 }
             } while (! empty($documents));
         });
