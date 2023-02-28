@@ -249,7 +249,7 @@ class TimeLimit implements Adapter
      *
      * @throws \Exception
      */
-    public function getLogs(?int $offset = null, ?int $limit = null): array
+    public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         /** @var array<Document> $results */
         $results = Authorization::skip(function () use ($offset, $limit) {
