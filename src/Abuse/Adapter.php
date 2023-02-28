@@ -18,13 +18,11 @@ interface Adapter
      *
      * Return logs with an offset and limit
      *
-     * @param  int  $offset
-     * @param  int  $limit
-     * @param  int  $offset
-     * @param  int  $limit
+     * @param  int|null  $offset
+     * @param  int|null  $limit
      * @return array<string, mixed>
      */
-    public function getLogs(int $offset, int $limit): array;
+    public function getLogs(?int $offset, ?int $limit): array;
 
     /**
      * Delete all logs older than $datetime
