@@ -5,7 +5,7 @@ WORKDIR /src/
 COPY composer.lock /src/
 COPY composer.json /src/
 
-RUN composer update --ignore-platform-reqs --optimize-autoloader \
+RUN composer install --ignore-platform-reqs --optimize-autoloader \
     --no-plugins --no-scripts --prefer-dist
 
 FROM php:8.0-cli-alpine as final
