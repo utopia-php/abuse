@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd2eb793182c550f053111494b4fb5e5",
+    "content-hash": "95abdbb48bf3dc6ee5a15916148540e5",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -336,16 +336,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.31.0",
+            "version": "0.32.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "61f9f4743a317f1d78558a5f981adf74e7fdc931"
+                "reference": "f252f9cb58d93a9e2ef99915d743151da6f4e218"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/61f9f4743a317f1d78558a5f981adf74e7fdc931",
-                "reference": "61f9f4743a317f1d78558a5f981adf74e7fdc931",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/f252f9cb58d93a9e2ef99915d743151da6f4e218",
+                "reference": "f252f9cb58d93a9e2ef99915d743151da6f4e218",
                 "shasum": ""
             },
             "require": {
@@ -384,22 +384,22 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.31.0"
+                "source": "https://github.com/utopia-php/database/tree/0.32.0"
             },
-            "time": "2023-02-23T09:49:44+00:00"
+            "time": "2023-03-01T20:11:40+00:00"
         },
         {
             "name": "utopia-php/framework",
-            "version": "0.27.0",
+            "version": "0.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/framework.git",
-                "reference": "b8d0447f5c98291d7759db05460ecced29a0f9ee"
+                "reference": "d4f36ae8f62803a37dae3548977b8079dd045374"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/framework/zipball/b8d0447f5c98291d7759db05460ecced29a0f9ee",
-                "reference": "b8d0447f5c98291d7759db05460ecced29a0f9ee",
+                "url": "https://api.github.com/repos/utopia-php/framework/zipball/d4f36ae8f62803a37dae3548977b8079dd045374",
+                "reference": "d4f36ae8f62803a37dae3548977b8079dd045374",
                 "shasum": ""
             },
             "require": {
@@ -428,9 +428,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/framework/issues",
-                "source": "https://github.com/utopia-php/framework/tree/0.27.0"
+                "source": "https://github.com/utopia-php/framework/tree/0.28.0"
             },
-            "time": "2023-01-29T05:36:17+00:00"
+            "time": "2023-03-01T19:48:36+00:00"
         },
         {
             "name": "utopia-php/mongo",
@@ -858,16 +858,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.2",
+            "version": "1.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "a2ffec7db373d8da4973d1d62add872db5cd22dd"
+                "reference": "5419375b5891add97dc74be71e6c1c34baaddf64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a2ffec7db373d8da4973d1d62add872db5cd22dd",
-                "reference": "a2ffec7db373d8da4973d1d62add872db5cd22dd",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/5419375b5891add97dc74be71e6c1c34baaddf64",
+                "reference": "5419375b5891add97dc74be71e6c1c34baaddf64",
                 "shasum": ""
             },
             "require": {
@@ -897,7 +897,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.10.2"
+                "source": "https://github.com/phpstan/phpstan/tree/1.10.3"
             },
             "funding": [
                 {
@@ -913,27 +913,27 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-23T14:36:46+00:00"
+            "time": "2023-02-25T14:47:13+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.24",
+            "version": "9.2.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "2cf940ebc6355a9d430462811b5aaa308b174bed"
+                "reference": "0e2b40518197a8c0d4b08bc34dfff1c99c508954"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/2cf940ebc6355a9d430462811b5aaa308b174bed",
-                "reference": "2cf940ebc6355a9d430462811b5aaa308b174bed",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/0e2b40518197a8c0d4b08bc34dfff1c99c508954",
+                "reference": "0e2b40518197a8c0d4b08bc34dfff1c99c508954",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "ext-xmlwriter": "*",
-                "nikic/php-parser": "^4.14",
+                "nikic/php-parser": "^4.15",
                 "php": ">=7.3",
                 "phpunit/php-file-iterator": "^3.0.3",
                 "phpunit/php-text-template": "^2.0.2",
@@ -982,7 +982,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.24"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.25"
             },
             "funding": [
                 {
@@ -990,7 +990,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-01-26T08:26:55+00:00"
+            "time": "2023-02-25T05:32:00+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -1235,16 +1235,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.3",
+            "version": "9.6.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "e7b1615e3e887d6c719121c6d4a44b0ab9645555"
+                "reference": "9125ee085b6d95e78277dc07aa1f46f9e0607b8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e7b1615e3e887d6c719121c6d4a44b0ab9645555",
-                "reference": "e7b1615e3e887d6c719121c6d4a44b0ab9645555",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9125ee085b6d95e78277dc07aa1f46f9e0607b8d",
+                "reference": "9125ee085b6d95e78277dc07aa1f46f9e0607b8d",
                 "shasum": ""
             },
             "require": {
@@ -1317,7 +1317,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.3"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.4"
             },
             "funding": [
                 {
@@ -1333,7 +1333,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-02-04T13:37:15+00:00"
+            "time": "2023-02-27T13:06:37+00:00"
         },
         {
             "name": "sebastian/cli-parser",
