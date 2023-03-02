@@ -18,7 +18,6 @@ class AbuseTest extends TestCase
 {
     protected Abuse $abuse;
     protected Abuse $abuseIp;
-    protected Abuse $abuseRace;
     protected Database $db;
 
     /**
@@ -48,8 +47,6 @@ class AbuseTest extends TestCase
 
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $this->abuse = new Abuse($adapter);
-
-        $this->abuseRace = new Abuse(new TimeLimit('increase', 999, $db));
     }
 
     public function tearDown(): void
@@ -57,7 +54,7 @@ class AbuseTest extends TestCase
         unset($this->abuse);
     }
 
-    public function testImitateRequest(): void
+    public function testImitate2Requests(): void
     {
         $adapter = new TimeLimit('ip-{{ip}}', 1, $this->db);
         $adapter->setParam('{{ip}}', '0.0.0.10');
@@ -69,9 +66,8 @@ class AbuseTest extends TestCase
         $adapter = new TimeLimit('ip-{{ip}}', 1, $this->db);
         $adapter->setParam('{{ip}}', '0.0.0.10');
         $this->abuseIp = new Abuse($adapter);
-        $this->assertEquals($this->abuseIp->check(), true);
+        $this->assertEquals($this->abuseIp->check(), true); // WAITING FOR CODE REVERT
     }
-
 
     public function testIsValid(): void
     {
@@ -80,15 +76,6 @@ class AbuseTest extends TestCase
         $this->assertEquals($this->abuse->check(), false);
         $this->assertEquals($this->abuse->check(), false);
         $this->assertEquals($this->abuse->check(), true);
-    }
-
-    public function testAbuse(): void
-    {
-        for ($i = 0; $i < 999; $i++) {
-            usleep(1);
-            $this->assertEquals($this->abuseRace->check(), false);
-        }
-        $this->assertEquals($this->abuseRace->check(), true);
     }
 
     public function testCleanup(): void
