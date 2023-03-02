@@ -8,7 +8,6 @@ use Utopia\Database\DateTime;
 use Utopia\Database\Document;
 use Utopia\Database\Exception\Authorization as AuthorizationException;
 use Utopia\Database\Exception\Duplicate;
-use Utopia\Database\Exception\Limit;
 use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
@@ -196,6 +195,9 @@ class TimeLimit implements Adapter
         if (\count($result) === 1) { // key + time is a unique index we get a single result
             $this->count = intval($result[0]->getAttribute('count', 0));
         }
+
+        // todo: I do not understand this array to int casting?
+        $this->count = (int) $result;
 
         return $this->count;
     }
