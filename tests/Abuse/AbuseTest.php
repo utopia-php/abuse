@@ -17,8 +17,9 @@ use Utopia\Exception;
 class AbuseTest extends TestCase
 {
     protected Abuse $abuse;
-
+    protected Abuse $abuseIp;
     protected Abuse $abuseRace;
+    protected Database $db;
 
     /**
      * @throws Exception
@@ -37,6 +38,7 @@ class AbuseTest extends TestCase
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
         $db->setDefaultDatabase('utopiaTests');
         $db->setNamespace('namespace');
+        $this->db = $db;
 
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, $db);
         if (! $db->exists('utopiaTests')) {
@@ -55,6 +57,22 @@ class AbuseTest extends TestCase
         unset($this->abuse);
     }
 
+    public function testImitateRequest(): void
+    {
+        $adapter = new TimeLimit('ip-{{ip}}', 1, $this->db);
+        $adapter->setParam('{{ip}}', '0.0.0.10');
+        $this->abuseIp = new Abuse($adapter);
+        $this->assertEquals($this->abuseIp->check(), false);
+
+        usleep(1);
+
+        $adapter = new TimeLimit('ip-{{ip}}', 1, $this->db);
+        $adapter->setParam('{{ip}}', '0.0.0.10');
+        $this->abuseIp = new Abuse($adapter);
+        $this->assertEquals($this->abuseIp->check(), true);
+    }
+
+
     public function testIsValid(): void
     {
         // Use vars to resolve adapter key
@@ -67,9 +85,9 @@ class AbuseTest extends TestCase
     public function testAbuse(): void
     {
         for ($i = 0; $i < 999; $i++) {
+            usleep(1);
             $this->assertEquals($this->abuseRace->check(), false);
         }
-
         $this->assertEquals($this->abuseRace->check(), true);
     }
 

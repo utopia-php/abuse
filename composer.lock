@@ -390,16 +390,16 @@
         },
         {
             "name": "utopia-php/framework",
-            "version": "0.28.0",
+            "version": "0.28.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/framework.git",
-                "reference": "d4f36ae8f62803a37dae3548977b8079dd045374"
+                "reference": "7f22c556fc5991e54e5811a68fb39809b21bda55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/framework/zipball/d4f36ae8f62803a37dae3548977b8079dd045374",
-                "reference": "d4f36ae8f62803a37dae3548977b8079dd045374",
+                "url": "https://api.github.com/repos/utopia-php/framework/zipball/7f22c556fc5991e54e5811a68fb39809b21bda55",
+                "reference": "7f22c556fc5991e54e5811a68fb39809b21bda55",
                 "shasum": ""
             },
             "require": {
@@ -428,9 +428,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/framework/issues",
-                "source": "https://github.com/utopia-php/framework/tree/0.28.0"
+                "source": "https://github.com/utopia-php/framework/tree/0.28.1"
             },
-            "time": "2023-03-01T19:48:36+00:00"
+            "time": "2023-03-02T08:16:01+00:00"
         },
         {
             "name": "utopia-php/mongo",
@@ -2361,5 +2361,5 @@
         "ext-curl": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.2.0"
 }
