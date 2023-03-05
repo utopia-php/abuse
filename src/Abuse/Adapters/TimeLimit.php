@@ -8,6 +8,7 @@ use Utopia\Database\DateTime;
 use Utopia\Database\Document;
 use Utopia\Database\Exception\Authorization as AuthorizationException;
 use Utopia\Database\Exception\Duplicate;
+use Utopia\Database\Exception\Limit;
 use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
@@ -49,13 +50,15 @@ class TimeLimit implements Adapter
 
     /**
      * @param  string  $key
+     * @param  int  $seconds
      * @param  int  $limit
      * @param  Database  $db
      */
-    public function __construct(string $key, int $limit, Database $db)
+    public function __construct(string $key, int $limit, int $seconds, Database $db)
     {
         $this->key = $key;
-        $this->time = DateTime::now();
+        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
+        $this->time = DateTime::format((new \DateTime())->setTimestamp($time));
         $this->limit = $limit;
         $this->db = $db;
     }

@@ -39,7 +39,7 @@ class AbuseTest extends TestCase
         $db->setNamespace('namespace');
         $this->db = $db;
 
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, $db);
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
         if (! $db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();
@@ -56,14 +56,14 @@ class AbuseTest extends TestCase
 
     public function testImitate2Requests(): void
     {
-        $adapter = new TimeLimit('ip-{{ip}}', 1, $this->db);
+        $adapter = new TimeLimit('ip-{{ip}}', 1,1, $this->db);
         $adapter->setParam('{{ip}}', '0.0.0.10');
         $this->abuseIp = new Abuse($adapter);
         $this->assertEquals($this->abuseIp->check(), false);
 
-        usleep(1);
+        sleep(2);
 
-        $adapter = new TimeLimit('ip-{{ip}}', 1, $this->db);
+        $adapter = new TimeLimit('ip-{{ip}}', 1,1, $this->db);
         $adapter->setParam('{{ip}}', '0.0.0.10');
         $this->abuseIp = new Abuse($adapter);
         $this->assertEquals($this->abuseIp->check(), true); // WAITING FOR CODE REVERT
