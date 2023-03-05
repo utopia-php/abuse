@@ -73,7 +73,6 @@ class AbuseTest extends TestCase
 
         var_dump($adapter->remaining());
 
-
         $this->assertEquals($this->abuseIp->check(), false);
         var_dump($adapter->remaining());
         $this->assertEquals($this->abuseIp->check(), true);
