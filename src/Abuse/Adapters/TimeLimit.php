@@ -195,6 +195,7 @@ class TimeLimit implements Adapter
         });
 
         $this->count = 0;
+
         if (\count($result) === 1) { // Unique Index
             $this->count = intval($result[0]->getAttribute('count', 0));
         }
