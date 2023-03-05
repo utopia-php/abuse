@@ -70,8 +70,15 @@ class AbuseTest extends TestCase
         $adapter = new TimeLimit($key, 1,1, $this->db);
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
+
+        var_dump($adapter->remaining());
+
+
         $this->assertEquals($this->abuseIp->check(), false);
+        var_dump($adapter->remaining());
         $this->assertEquals($this->abuseIp->check(), true);
+
+
     }
 
     public function testIsValid(): void

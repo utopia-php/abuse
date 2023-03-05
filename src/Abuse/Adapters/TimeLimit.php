@@ -194,12 +194,12 @@ class TimeLimit implements Adapter
             ]);
         });
 
-        $this->count = 0;
-        if (\count($result) === 1) { // key + time is a unique index we get a single result
-            $this->count = intval($result[0]->getAttribute('count', 0));
+        if (\count($result) === 1) { // Unique Index
+            $result = $result[0]->getAttribute('count', 0);
+        } else {
+            $result = 0;
         }
 
-        // todo: I do not understand this array to int casting?
         $this->count = (int) $result;
 
         return $this->count;
