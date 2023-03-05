@@ -17,7 +17,9 @@ use Utopia\Exception;
 class AbuseTest extends TestCase
 {
     protected Abuse $abuse;
+
     protected Abuse $abuseIp;
+
     protected Database $db;
 
     /**
@@ -59,7 +61,7 @@ class AbuseTest extends TestCase
         $key = '{{ip}}';
         $value = '0.0.0.10';
 
-        $adapter = new TimeLimit($key, 1,1, $this->db);
+        $adapter = new TimeLimit($key, 1, 1, $this->db);
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
         $this->assertEquals($this->abuseIp->check(), false);
@@ -67,7 +69,7 @@ class AbuseTest extends TestCase
 
         sleep(1);
 
-        $adapter = new TimeLimit($key, 1,1, $this->db);
+        $adapter = new TimeLimit($key, 1, 1, $this->db);
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
 
