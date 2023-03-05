@@ -309,7 +309,7 @@ class TimeLimit implements Adapter
      *
      * @return bool
      *
-     * @throws \Exception
+     * @throws \Exception|Throwable
      */
     public function check(): bool
     {
