@@ -71,13 +71,8 @@ class AbuseTest extends TestCase
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
 
-        var_dump($adapter->remaining());
-
         $this->assertEquals($this->abuseIp->check(), false);
-        var_dump($adapter->remaining());
         $this->assertEquals($this->abuseIp->check(), true);
-
-
     }
 
     public function testIsValid(): void
