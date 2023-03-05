@@ -2,13 +2,13 @@
 
 namespace Utopia\Abuse\Adapters;
 
+use Throwable;
 use Utopia\Abuse\Adapter;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
 use Utopia\Database\Document;
 use Utopia\Database\Exception\Authorization as AuthorizationException;
 use Utopia\Database\Exception\Duplicate;
-use Utopia\Database\Exception\Limit;
 use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
@@ -210,7 +210,7 @@ class TimeLimit implements Adapter
      * @param  string  $datetime
      * @return void
      *
-     * @throws AuthorizationException|Structure|\Exception
+     * @throws AuthorizationException|Structure|\Exception|Throwable
      */
     protected function hit(string $key, string $datetime): void
     {
