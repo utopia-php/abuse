@@ -22,7 +22,7 @@ interface Adapter
      * @param  int|null  $limit
      * @return array<string, mixed>
      */
-    public function getLogs(?int $offset, ?int $limit): array;
+    public function getLogs(?int $offset = null, ?int $limit = 25): array;
 
     /**
      * Delete all logs older than $datetime

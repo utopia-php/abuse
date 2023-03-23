@@ -38,7 +38,7 @@ class Abuse
      * @param  int|null  $limit
      * @return array<string, mixed>
      */
-    public function getLogs(?int $offset, ?int $limit = 25): array
+    public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         return $this->adapter->getLogs($offset, $limit);
     }
