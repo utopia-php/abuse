@@ -20,7 +20,7 @@
         "php": ">=8.0",
         "ext-pdo": "*",
         "ext-curl": "*",
-        "utopia-php/database": "dev-refactor-limits as 0.31.0"
+        "utopia-php/database": "dev-refactor-limits as 0.33.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.4",
