@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8fc25dfe29a8940b537b4d1e767ad4dd",
+    "content-hash": "48c701e8b661e7d3188c4c0ad4e57722",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -336,16 +336,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "dev-refactor-limits",
+            "version": "0.34.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "cc556a2afbd075ce0cdb45c80c55b860729c459c"
+                "reference": "c0b2d93cd5b867f9816d89aa7883dda7e8373ea5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/cc556a2afbd075ce0cdb45c80c55b860729c459c",
-                "reference": "cc556a2afbd075ce0cdb45c80c55b860729c459c",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/c0b2d93cd5b867f9816d89aa7883dda7e8373ea5",
+                "reference": "c0b2d93cd5b867f9816d89aa7883dda7e8373ea5",
                 "shasum": ""
             },
             "require": {
@@ -388,9 +388,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/refactor-limits"
+                "source": "https://github.com/utopia-php/database/tree/0.34.0"
             },
-            "time": "2023-03-23T01:45:21+00:00"
+            "time": "2023-03-23T05:24:05+00:00"
         },
         {
             "name": "utopia-php/framework",
@@ -2357,18 +2357,9 @@
             "time": "2021-07-28T10:34:58+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "utopia-php/database",
-            "version": "dev-refactor-limits",
-            "alias": "0.33.0",
-            "alias_normalized": "0.33.0.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "utopia-php/database": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
