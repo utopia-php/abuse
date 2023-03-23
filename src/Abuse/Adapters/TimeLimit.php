@@ -254,6 +254,7 @@ class TimeLimit implements Adapter
         /** @var array<Document> $results */
         $results = Authorization::skip(function () use ($offset, $limit) {
             $queries = [];
+            $queries[] = Query::orderDesc('');
 
             if (! \is_null($offset)) {
                 $queries[] = Query::offset($offset);
