@@ -107,13 +107,13 @@ class ReCaptcha implements Adapter
      *
      * Return logs with an offset and limit
      *
-     * @param  int  $offset
-     * @param  int  $limit
+     * @param  int|null  $offset
+     * @param  int|null  $limit
      * @return array<string, mixed>
      *
      * @throws Exception
      */
-    public function getLogs(int $offset, int $limit): array
+    public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         throw new Exception('Method not supported');
     }

@@ -34,11 +34,11 @@ class Abuse
      *
      * Return logs with an offset and limit
      *
-     * @param  int  $offset
-     * @param  int  $limit
+     * @param  int|null  $offset
+     * @param  int|null  $limit
      * @return array<string, mixed>
      */
-    public function getLogs(int $offset, int $limit): array
+    public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         return $this->adapter->getLogs($offset, $limit);
     }
