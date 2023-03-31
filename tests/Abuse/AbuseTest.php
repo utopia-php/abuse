@@ -12,14 +12,20 @@ use Utopia\Database\Adapter\MariaDB;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
+use Utopia\Exception;
 
 class AbuseTest extends TestCase
 {
-    /**
-     * @var Abuse
-     */
-    protected $abuse = null;
+    protected Abuse $abuse;
 
+    protected Abuse $abuseIp;
+
+    protected Database $db;
+
+    /**
+     * @throws Exception
+     * @throws \Exception
+     */
     public function setUp(): void
     {
         // Limit login attempts to 3 time in 5 minutes time frame
@@ -33,21 +39,42 @@ class AbuseTest extends TestCase
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
         $db->setDefaultDatabase('utopiaTests');
         $db->setNamespace('namespace');
+        $this->db = $db;
 
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, (60 * 5), $db);
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
         if (! $db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();
         }
 
         $adapter->setParam('{{ip}}', '127.0.0.1');
-
         $this->abuse = new Abuse($adapter);
     }
 
     public function tearDown(): void
     {
         unset($this->abuse);
+    }
+
+    public function testImitate2Requests(): void
+    {
+        $key = '{{ip}}';
+        $value = '0.0.0.10';
+
+        $adapter = new TimeLimit($key, 1, 1, $this->db);
+        $adapter->setParam($key, $value);
+        $this->abuseIp = new Abuse($adapter);
+        $this->assertEquals($this->abuseIp->check(), false);
+        $this->assertEquals($this->abuseIp->check(), true);
+
+        sleep(1);
+
+        $adapter = new TimeLimit($key, 1, 1, $this->db);
+        $adapter->setParam($key, $value);
+        $this->abuseIp = new Abuse($adapter);
+
+        $this->assertEquals($this->abuseIp->check(), false);
+        $this->assertEquals($this->abuseIp->check(), true);
     }
 
     public function testIsValid(): void
@@ -63,7 +90,7 @@ class AbuseTest extends TestCase
     {
         // Check that there is only one log
         $logs = $this->abuse->getLogs(0, 10);
-        $this->assertEquals(1, \count($logs));
+        $this->assertEquals(3, \count($logs));
 
         sleep(5);
         // Delete the log

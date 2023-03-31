@@ -18,6 +18,10 @@ services:
       - abuse
     depends_on:
       - mysql
+    volumes:
+      - ./phpunit.xml:/code/phpunit.xml
+      - ./src:/code/src
+      - ./tests:/code/tests
 
 networks:
   abuse:

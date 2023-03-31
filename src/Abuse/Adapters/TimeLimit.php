@@ -2,13 +2,13 @@
 
 namespace Utopia\Abuse\Adapters;
 
+use Throwable;
 use Utopia\Abuse\Adapter;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
 use Utopia\Database\Document;
 use Utopia\Database\Exception\Authorization as AuthorizationException;
 use Utopia\Database\Exception\Duplicate;
-use Utopia\Database\Exception\Limit;
 use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
@@ -64,7 +64,6 @@ class TimeLimit implements Adapter
     }
 
     /**
-     * @throws Limit
      * @throws Duplicate
      * @throws Exception|\Exception
      */
@@ -195,7 +194,11 @@ class TimeLimit implements Adapter
             ]);
         });
 
-        $this->count = (int) $result;
+        $this->count = 0;
+
+        if (\count($result) === 1) { // Unique Index
+            $this->count = intval($result[0]->getAttribute('count', 0));
+        }
 
         return $this->count;
     }
@@ -227,11 +230,27 @@ class TimeLimit implements Adapter
                     'count' => 1,
                     '$collection' => TimeLimit::COLLECTION,
                 ];
-                $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+
+                try {
+                    $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+                } catch (Duplicate $e) {
+                    // Duplicate in case of race condition
+                    /** @var Document $data */
+                    $data = $this->db->findOne(TimeLimit::COLLECTION, [
+                        Query::equal('key', [$key]),
+                        Query::equal('time', [$datetime]),
+                    ]);
+
+                    if ($data != false) {
+                        $this->count = intval($data->getAttribute('count'));
+                        $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
+                    } else {
+                        throw new \Exception('Document Not Found');
+                    }
+                }
             } else {
                 /** @var Document $data */
-                $data->setAttribute('count', $data->getAttribute('count', 0) + 1);
-                $this->db->updateDocument(TimeLimit::COLLECTION, $data->getId(), $data);
+                $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
             }
         });
 
@@ -301,7 +320,7 @@ class TimeLimit implements Adapter
      *
      * @return bool
      *
-     * @throws \Exception
+     * @throws \Exception|Throwable
      */
     public function check(): bool
     {
