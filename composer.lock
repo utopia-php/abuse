@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "48c701e8b661e7d3188c4c0ad4e57722",
+    "content-hash": "ac817075e64f9abd8a9c44bb3cbc73a4",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -336,16 +336,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.34.1",
+            "version": "0.35.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "b592ab1bab9d7412cf5b756fdcdf850c03b1470d"
+                "reference": "f162c142fd61753c4b413b15c3c4041f3cd00bb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/b592ab1bab9d7412cf5b756fdcdf850c03b1470d",
-                "reference": "b592ab1bab9d7412cf5b756fdcdf850c03b1470d",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/f162c142fd61753c4b413b15c3c4041f3cd00bb2",
+                "reference": "f162c142fd61753c4b413b15c3c4041f3cd00bb2",
                 "shasum": ""
             },
             "require": {
@@ -353,7 +353,7 @@
                 "php": ">=8.0",
                 "utopia-php/cache": "0.8.*",
                 "utopia-php/framework": "0.*.*",
-                "utopia-php/mongo": "0.1.*"
+                "utopia-php/mongo": "0.2.*"
             },
             "require-dev": {
                 "ext-mongodb": "*",
@@ -362,7 +362,7 @@
                 "laravel/pint": "1.4.*",
                 "mongodb/mongodb": "1.8.0",
                 "pcov/clobber": "^2.0",
-                "phpstan/phpstan": "1.9.*",
+                "phpstan/phpstan": "1.10.*",
                 "phpunit/phpunit": "^9.4",
                 "rregeer/phpunit-coverage-check": "^0.3.1",
                 "swoole/ide-helper": "4.8.0",
@@ -388,9 +388,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.34.1"
+                "source": "https://github.com/utopia-php/database/tree/0.35.0"
             },
-            "time": "2023-03-23T07:23:41+00:00"
+            "time": "2023-04-11T04:02:22+00:00"
         },
         {
             "name": "utopia-php/framework",
@@ -438,16 +438,16 @@
         },
         {
             "name": "utopia-php/mongo",
-            "version": "0.1.0",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/mongo.git",
-                "reference": "f4b6ec74c5323ca16c500dd19109518d2eeb1f8f"
+                "reference": "b6dfb31b93c07c59b8bbd62a3b52e3b97a407c09"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/mongo/zipball/f4b6ec74c5323ca16c500dd19109518d2eeb1f8f",
-                "reference": "f4b6ec74c5323ca16c500dd19109518d2eeb1f8f",
+                "url": "https://api.github.com/repos/utopia-php/mongo/zipball/b6dfb31b93c07c59b8bbd62a3b52e3b97a407c09",
+                "reference": "b6dfb31b93c07c59b8bbd62a3b52e3b97a407c09",
                 "shasum": ""
             },
             "require": {
@@ -492,9 +492,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/mongo/issues",
-                "source": "https://github.com/utopia-php/mongo/tree/0.1.0"
+                "source": "https://github.com/utopia-php/mongo/tree/0.2.0"
             },
-            "time": "2023-01-12T14:02:08+00:00"
+            "time": "2023-03-22T10:44:29+00:00"
         }
     ],
     "packages-dev": [
@@ -2368,5 +2368,5 @@
         "ext-curl": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
