@@ -16,7 +16,7 @@ use Utopia\Exception;
 
 class TimeLimit implements Adapter
 {
-    const COLLECTION = 'abuse';
+    public const COLLECTION = 'abuse';
 
     /**
      * @var Database
