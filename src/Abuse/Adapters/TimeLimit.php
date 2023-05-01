@@ -76,6 +76,7 @@ class TimeLimit implements Adapter
         $attributes = [
             new Document([
                 '$id' => 'key',
+                'key' => 'key',
                 'type' => Database::VAR_STRING,
                 'size' => Database::LENGTH_KEY,
                 'required' => true,
@@ -85,6 +86,7 @@ class TimeLimit implements Adapter
             ]),
             new Document([
                 '$id' => 'time',
+                'key' => 'time',
                 'type' => Database::VAR_DATETIME,
                 'size' => 0,
                 'required' => true,
@@ -94,6 +96,7 @@ class TimeLimit implements Adapter
             ]),
             new Document([
                 '$id' => 'count',
+                'key' => 'count',
                 'type' => Database::VAR_INTEGER,
                 'size' => 11,
                 'required' => true,
