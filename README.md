@@ -61,7 +61,7 @@ $abuse      = new Abuse($adapter);
 
 // Use vars to resolve adapter key
 
-if(!$abuse->check()) {
+if($abuse->check()) {
     throw new Exception('Service was abused!'); // throw error and return X-Rate limit headers here
 }
 ```
@@ -83,7 +83,7 @@ use Utopia\Abuse\Adapters\ReCaptcha;
 $adapter    = new ReCaptcha('secret-api-key', $_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
 $abuse      = new Abuse($adapter);
 
-if(!$abuse->check()) {
+if($abuse->check()) {
     throw new Exception('Service was abused!'); // throw error and return X-Rate limit headers here
 }
 ```
