@@ -30,6 +30,11 @@ class ReCaptcha implements Adapter
     protected string $remoteIP = '';
 
     /**
+     * Threshold that is used to determine threats
+     */
+    protected float $threshold;
+
+    /**
      * ReCaptcha Adapter
      *
      * See more information about the implementation instructions
@@ -42,23 +47,30 @@ class ReCaptcha implements Adapter
      * @param  string  $secret
      * @param  string  $response
      * @param  string  $remoteIP
+     * @param  float   $threshold By default, you can use a threshold of 0.5. @see https://developers.google.com/recaptcha/docs/v3#interpreting_the_score
      */
-    public function __construct(string $secret, string $response, string $remoteIP)
+    public function __construct(string $secret, string $response, string $remoteIP, float $threshold = 0.5)
     {
         $this->secret = $secret;
         $this->response = $response;
         $this->remoteIP = $remoteIP;
+        $this->threshold = $threshold;
     }
 
     /**
-     * Check
-     *
-     * Check if user is human or not, compared to score
-     *
-     * @param  float  $score
-     * @return bool
+     * @inheritDoc
      */
     public function check(float $score = 0.5): bool
+    {
+        $this->threshold = $score;
+
+        return $this->isSafe() === false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSafe(): bool
     {
         $url = 'https://www.google.com/recaptcha/api/siteverify';
         $fields = [
@@ -84,7 +96,7 @@ class ReCaptcha implements Adapter
         \curl_close($ch);
 
         // reCAPTCHA v3 returns a score (1.0 is very likely a good interaction, 0.0 is very likely a bot) @see https://developers.google.com/recaptcha/docs/v3#interpreting_the_score
-        return $result['success'] === false || $result['score'] < $score;
+        return $result['success'] && $result['score'] > $this->threshold;
     }
 
     /**

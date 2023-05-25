@@ -53,7 +53,7 @@ class AbuseTest extends TestCase
 
     public function tearDown(): void
     {
-        unset($this->abuse);
+        unset($this->abuse, $this->abuseIp);
     }
 
     public function testImitate2Requests(): void
@@ -64,8 +64,9 @@ class AbuseTest extends TestCase
         $adapter = new TimeLimit($key, 1, 1, $this->db);
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
-        $this->assertEquals($this->abuseIp->check(), false);
-        $this->assertEquals($this->abuseIp->check(), true);
+
+        $this->assertEquals($this->abuseIp->isSafe(), true);
+        $this->assertEquals($this->abuseIp->isSafe(), false);
 
         sleep(1);
 
@@ -73,17 +74,31 @@ class AbuseTest extends TestCase
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
 
-        $this->assertEquals($this->abuseIp->check(), false);
-        $this->assertEquals($this->abuseIp->check(), true);
+        $this->assertEquals($this->abuseIp->isSafe(), true);
+        $this->assertEquals($this->abuseIp->isSafe(), false);
+    }
+
+    public function testUnlimitedRequests(): void
+    {
+        $key = '{{ip}}';
+        $value = '0.0.0.10';
+
+        $adapter = new TimeLimit($key, 0, 1, $this->db);
+        $adapter->setParam($key, $value);
+        $this->abuseIp = new Abuse($adapter);
+
+        for ($i = 0; $i < 100; $i++) {
+            $this->assertEquals($this->abuseIp->isSafe(), true);
+        }
     }
 
     public function testIsValid(): void
     {
         // Use vars to resolve adapter key
-        $this->assertEquals($this->abuse->check(), false);
-        $this->assertEquals($this->abuse->check(), false);
-        $this->assertEquals($this->abuse->check(), false);
-        $this->assertEquals($this->abuse->check(), true);
+        $this->assertEquals($this->abuse->isSafe(), true);
+        $this->assertEquals($this->abuse->isSafe(), true);
+        $this->assertEquals($this->abuse->isSafe(), true);
+        $this->assertEquals($this->abuse->isSafe(), false);
     }
 
     public function testCleanup(): void

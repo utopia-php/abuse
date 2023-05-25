@@ -10,8 +10,16 @@ interface Adapter
      * Checks if number of counts is bigger or smaller than current limit
      *
      * @return bool
+     * @deprecated Check is ambiguous, use isSafe instead
      */
     public function check(): bool;
+
+    /**
+     * Main method for threat detection
+     *
+     * @return bool Returns true if is safe to continue
+     */
+    public function isSafe(): bool;
 
     /**
      * Get abuse logs

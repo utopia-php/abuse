@@ -61,7 +61,7 @@ $abuse      = new Abuse($adapter);
 
 // Use vars to resolve adapter key
 
-if($abuse->check()) {
+if($abuse->isSafe() === false) {
     throw new Exception('Service was abused!'); // throw error and return X-Rate limit headers here
 }
 ```
@@ -83,12 +83,12 @@ use Utopia\Abuse\Adapters\ReCaptcha;
 $adapter    = new ReCaptcha('secret-api-key', $_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
 $abuse      = new Abuse($adapter);
 
-if($abuse->check()) {
+if($abuse->isSafe() === false) {
     throw new Exception('Service was abused!'); // throw error and return X-Rate limit headers here
 }
 ```
 
-*Notice: The code above is for example purpose only. It is always recommended to validate user input before using it in your code. If you are using a load balancer or any proxy server you might need to get user IP from the HTTP_X_FORWARDE‌​D_FOR header.*
+*Notice: The code above is for example purpose only. It is always recommended to validate user input before using it in your code. If you are using a load balancer or any proxy server you might need to get user IP from the HTTP_X_FORWARDED_FOR header.*
 
 ## System Requirements
 
