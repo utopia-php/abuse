@@ -89,10 +89,14 @@ abstract class ReCaptchaLike implements Adapter
 
         //execute post
         /** @var array<string, mixed> $result */
-        $result = \json_decode((string) \curl_exec($ch), true);
-
-        //close connection
-        \curl_close($ch);
+        try {
+            $result = \json_decode((string)\curl_exec($ch), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $_) {
+            return false;
+        } finally {
+            //close connection
+            \curl_close($ch);
+        }
 
         return $this->decideByResult($result);
     }
