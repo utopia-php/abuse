@@ -57,8 +57,9 @@ class TimeLimit implements Adapter
     public function __construct(string $key, int $limit, int $seconds, Database $db)
     {
         $this->key = $key;
-        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
-        $this->time = DateTime::format((new \DateTime())->setTimestamp($time));
+        $currentTimestamp = time(); // todo: any good Idea without time()?
+        $timestampWindow = $currentTimestamp - $currentTimestamp % $seconds;
+        $this->time = DateTime::format((new \DateTime())->setTimestamp($timestampWindow));
         $this->limit = $limit;
         $this->db = $db;
     }
