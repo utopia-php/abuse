@@ -1,11 +1,11 @@
 <?php
 
-namespace Utopia\Abuse\Adapters;
+namespace Utopia\Abuse\Adapters\ReCaptchaLike;
 
 use Exception;
 use Utopia\Abuse\Adapter;
 
-class ReCaptcha implements Adapter
+abstract class ReCaptchaLike implements Adapter
 {
     /**
      * Use this for communication between your site and Google.
@@ -72,7 +72,6 @@ class ReCaptcha implements Adapter
      */
     public function isSafe(): bool
     {
-        $url = 'https://www.google.com/recaptcha/api/siteverify';
         $fields = [
             'secret' => \urlencode($this->secret),
             'response' => \urlencode($this->response),
@@ -83,7 +82,7 @@ class ReCaptcha implements Adapter
         $ch = \curl_init();
 
         //set the url, number of POST vars, POST data
-        \curl_setopt($ch, CURLOPT_URL, $url);
+        \curl_setopt($ch, CURLOPT_URL, $this->getSiteVerifyUrl());
         \curl_setopt($ch, CURLOPT_POST, \count($fields));
         \curl_setopt($ch, CURLOPT_POSTFIELDS, \http_build_query($fields));
         \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -95,9 +94,23 @@ class ReCaptcha implements Adapter
         //close connection
         \curl_close($ch);
 
-        // reCAPTCHA v3 returns a score (1.0 is very likely a good interaction, 0.0 is very likely a bot) @see https://developers.google.com/recaptcha/docs/v3#interpreting_the_score
-        return $result['success'] && $result['score'] > $this->threshold;
+        return $this->decideByResult($result);
     }
+
+    /**
+     * Implementation how score is interpreted.
+     *
+     * @param array $result Returned by reCAPTCHA service
+     * @return bool True if is safe
+     */
+    abstract protected function decideByResult(array $result): bool;
+
+    /**
+     * Implementation how to get site-verify url.
+     *
+     * @return string Url of the site-verify endpoint.
+     */
+    abstract protected function getSiteVerifyUrl(): string;
 
     /**
      * Delete logs older than $datetime
