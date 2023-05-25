@@ -1,11 +1,11 @@
 <?php
 
-namespace Utopia\Abuse\Adapters;
+namespace Utopia\Abuse\Adapters\ReCaptchaLike;
 
 use Exception;
 use Utopia\Abuse\Adapter;
 
-class ReCaptcha implements Adapter
+abstract class ReCaptchaLike implements Adapter
 {
     /**
      * Use this for communication between your site and Google.
@@ -30,6 +30,11 @@ class ReCaptcha implements Adapter
     protected string $remoteIP = '';
 
     /**
+     * Threshold that is used to determine threats
+     */
+    protected float $threshold;
+
+    /**
      * ReCaptcha Adapter
      *
      * See more information about the implementation instructions
@@ -42,25 +47,31 @@ class ReCaptcha implements Adapter
      * @param  string  $secret
      * @param  string  $response
      * @param  string  $remoteIP
+     * @param  float   $threshold By default, you can use a threshold of 0.5. @see https://developers.google.com/recaptcha/docs/v3#interpreting_the_score
      */
-    public function __construct(string $secret, string $response, string $remoteIP)
+    public function __construct(string $secret, string $response, string $remoteIP, float $threshold = 0.5)
     {
         $this->secret = $secret;
         $this->response = $response;
         $this->remoteIP = $remoteIP;
+        $this->threshold = $threshold;
     }
 
     /**
-     * Check
-     *
-     * Check if user is human or not, compared to score
-     *
-     * @param  float  $score
-     * @return bool
+     * @inheritDoc
      */
     public function check(float $score = 0.5): bool
     {
-        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $this->threshold = $score;
+
+        return $this->isSafe() === false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isSafe(): bool
+    {
         $fields = [
             'secret' => \urlencode($this->secret),
             'response' => \urlencode($this->response),
@@ -71,23 +82,39 @@ class ReCaptcha implements Adapter
         $ch = \curl_init();
 
         //set the url, number of POST vars, POST data
-        \curl_setopt($ch, CURLOPT_URL, $url);
+        \curl_setopt($ch, CURLOPT_URL, $this->getSiteVerifyUrl());
         \curl_setopt($ch, CURLOPT_POST, \count($fields));
         \curl_setopt($ch, CURLOPT_POSTFIELDS, \http_build_query($fields));
         \curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         //execute post
         /** @var array<string, mixed> $result */
-        $result = \json_decode((string) \curl_exec($ch), true);
-
-        //close connection
-        \curl_close($ch);
-        if ($result['success'] && $result['score'] >= $score) {
-            return true;
-        } else {
+        try {
+            $result = \json_decode((string)\curl_exec($ch), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $_) {
             return false;
+        } finally {
+            //close connection
+            \curl_close($ch);
         }
+
+        return $this->decideByResult($result);
     }
+
+    /**
+     * Implementation how score is interpreted.
+     *
+     * @param array $result Returned by reCAPTCHA service
+     * @return bool True if is safe
+     */
+    abstract protected function decideByResult(array $result): bool;
+
+    /**
+     * Implementation how to get site-verify url.
+     *
+     * @return string Url of the site-verify endpoint.
+     */
+    abstract protected function getSiteVerifyUrl(): string;
 
     /**
      * Delete logs older than $datetime
