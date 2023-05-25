@@ -82,11 +82,9 @@ class ReCaptcha implements Adapter
 
         //close connection
         \curl_close($ch);
-        if ($result['success'] && $result['score'] >= $score) {
-            return true;
-        } else {
-            return false;
-        }
+
+        // reCAPTCHA v3 returns a score (1.0 is very likely a good interaction, 0.0 is very likely a bot) @see https://developers.google.com/recaptcha/docs/v3#interpreting_the_score
+        return $result['success'] === false || $result['score'] < $score;
     }
 
     /**
