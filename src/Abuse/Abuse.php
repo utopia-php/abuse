@@ -23,10 +23,21 @@ class Abuse
      * Checks if request is considered abuse or not
      *
      * @return bool
+     * @deprecated Check is ambiguous, use isSafe instead
      */
     public function check(): bool
     {
         return $this->adapter->check();
+    }
+
+    /**
+     * Main method for threat detection
+     *
+     * @return bool Returns true if is safe to continue
+     */
+    public function isSafe(): bool
+    {
+        return $this->adapter->isSafe();
     }
 
     /**

@@ -51,7 +51,7 @@ class TimeLimit implements Adapter
     /**
      * @param  string  $key
      * @param  int  $seconds
-     * @param  int  $limit
+     * @param  int  $limit Number of requests in given time window. 0 means unlimited.
      * @param  Database  $db
      */
     public function __construct(string $key, int $limit, int $seconds, Database $db)
@@ -314,27 +314,35 @@ class TimeLimit implements Adapter
     }
 
     /**
-     * Check
-     *
-     * Checks if number of counts is bigger or smaller than current limit. limit 0 is equal to unlimited
-     *
-     * @return bool
-     *
-     * @throws \Exception|Throwable
+     * @inheritDoc
+     * @throws AuthorizationException
+     * @throws Throwable
+     * @throws Structure
      */
     public function check(): bool
     {
-        if (0 == $this->limit) {
-            return false;
+        return $this->isSafe() === false;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws AuthorizationException
+     * @throws Throwable
+     * @throws Structure
+     */
+    public function isSafe(): bool
+    {
+        if (0 === $this->limit) {
+            return true;
         }
 
         $key = $this->parseKey();
 
-        if ($this->limit > $this->count($key, $this->time)) {
-            $this->hit($key, $this->time);
-
+        if ($this->limit <= $this->count($key, $this->time)) {
             return false;
         }
+
+        $this->hit($key, $this->time);
 
         return true;
     }
