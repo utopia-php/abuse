@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3a11f0f0a1d282605f5135380e1094ff",
+    "content-hash": "1b1799ee4dd23c8a57f598585fefbd1b",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -336,16 +336,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.36.1",
+            "version": "0.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "f6ab65e59a199da5155c114564077b1ab8c4daef"
+                "reference": "698c5a44598bc263c58506d4fd526589ea392114"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/f6ab65e59a199da5155c114564077b1ab8c4daef",
-                "reference": "f6ab65e59a199da5155c114564077b1ab8c4daef",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/698c5a44598bc263c58506d4fd526589ea392114",
+                "reference": "698c5a44598bc263c58506d4fd526589ea392114",
                 "shasum": ""
             },
             "require": {
@@ -356,8 +356,6 @@
                 "utopia-php/mongo": "0.2.*"
             },
             "require-dev": {
-                "ext-mongodb": "*",
-                "ext-redis": "*",
                 "fakerphp/faker": "^1.14",
                 "laravel/pint": "1.4.*",
                 "mongodb/mongodb": "1.8.0",
@@ -388,9 +386,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.36.1"
+                "source": "https://github.com/utopia-php/database/tree/0.37.0"
             },
-            "time": "2023-04-27T08:39:55+00:00"
+            "time": "2023-06-09T07:39:11+00:00"
         },
         {
             "name": "utopia-php/framework",
