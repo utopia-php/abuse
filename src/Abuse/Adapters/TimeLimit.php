@@ -197,7 +197,10 @@ class TimeLimit implements Adapter
         $this->count = 0;
 
         if (\count($result) === 1) { // Unique Index
-            $this->count = intval($result[0]->getAttribute('count', 0));
+            $count = $result[0]->getAttribute('count', 0);
+            if (\is_numeric($count)) {
+                $this->count = intval($count);
+            }
         }
 
         return $this->count;
@@ -235,14 +238,16 @@ class TimeLimit implements Adapter
                     $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
                 } catch (Duplicate $e) {
                     // Duplicate in case of race condition
-                    /** @var Document $data */
                     $data = $this->db->findOne(TimeLimit::COLLECTION, [
                         Query::equal('key', [$key]),
                         Query::equal('time', [$datetime]),
                     ]);
 
-                    if ($data != false) {
-                        $this->count = intval($data->getAttribute('count'));
+                    if ($data !== false && $data instanceof Document) {
+                        $count = $data->getAttribute('count', 0);
+                        if (\is_numeric($count)) {
+                            $this->count = intval($count);
+                        }
                         $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
                     } else {
                         throw new \Exception('Document Not Found');
