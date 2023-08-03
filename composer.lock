@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b2ca804f0a7e8b611a699c139b32671c",
+    "content-hash": "06a3c19acf31fbdaa0d92444a311c96b",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -336,16 +336,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.39.0",
+            "version": "0.40.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "a9f706034a12c7c87e6fd38eca69587fd3def0e0"
+                "reference": "ec586ba1c5fc83856df4feaa05464da72b72ee0d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/a9f706034a12c7c87e6fd38eca69587fd3def0e0",
-                "reference": "a9f706034a12c7c87e6fd38eca69587fd3def0e0",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/ec586ba1c5fc83856df4feaa05464da72b72ee0d",
+                "reference": "ec586ba1c5fc83856df4feaa05464da72b72ee0d",
                 "shasum": ""
             },
             "require": {
@@ -386,22 +386,22 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.39.0"
+                "source": "https://github.com/utopia-php/database/tree/0.40.0"
             },
-            "time": "2023-07-26T18:03:25+00:00"
+            "time": "2023-08-03T08:01:37+00:00"
         },
         {
             "name": "utopia-php/framework",
-            "version": "0.28.4",
+            "version": "0.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/framework.git",
-                "reference": "98c5469efe195aeecc63745dbf8e2f357f8cedac"
+                "reference": "1c8ed95fb73531b0508ad69f85dafc4c78a64414"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/framework/zipball/98c5469efe195aeecc63745dbf8e2f357f8cedac",
-                "reference": "98c5469efe195aeecc63745dbf8e2f357f8cedac",
+                "url": "https://api.github.com/repos/utopia-php/framework/zipball/1c8ed95fb73531b0508ad69f85dafc4c78a64414",
+                "reference": "1c8ed95fb73531b0508ad69f85dafc4c78a64414",
                 "shasum": ""
             },
             "require": {
@@ -409,9 +409,9 @@
             },
             "require-dev": {
                 "laravel/pint": "^1.2",
-                "phpstan/phpstan": "1.9.x-dev",
-                "phpunit/phpunit": "^9.5.25",
-                "vimeo/psalm": "4.27.0"
+                "phpbench/phpbench": "^1.2",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^9.5.25"
             },
             "type": "library",
             "autoload": {
@@ -431,9 +431,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/framework/issues",
-                "source": "https://github.com/utopia-php/framework/tree/0.28.4"
+                "source": "https://github.com/utopia-php/framework/tree/0.29"
             },
-            "time": "2023-06-03T14:09:22+00:00"
+            "time": "2023-07-30T07:56:23+00:00"
         },
         {
             "name": "utopia-php/mongo",
@@ -1849,16 +1849,16 @@
         },
         {
             "name": "sebastian/global-state",
-            "version": "5.0.5",
+            "version": "5.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/global-state.git",
-                "reference": "0ca8db5a5fc9c8646244e629625ac486fa286bf2"
+                "reference": "bde739e7565280bda77be70044ac1047bc007e34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/0ca8db5a5fc9c8646244e629625ac486fa286bf2",
-                "reference": "0ca8db5a5fc9c8646244e629625ac486fa286bf2",
+                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/bde739e7565280bda77be70044ac1047bc007e34",
+                "reference": "bde739e7565280bda77be70044ac1047bc007e34",
                 "shasum": ""
             },
             "require": {
@@ -1901,7 +1901,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/global-state/issues",
-                "source": "https://github.com/sebastianbergmann/global-state/tree/5.0.5"
+                "source": "https://github.com/sebastianbergmann/global-state/tree/5.0.6"
             },
             "funding": [
                 {
@@ -1909,7 +1909,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-02-14T08:28:10+00:00"
+            "time": "2023-08-02T09:26:13+00:00"
         },
         {
             "name": "sebastian/lines-of-code",
