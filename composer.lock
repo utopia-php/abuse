@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "06a3c19acf31fbdaa0d92444a311c96b",
+    "content-hash": "c1f3e6f58a7267e72e763bcb1f8e2ae4",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -336,16 +336,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.40.0",
+            "version": "0.41.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "ec586ba1c5fc83856df4feaa05464da72b72ee0d"
+                "reference": "98dc6a94e636fe8f955c20fa4833db8986b5c27a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/ec586ba1c5fc83856df4feaa05464da72b72ee0d",
-                "reference": "ec586ba1c5fc83856df4feaa05464da72b72ee0d",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/98dc6a94e636fe8f955c20fa4833db8986b5c27a",
+                "reference": "98dc6a94e636fe8f955c20fa4833db8986b5c27a",
                 "shasum": ""
             },
             "require": {
@@ -386,22 +386,22 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.40.0"
+                "source": "https://github.com/utopia-php/database/tree/0.41.0"
             },
-            "time": "2023-08-03T08:01:37+00:00"
+            "time": "2023-08-09T02:52:31+00:00"
         },
         {
             "name": "utopia-php/framework",
-            "version": "0.29",
+            "version": "0.30.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/framework.git",
-                "reference": "1c8ed95fb73531b0508ad69f85dafc4c78a64414"
+                "reference": "0969d429997996ceade53e477fce31221b415651"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/framework/zipball/1c8ed95fb73531b0508ad69f85dafc4c78a64414",
-                "reference": "1c8ed95fb73531b0508ad69f85dafc4c78a64414",
+                "url": "https://api.github.com/repos/utopia-php/framework/zipball/0969d429997996ceade53e477fce31221b415651",
+                "reference": "0969d429997996ceade53e477fce31221b415651",
                 "shasum": ""
             },
             "require": {
@@ -431,9 +431,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/framework/issues",
-                "source": "https://github.com/utopia-php/framework/tree/0.29"
+                "source": "https://github.com/utopia-php/framework/tree/0.30.0"
             },
-            "time": "2023-07-30T07:56:23+00:00"
+            "time": "2023-08-07T07:55:48+00:00"
         },
         {
             "name": "utopia-php/mongo",
@@ -861,16 +861,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.26",
+            "version": "1.10.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "5d660cbb7e1b89253a47147ae44044f49832351f"
+                "reference": "e4545b55904ebef470423d3ddddb74fa7325497a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/5d660cbb7e1b89253a47147ae44044f49832351f",
-                "reference": "5d660cbb7e1b89253a47147ae44044f49832351f",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e4545b55904ebef470423d3ddddb74fa7325497a",
+                "reference": "e4545b55904ebef470423d3ddddb74fa7325497a",
                 "shasum": ""
             },
             "require": {
@@ -919,7 +919,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-19T12:44:37+00:00"
+            "time": "2023-08-08T12:33:42+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
