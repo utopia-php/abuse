@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7fed5f76d1e658061bf5ec6099ba3a60",
+    "content-hash": "49f509e28dd71618101988ac78e30fa5",
     "packages": [
         {
             "name": "jean85/pretty-package-versions",
@@ -268,16 +268,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.45.0",
+            "version": "dev-feat-isolation-mode",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "7dfb03e69306c406301b8b9655650ec56f09bf6b"
+                "reference": "b7bcc9b373242a9e494b0b7bbf78dfa54333727c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/7dfb03e69306c406301b8b9655650ec56f09bf6b",
-                "reference": "7dfb03e69306c406301b8b9655650ec56f09bf6b",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/b7bcc9b373242a9e494b0b7bbf78dfa54333727c",
+                "reference": "b7bcc9b373242a9e494b0b7bbf78dfa54333727c",
                 "shasum": ""
             },
             "require": {
@@ -318,9 +318,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.45.0"
+                "source": "https://github.com/utopia-php/database/tree/feat-isolation-mode"
             },
-            "time": "2023-11-01T08:30:19+00:00"
+            "time": "2023-11-22T07:58:21+00:00"
         },
         {
             "name": "utopia-php/framework",
@@ -2290,9 +2290,18 @@
             "time": "2021-07-28T10:34:58+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "utopia-php/database",
+            "version": "dev-feat-isolation-mode",
+            "alias": "0.45.0",
+            "alias_normalized": "0.45.0.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "utopia-php/database": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

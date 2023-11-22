@@ -69,7 +69,7 @@ class TimeLimit implements Adapter
      */
     public function setup(): void
     {
-        if (! $this->db->exists($this->db->getDefaultDatabase())) {
+        if (! $this->db->exists($this->db->getDatabase())) {
             throw new Exception('You need to create database before running timelimit setup');
         }
 
@@ -120,7 +120,11 @@ class TimeLimit implements Adapter
             ]),
         ];
 
-        $this->db->createCollection(TimeLimit::COLLECTION, $attributes, $indexes);
+        try {
+            $this->db->createCollection(TimeLimit::COLLECTION, $attributes, $indexes);
+        } catch (Duplicate) {
+            // Collection already exists
+        }
     }
 
     /**
