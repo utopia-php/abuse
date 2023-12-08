@@ -37,7 +37,7 @@ class AbuseTest extends TestCase
         $pdo = new PDO("mysql:host={$dbHost};port={$dbPort};charset=utf8mb4", $dbUser, $dbPass, MariaDB::getPdoAttributes());
 
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
-        $db->setDefaultDatabase('utopiaTests');
+        $db->setDatabase('utopiaTests');
         $db->setNamespace('namespace');
         $this->db = $db;
 
