@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f78eeda391d225f378154fe10e288486",
+    "content-hash": "1b7e75223ec175933d427857707d8c4c",
     "packages": [
         {
             "name": "jean85/pretty-package-versions",
-            "version": "2.0.5",
+            "version": "2.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Jean85/pretty-package-versions.git",
-                "reference": "ae547e455a3d8babd07b96966b17d7fd21d9c6af"
+                "reference": "f9fdd29ad8e6d024f52678b570e5593759b550b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Jean85/pretty-package-versions/zipball/ae547e455a3d8babd07b96966b17d7fd21d9c6af",
-                "reference": "ae547e455a3d8babd07b96966b17d7fd21d9c6af",
+                "url": "https://api.github.com/repos/Jean85/pretty-package-versions/zipball/f9fdd29ad8e6d024f52678b570e5593759b550b4",
+                "reference": "f9fdd29ad8e6d024f52678b570e5593759b550b4",
                 "shasum": ""
             },
             "require": {
@@ -25,9 +25,9 @@
                 "php": "^7.1|^8.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.17",
+                "friendsofphp/php-cs-fixer": "^3.2",
                 "jean85/composer-provided-replaced-stub-package": "^1.0",
-                "phpstan/phpstan": "^0.12.66",
+                "phpstan/phpstan": "^1.4",
                 "phpunit/phpunit": "^7.5|^8.5|^9.4",
                 "vimeo/psalm": "^4.3"
             },
@@ -61,9 +61,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Jean85/pretty-package-versions/issues",
-                "source": "https://github.com/Jean85/pretty-package-versions/tree/2.0.5"
+                "source": "https://github.com/Jean85/pretty-package-versions/tree/2.0.6"
             },
-            "time": "2021-10-08T21:21:46+00:00"
+            "time": "2024-03-08T09:58:59+00:00"
         },
         {
             "name": "mongodb/mongodb",
@@ -266,16 +266,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.49.1",
+            "version": "dev-feat-framework-v2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "4199fe8f00f4e181c7782c4a6862845d591c1f03"
+                "reference": "bdd9140e40c77faadb0cf2f5050b466c34eef673"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/4199fe8f00f4e181c7782c4a6862845d591c1f03",
-                "reference": "4199fe8f00f4e181c7782c4a6862845d591c1f03",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/bdd9140e40c77faadb0cf2f5050b466c34eef673",
+                "reference": "bdd9140e40c77faadb0cf2f5050b466c34eef673",
                 "shasum": ""
             },
             "require": {
@@ -284,7 +284,7 @@
                 "php": ">=8.0",
                 "utopia-php/cache": "0.9.*",
                 "utopia-php/fetch": "0.1.*",
-                "utopia-php/framework": "0.33.*",
+                "utopia-php/framework": "0.34.*",
                 "utopia-php/mongo": "0.3.*"
             },
             "require-dev": {
@@ -295,7 +295,7 @@
                 "phpunit/phpunit": "^9.4",
                 "rregeer/phpunit-coverage-check": "^0.3.1",
                 "swoole/ide-helper": "4.8.0",
-                "utopia-php/cli": "^0.14.0"
+                "utopia-php/cli": "0.17.*"
             },
             "type": "library",
             "autoload": {
@@ -317,9 +317,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.49.1"
+                "source": "https://github.com/utopia-php/database/tree/feat-framework-v2"
             },
-            "time": "2024-03-06T11:35:53+00:00"
+            "time": "2024-03-07T16:55:44+00:00"
         },
         {
             "name": "utopia-php/fetch",
@@ -362,48 +362,51 @@
         },
         {
             "name": "utopia-php/framework",
-            "version": "0.33.2",
+            "version": "0.34.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/http.git",
-                "reference": "b1423ca3e3b61c6c4c2e619d2cb80672809a19f3"
+                "reference": "fd126c02b78cc80678c9638f7b335dfb4a841b78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/http/zipball/b1423ca3e3b61c6c4c2e619d2cb80672809a19f3",
-                "reference": "b1423ca3e3b61c6c4c2e619d2cb80672809a19f3",
+                "url": "https://api.github.com/repos/utopia-php/http/zipball/fd126c02b78cc80678c9638f7b335dfb4a841b78",
+                "reference": "fd126c02b78cc80678c9638f7b335dfb4a841b78",
                 "shasum": ""
             },
             "require": {
+                "ext-swoole": "*",
                 "php": ">=8.0"
             },
             "require-dev": {
                 "laravel/pint": "^1.2",
                 "phpbench/phpbench": "^1.2",
                 "phpstan/phpstan": "^1.10",
-                "phpunit/phpunit": "^9.5.25"
+                "phpunit/phpunit": "^9.5.25",
+                "swoole/ide-helper": "4.8.3"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Utopia\\": "src/"
+                    "Utopia\\Http\\": "src/Http"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "description": "A simple, light and advanced PHP framework",
+            "description": "A simple, light and advanced PHP HTTP framework",
             "keywords": [
                 "framework",
+                "http",
                 "php",
                 "upf"
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/http/issues",
-                "source": "https://github.com/utopia-php/http/tree/0.33.2"
+                "source": "https://github.com/utopia-php/http/tree/0.34.2"
             },
-            "time": "2024-01-31T10:35:59+00:00"
+            "time": "2024-02-20T11:36:56+00:00"
         },
         {
             "name": "utopia-php/mongo",
@@ -840,16 +843,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.59",
+            "version": "1.10.60",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "e607609388d3a6d418a50a49f7940e8086798281"
+                "reference": "95dcea7d6c628a3f2f56d091d8a0219485a86bbe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e607609388d3a6d418a50a49f7940e8086798281",
-                "reference": "e607609388d3a6d418a50a49f7940e8086798281",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/95dcea7d6c628a3f2f56d091d8a0219485a86bbe",
+                "reference": "95dcea7d6c628a3f2f56d091d8a0219485a86bbe",
                 "shasum": ""
             },
             "require": {
@@ -898,7 +901,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-02-20T13:59:13+00:00"
+            "time": "2024-03-07T13:30:19+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -2337,9 +2340,18 @@
             "time": "2024-03-03T12:36:25+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "utopia-php/database",
+            "version": "dev-feat-framework-v2",
+            "alias": "0.49.99",
+            "alias_normalized": "0.49.99.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "utopia-php/database": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
