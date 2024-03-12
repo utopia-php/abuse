@@ -9,7 +9,13 @@ services:
       - abuse
     ports:
       - "9307:3306"
-  
+
+  redis:
+    image: redis:6.0-alpine
+    container_name: redis
+    networks:
+      - abuse
+
   tests:
     build:
       context: .
