@@ -20,9 +20,9 @@ class Redis implements Adapter
     protected string $key = '';
 
     /**
-     * @var string
+     * @var int
      */
-    protected string $time;
+    protected int $time;
 
     /**
      * @var int
@@ -91,7 +91,14 @@ class Redis implements Adapter
         return $this->key;
     }
 
-    protected function count(string $key, string $datetime): int
+    /**
+     * Undocumented function
+     *
+     * @param string $key
+     * @param int $datetime
+     * @return integer
+     */
+    protected function count(string $key, int $datetime): int
     {
         if (0 == $this->limit) { // No limit no point for counting
             return 0;
@@ -101,24 +108,34 @@ class Redis implements Adapter
             return $this->count;
         }
 
-        $this->count = $this->redis->get(self::NAMESPACE . ':' . $key .':' . $datetime);
+        $count = $this->redis->get(self::NAMESPACE . ':'. $key .':'. $datetime);
+        if (!$count) {
+            $this->count = 0;
+        } else {
+            $this->count = (int) $count;
+        }
 
         return $this->count;
     }
 
     /**
      * @param  string  $key
-     * @param  string  $datetime
+     * @param  int  $datetime
      * @return void
      *
      */
-    protected function hit(string $key, string $datetime): void
+    protected function hit(string $key, int $datetime): void
     {
         if (0 == $this->limit) { // No limit no point for counting
             return;
         }
 
-        $this->count = $this->redis->get(self::NAMESPACE . ':'. $key .':'. $datetime) ?? 0;
+        $count = $this->redis->get(self::NAMESPACE . ':'. $key .':'. $datetime);
+        if (!$count) {
+            $this->count = 0;
+        } else {
+            $this->count = (int) $count;
+        }
 
         $this->redis->incr(self::NAMESPACE . ':'. $key .':'. $datetime);
         $this->count++;
@@ -160,7 +177,17 @@ class Redis implements Adapter
     public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         // TODO limit potential is SCAN but needs cursor no offset
-        return $this->redis->keys(self::NAMESPACE . ':*');
+        $cursor = null;
+        $keys = $this->redis->scan($cursor, self::NAMESPACE . ':*', $limit);
+        if (!$keys) {
+            return [];
+        }
+
+        $logs = [];
+        foreach ($keys as $key) {
+            $logs[$key] = $this->redis->get($key);
+        }
+        return $logs;
     }
 
     /**
@@ -175,12 +202,19 @@ class Redis implements Adapter
         $iterator = null;
         while ($iterator !== 0) {
             $keys = $this->redis->scan($iterator, self::NAMESPACE . ':*:*', 1000);
-            $keys = $this->filterKeys($keys, $datetime);
+            $keys = $this->filterKeys($keys ? $keys : [], (int) $datetime);
             $this->redis->del($keys);
         }
         return true;
     }
 
+    /**
+     * Filter keys
+     *
+     * @param array<string> $keys
+     * @param integer $timestamp
+     * @return array<string>
+     */
     protected function filterKeys(array $keys, int $timestamp): array
     {
         $filteredKeys = [];

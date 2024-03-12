@@ -76,7 +76,8 @@ class AbuseRedisTest extends TestCase
         sleep(5);
         // Delete the log
         $interval = DateInterval::createFromDateString(1 . ' seconds');
-        $status = $this->abuse->cleanup((new \DateTime())->sub($interval)->getTimestamp());
+        $timestamp = (new \DateTime())->sub($interval)->getTimestamp();
+        $status = $this->abuse->cleanup(strval($timestamp));
         $this->assertEquals($status, true);
 
         // Check that there are no logs in the DB
