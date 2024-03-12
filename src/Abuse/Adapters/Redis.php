@@ -160,7 +160,7 @@ class Redis implements Adapter
     public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         // TODO limit potential is SCAN but needs cursor no offset
-        return $this->redis->keys(self::NAMESPACE . ':*'); 
+        return $this->redis->keys(self::NAMESPACE . ':*');
     }
 
     /**
@@ -172,8 +172,8 @@ class Redis implements Adapter
     public function cleanup(string $datetime): bool
     {
         // TODO
-        $iterator = NULL;
-        while($iterator !== 0) {
+        $iterator = null;
+        while ($iterator !== 0) {
             $keys = $this->redis->scan($iterator, self::NAMESPACE . ':*:*', 1000);
             $keys = $this->filterKeys($keys, $datetime);
             $this->redis->del($keys);
@@ -181,7 +181,8 @@ class Redis implements Adapter
         return true;
     }
 
-    protected function filterKeys(array $keys, int $timestamp): array {
+    protected function filterKeys(array $keys, int $timestamp): array
+    {
         $filteredKeys = [];
         foreach ($keys as $key) {
             $parts = explode(':', $key);
@@ -192,6 +193,4 @@ class Redis implements Adapter
         }
         return $filteredKeys;
     }
-    
-
 }
