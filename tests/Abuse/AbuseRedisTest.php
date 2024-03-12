@@ -73,6 +73,7 @@ class AbuseRedisTest extends TestCase
         $logs = $this->abuse->getLogs(0, 10);
         $this->assertEquals(3, \count($logs));
 
+        sleep(5);
         // Delete the log
         $interval = DateInterval::createFromDateString(1 . ' seconds');
         $status = $this->abuse->cleanup((new \DateTime())->sub($interval)->getTimestamp());

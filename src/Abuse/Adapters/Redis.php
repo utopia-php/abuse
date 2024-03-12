@@ -174,11 +174,24 @@ class Redis implements Adapter
         // TODO
         $iterator = NULL;
         while($iterator !== 0) {
-            $keys = $this->redis->scan($iterator, self::NAMESPACE . ':*:' . $datetime);
-            var_dump($keys);
+            $keys = $this->redis->scan($iterator, self::NAMESPACE . ':*:*', 1000);
+            $keys = $this->filterKeys($keys, $datetime);
             $this->redis->del($keys);
         }
         return true;
     }
+
+    protected function filterKeys(array $keys, int $timestamp): array {
+        $filteredKeys = [];
+        foreach ($keys as $key) {
+            $parts = explode(':', $key);
+            $keyTimestamp = (int)end($parts); // Assuming the last part is always the timestamp
+            if ($keyTimestamp < $timestamp) {
+                $filteredKeys[] = $key;
+            }
+        }
+        return $filteredKeys;
+    }
+    
 
 }
