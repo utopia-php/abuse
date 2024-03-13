@@ -14,7 +14,7 @@ use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
 use Utopia\Exception;
 
-class TimeLimit implements Adapter
+class TimeLimit extends Adapter
 {
     public const COLLECTION = 'abuse';
 
@@ -22,11 +22,6 @@ class TimeLimit implements Adapter
      * @var Database
      */
     protected Database $db;
-
-    /**
-     * @var string
-     */
-    protected string $key = '';
 
     /**
      * @var string
@@ -42,11 +37,6 @@ class TimeLimit implements Adapter
      * @var int|null
      */
     protected ?int $count = null;
-
-    /**
-     * @var array<string, string>
-     */
-    protected array $params = [];
 
     /**
      * @param  string  $key
@@ -125,48 +115,6 @@ class TimeLimit implements Adapter
         } catch (Duplicate) {
             // Collection already exists
         }
-    }
-
-    /**
-     * Set Param
-     *
-     * Set custom param for key pattern parsing
-     *
-     * @param  string  $key
-     * @param  string  $value
-     * @return $this
-     */
-    public function setParam(string $key, string $value): self
-    {
-        $this->params[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Get Params
-     *
-     * Return array of all key params
-     *
-     * @return array<string, string>
-     */
-    protected function getParams(): array
-    {
-        return $this->params;
-    }
-
-    /**
-     * Parse key with all custom attached params
-     *
-     * @return string
-     */
-    protected function parseKey(): string
-    {
-        foreach ($this->getParams() as $key => $value) {
-            $this->key = \str_replace($key, $value, $this->key);
-        }
-
-        return $this->key;
     }
 
     /**

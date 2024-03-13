@@ -5,7 +5,7 @@ namespace Utopia\Abuse\Adapters;
 use Utopia\Abuse\Adapter;
 use Redis as Client;
 
-class Redis implements Adapter
+class Redis extends Adapter
 {
     public const NAMESPACE = 'abuse';
 
@@ -13,11 +13,6 @@ class Redis implements Adapter
      * @var Client
      */
     protected Client $redis;
-
-    /**
-     * @var string
-     */
-    protected string $key = '';
 
     /**
      * @var int
@@ -34,12 +29,6 @@ class Redis implements Adapter
      */
     protected ?int $count = null;
 
-    /**
-     * @var array<string, string>
-     */
-    protected array $params = [];
-
-
     public function __construct(string $key, int $limit, int $seconds, Client $redis)
     {
         $this->redis = $redis;
@@ -47,48 +36,6 @@ class Redis implements Adapter
         $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
         $this->time = $time;
         $this->limit = $limit;
-    }
-
-    /**
-     * Set Param
-     *
-     * Set custom param for key pattern parsing
-     *
-     * @param  string  $key
-     * @param  string  $value
-     * @return $this
-     */
-    public function setParam(string $key, string $value): self
-    {
-        $this->params[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Get Params
-     *
-     * Return array of all key params
-     *
-     * @return array<string, string>
-     */
-    protected function getParams(): array
-    {
-        return $this->params;
-    }
-
-    /**
-     * Parse key with all custom attached params
-     *
-     * @return string
-     */
-    protected function parseKey(): string
-    {
-        foreach ($this->getParams() as $key => $value) {
-            $this->key = \str_replace($key, $value, $this->key);
-        }
-
-        return $this->key;
     }
 
     /**
