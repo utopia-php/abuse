@@ -17,11 +17,9 @@ jobs:
 
       - run: git checkout HEAD^2
 
-      - name: Set PHP version env
-        run: export PHP_VERSION=${{ matrix.php-versions }}
-
       - name: Build
         run: |
+          export PHP_VERSION=${{ matrix.php-versions }}
           docker compose build
           docker compose up -d
           sleep 10
