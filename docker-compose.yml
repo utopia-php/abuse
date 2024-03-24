@@ -13,7 +13,7 @@ services:
   tests:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile.php-$PHP_VERSION
     networks:
       - abuse
     depends_on:
