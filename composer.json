@@ -14,7 +14,8 @@
     "scripts": {
         "check": "./vendor/bin/phpstan analyse --level max src tests",
         "lint": "./vendor/bin/pint --test",
-        "format": "./vendor/bin/pint"
+        "format": "./vendor/bin/pint",
+        "bench": "vendor/bin/phpbench run --report=benchmark"
     },
     "require": {
         "php": ">=8.0",
