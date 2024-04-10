@@ -15,7 +15,7 @@
         "check": "./vendor/bin/phpstan analyse --level max src tests",
         "lint": "./vendor/bin/pint --test",
         "format": "./vendor/bin/pint",
-        "bench": "vendor/bin/phpbench run --report=benchmark"
+        "bench": "vendor/bin/phpbench run --report=aggregate"
     },
     "require": {
         "php": ">=8.0",
