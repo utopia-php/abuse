@@ -14,7 +14,7 @@ use Utopia\Database\Database;
 use Utopia\Database\DateTime;
 use Utopia\Exception;
 
-class TimeLimitTest extends Base
+class DatabaseTest extends Base
 {
     protected Database $db;
 
