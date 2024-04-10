@@ -2,10 +2,9 @@
 
 namespace Utopia\Abuse\Adapters;
 
-use Utopia\Abuse\Adapter;
 use Redis as Client;
 
-class Redis extends Adapter
+class Redis extends TimeLimit
 {
     public const NAMESPACE = 'abuse';
 
@@ -14,27 +13,12 @@ class Redis extends Adapter
      */
     protected Client $redis;
 
-    /**
-     * @var int
-     */
-    protected int $time;
-
-    /**
-     * @var int
-     */
-    protected int $limit = 0;
-
-    /**
-     * @var int|null
-     */
-    protected ?int $count = null;
-
     public function __construct(string $key, int $limit, int $seconds, Client $redis)
     {
         $this->redis = $redis;
         $this->key = $key;
-        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
-        $this->time = $time;
+        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds);
+        $this->time = strval($time);
         $this->limit = $limit;
     }
 
@@ -42,10 +26,10 @@ class Redis extends Adapter
      * Undocumented function
      *
      * @param string $key
-     * @param int $datetime
+     * @param string $datetime
      * @return integer
      */
-    protected function count(string $key, int $datetime): int
+    protected function count(string $key, string $datetime): int
     {
         if (0 == $this->limit) { // No limit no point for counting
             return 0;
@@ -67,11 +51,11 @@ class Redis extends Adapter
 
     /**
      * @param  string  $key
-     * @param  int  $datetime
+     * @param  string  $datetime
      * @return void
      *
      */
-    protected function hit(string $key, int $datetime): void
+    protected function hit(string $key, string $datetime): void
     {
         if (0 == $this->limit) { // No limit no point for counting
             return;
@@ -86,30 +70,6 @@ class Redis extends Adapter
 
         $this->redis->incr(self::NAMESPACE . ':'. $key .':'. $datetime);
         $this->count++;
-    }
-
-    /**
-     * Check
-     *
-     * Checks if number of counts is bigger or smaller than current limit
-     *
-     * @return bool
-     */
-    public function check(): bool
-    {
-        if (0 == $this->limit) {
-            return false;
-        }
-
-        $key = $this->parseKey();
-
-        if ($this->limit > $this->count($key, $this->time)) {
-            $this->hit($key, $this->time);
-
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -145,7 +105,6 @@ class Redis extends Adapter
      */
     public function cleanup(string $datetime): bool
     {
-        // TODO
         $iterator = null;
         while ($iterator !== 0) {
             $keys = $this->redis->scan($iterator, self::NAMESPACE . ':*:*', 1000);
