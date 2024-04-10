@@ -6,7 +6,8 @@ use Utopia\Abuse\Adapters\Redis;
 use PhpBench\Attributes\BeforeMethods;
 use PhpBench\Attributes\Iterations;
 
-final class RedisBench {
+final class RedisBench
+{
     protected Client $redis;
     protected Abuse $abuse;
     protected Redis $adapter;
@@ -28,12 +29,12 @@ final class RedisBench {
     public function benchTimelimit(): void
     {
         $ip = '';
-        for( $i = 0; $i < 4; $i++ ) {
+        for ($i = 0; $i < 4; $i++) {
             $sub = rand(0, 255);
             $ip .= $sub . '.';
         };
-        $ip = ltrim($ip,'.');
-        $this->adapter->setParam('{{ip}}', $ip );
+        $ip = ltrim($ip, '.');
+        $this->adapter->setParam('{{ip}}', $ip);
         $this->abuse->check();
     }
 }
