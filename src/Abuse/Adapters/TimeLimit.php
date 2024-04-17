@@ -7,12 +7,12 @@ use Utopia\Abuse\Adapter;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
 use Utopia\Database\Document;
+use Utopia\Database\Exception;
 use Utopia\Database\Exception\Authorization as AuthorizationException;
 use Utopia\Database\Exception\Duplicate;
 use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
-use Utopia\Exception;
 
 class TimeLimit implements Adapter
 {
@@ -51,10 +51,11 @@ class TimeLimit implements Adapter
     protected Authorization $auth;
 
     /**
-     * @param  string  $key
-     * @param  int  $seconds
-     * @param  int  $limit
-     * @param  Database  $db
+     * @param string $key
+     * @param int $limit
+     * @param int $seconds
+     * @param Database $db
+     * @param Authorization $auth
      */
     public function __construct(string $key, int $limit, int $seconds, Database $db, Authorization $auth)
     {
@@ -68,12 +69,12 @@ class TimeLimit implements Adapter
 
     /**
      * @throws Duplicate
-     * @throws Exception|\Exception
+     * @throws Exception
      */
     public function setup(): void
     {
         if (! $this->db->exists($this->db->getDatabase())) {
-            throw new \Exception('You need to create database before running timelimit setup');
+            throw new Exception('You need to create database before running timelimit setup');
         }
 
         $attributes = [
@@ -194,6 +195,14 @@ class TimeLimit implements Adapter
         }
 
         /** @var array<Document> $result */
+
+        /**
+         * todo: why we are using
+         * $this->auth->skip
+         * and not ?
+         * $this->db->getAuthorization()->skip
+         */
+
         $result = $this->auth->skip(function () use ($key, $datetime) {
             return $this->db->find(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
@@ -250,7 +259,7 @@ class TimeLimit implements Adapter
                         Query::equal('time', [$datetime]),
                     ]);
 
-                    if ($data !== false && $data instanceof Document) {
+                    if ($data instanceof Document) {
                         $count = $data->getAttribute('count', 0);
                         if (\is_numeric($count)) {
                             $this->count = intval($count);
@@ -261,7 +270,6 @@ class TimeLimit implements Adapter
                     }
                 }
             } else {
-                /** @var Document $data */
                 $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
             }
         });
@@ -332,7 +340,7 @@ class TimeLimit implements Adapter
      *
      * @return bool
      *
-     * @throws \Exception|Throwable
+     * @throws Throwable
      */
     public function check(): bool
     {

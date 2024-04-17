@@ -12,7 +12,8 @@ use Utopia\Database\Adapter\MariaDB;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
-use Utopia\Exception;
+use Utopia\Database\Exception;
+use Utopia\Database\Validator\Authorization;
 
 class AbuseTest extends TestCase
 {
@@ -39,9 +40,10 @@ class AbuseTest extends TestCase
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
         $db->setDatabase('utopiaTests');
         $db->setNamespace('namespace');
+        $db->setAuthorization(new Authorization());
         $this->db = $db;
 
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db, new Authorization());
         if (! $db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();
