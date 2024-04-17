@@ -22,6 +22,7 @@ class AbuseTest extends TestCase
     protected Abuse $abuseIp;
 
     protected Database $db;
+    protected Authorization $authorization;
 
     /**
      * @throws Exception
@@ -40,10 +41,13 @@ class AbuseTest extends TestCase
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
         $db->setDatabase('utopiaTests');
         $db->setNamespace('namespace');
-        $db->setAuthorization(new Authorization());
+
+        $this->authorization = new Authorization();
+        $db->setAuthorization($this->authorization);
         $this->db = $db;
 
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db, new Authorization());
+        // todo do I need to pass a new $auth ? or can I use the one from DB?
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db, $this->authorization);
         if (! $db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();
@@ -63,7 +67,7 @@ class AbuseTest extends TestCase
         $key = '{{ip}}';
         $value = '0.0.0.10';
 
-        $adapter = new TimeLimit($key, 1, 1, $this->db);
+        $adapter = new TimeLimit($key, 1, 1, $this->db, new Authorization());
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
         $this->assertEquals($this->abuseIp->check(), false);
@@ -71,7 +75,7 @@ class AbuseTest extends TestCase
 
         sleep(1);
 
-        $adapter = new TimeLimit($key, 1, 1, $this->db);
+        $adapter = new TimeLimit($key, 1, 1, $this->db, new Authorization());
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
 
