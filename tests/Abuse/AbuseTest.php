@@ -22,7 +22,6 @@ class AbuseTest extends TestCase
     protected Abuse $abuseIp;
 
     protected Database $db;
-    protected Authorization $authorization;
 
     /**
      * @throws Exception
@@ -42,12 +41,12 @@ class AbuseTest extends TestCase
         $db->setDatabase('utopiaTests');
         $db->setNamespace('namespace');
 
-        $this->authorization = new Authorization();
-        $db->setAuthorization($this->authorization);
+        $auth = new Authorization();
+        $db->setAuthorization($auth);
         $this->db = $db;
 
-        // todo do I need to pass a new $auth ? or can I use the one from DB?
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db, $this->authorization);
+        // todo: Should I create a new Authorization() or can I use $auth from the db?
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db, $auth);
         if (! $db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();
