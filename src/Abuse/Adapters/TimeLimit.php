@@ -201,6 +201,7 @@ class TimeLimit implements Adapter
          * $this->auth->skip
          * and not ?
          * $this->db->getAuthorization()->skip
+         * are they different objects?
          */
 
         $result = $this->auth->skip(function () use ($key, $datetime) {
