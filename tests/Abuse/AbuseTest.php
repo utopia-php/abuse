@@ -40,7 +40,6 @@ class AbuseTest extends TestCase
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
         $db->setDatabase('utopiaTests');
         $db->setNamespace('namespace');
-        $db->setAuthorization(new Authorization());
         $this->db = $db;
 
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
