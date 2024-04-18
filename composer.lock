@@ -270,12 +270,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "0645d8550cbcdb921d072b05f05b0f979442d94f"
+                "reference": "6b8264a4e269d679182fc376179281b7108a4242"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/0645d8550cbcdb921d072b05f05b0f979442d94f",
-                "reference": "0645d8550cbcdb921d072b05f05b0f979442d94f",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/6b8264a4e269d679182fc376179281b7108a4242",
+                "reference": "6b8264a4e269d679182fc376179281b7108a4242",
                 "shasum": ""
             },
             "require": {
@@ -319,7 +319,7 @@
                 "issues": "https://github.com/utopia-php/database/issues",
                 "source": "https://github.com/utopia-php/database/tree/feat-framework-v2"
             },
-            "time": "2024-04-17T14:28:28+00:00"
+            "time": "2024-04-18T12:50:22+00:00"
         },
         {
             "name": "utopia-php/fetch",

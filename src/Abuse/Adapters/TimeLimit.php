@@ -48,18 +48,14 @@ class TimeLimit implements Adapter
      */
     protected array $params = [];
 
-    protected Authorization $auth;
-
     /**
      * @param string $key
      * @param int $limit
      * @param int $seconds
      * @param Database $db
-     * @param Authorization $auth
      */
-    public function __construct(string $key, int $limit, int $seconds, Database $db, Authorization $auth)
+    public function __construct(string $key, int $limit, int $seconds, Database $db)
     {
-        $this->auth = $auth;
         $this->key = $key;
         $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
         $this->time = DateTime::format((new \DateTime())->setTimestamp($time));
@@ -196,15 +192,7 @@ class TimeLimit implements Adapter
 
         /** @var array<Document> $result */
 
-        /**
-         * todo: why we are using
-         * $this->auth->skip
-         * and not ?
-         * $this->db->getAuthorization()->skip
-         * are they different objects?
-         */
-
-        $result = $this->auth->skip(function () use ($key, $datetime) {
+        $result = $this->db->getAuthorization()->skip(function () use ($key, $datetime) {
             return $this->db->find(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
@@ -236,7 +224,7 @@ class TimeLimit implements Adapter
             return;
         }
 
-        $this->auth->skip(function () use ($datetime, $key) {
+        $this->db->getAuthorization()->skip(function () use ($datetime, $key) {
             $data = $this->db->findOne(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
@@ -292,7 +280,7 @@ class TimeLimit implements Adapter
     public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         /** @var array<Document> $results */
-        $results = $this->auth->skip(function () use ($offset, $limit) {
+        $results = $this->db->getAuthorization()->skip(function () use ($offset, $limit) {
             $queries = [];
             $queries[] = Query::orderDesc('');
 
@@ -319,7 +307,7 @@ class TimeLimit implements Adapter
      */
     public function cleanup(string $datetime): bool
     {
-        $this->auth->skip(function () use ($datetime) {
+        $this->db->getAuthorization()->skip(function () use ($datetime) {
             do {
                 $documents = $this->db->find(TimeLimit::COLLECTION, [
                     Query::lessThan('time', $datetime),
