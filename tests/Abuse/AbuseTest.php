@@ -40,13 +40,10 @@ class AbuseTest extends TestCase
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
         $db->setDatabase('utopiaTests');
         $db->setNamespace('namespace');
-
-        $auth = new Authorization();
-        $db->setAuthorization($auth);
+        $db->setAuthorization(new Authorization());
         $this->db = $db;
 
-        // todo: Should I create a new Authorization() or can I use $auth from the db?
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db, $auth);
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
         if (! $db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();
