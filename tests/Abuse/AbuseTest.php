@@ -13,7 +13,6 @@ use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
 use Utopia\Database\Exception;
-use Utopia\Database\Validator\Authorization;
 
 class AbuseTest extends TestCase
 {
