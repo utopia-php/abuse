@@ -11,7 +11,6 @@ final class RedisBench extends Base
     protected Client $redis;
 
     /**
-     * @throws Exception
      * @throws \Exception
      */
     public function setUp(): void
