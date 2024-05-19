@@ -39,7 +39,7 @@ class Redis extends TimeLimit
             return $this->count;
         }
 
-        $count = $this->redis->get(self::NAMESPACE . ':'. $key .':'. $datetime);
+        $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $datetime);
         if (!$count) {
             $this->count = 0;
         } else {
@@ -61,14 +61,14 @@ class Redis extends TimeLimit
             return;
         }
 
-        $count = $this->redis->get(self::NAMESPACE . ':'. $key .':'. $datetime);
+        $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $datetime);
         if (!$count) {
             $this->count = 0;
         } else {
             $this->count = (int) $count;
         }
 
-        $this->redis->incr(self::NAMESPACE . ':'. $key .':'. $datetime);
+        $this->redis->incr(self::NAMESPACE . '__'. $key .'__'. $datetime);
         $this->count++;
     }
 
@@ -85,7 +85,7 @@ class Redis extends TimeLimit
     {
         // TODO limit potential is SCAN but needs cursor no offset
         $cursor = null;
-        $keys = $this->redis->scan($cursor, self::NAMESPACE . ':*', $limit);
+        $keys = $this->redis->scan($cursor, self::NAMESPACE . '__*', $limit);
         if (!$keys) {
             return [];
         }
@@ -107,7 +107,7 @@ class Redis extends TimeLimit
     {
         $iterator = null;
         while ($iterator !== 0) {
-            $keys = $this->redis->scan($iterator, self::NAMESPACE . ':*:*', 1000);
+            $keys = $this->redis->scan($iterator, self::NAMESPACE . '__*__*', 1000);
             $keys = $this->filterKeys($keys ? $keys : [], (int) $datetime);
             $this->redis->del($keys);
         }
@@ -125,7 +125,7 @@ class Redis extends TimeLimit
     {
         $filteredKeys = [];
         foreach ($keys as $key) {
-            $parts = explode(':', $key);
+            $parts = explode('__', $key);
             $keyTimestamp = (int)end($parts); // Assuming the last part is always the timestamp
             if ($keyTimestamp < $timestamp) {
                 $filteredKeys[] = $key;
