@@ -12,7 +12,7 @@ use Utopia\Database\Adapter\MariaDB;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
 use Utopia\Database\DateTime;
-use Utopia\Exception;
+use Utopia\Database\Exception;
 
 class AbuseTest extends TestCase
 {
