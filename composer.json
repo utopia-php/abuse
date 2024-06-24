@@ -20,7 +20,7 @@
         "php": ">=8.0",
         "ext-pdo": "*",
         "ext-curl": "*",
-        "utopia-php/database": "0.49.*"
+        "utopia-php/database": "0.50.*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.4",
