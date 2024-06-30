@@ -23,6 +23,7 @@ services:
     networks:
       - abuse
     depends_on:
+      - redis
       - mysql
     volumes:
       - ./phpunit.xml:/code/phpunit.xml
