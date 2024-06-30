@@ -39,11 +39,12 @@ class Redis extends TimeLimit
             return $this->count;
         }
 
+        /** @var string $count */
         $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $datetime);
         if (!$count) {
             $this->count = 0;
         } else {
-            $this->count = (int) $count;
+            $this->count = intval($count);
         }
 
         return $this->count;
@@ -61,11 +62,12 @@ class Redis extends TimeLimit
             return;
         }
 
+        /** @var string $count */
         $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $datetime);
         if (!$count) {
             $this->count = 0;
         } else {
-            $this->count = (int) $count;
+            $this->count = intval($count);
         }
 
         $this->redis->incr(self::NAMESPACE . '__'. $key .'__'. $datetime);
