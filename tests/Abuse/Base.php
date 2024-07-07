@@ -2,54 +2,19 @@
 
 namespace Utopia\Tests;
 
-use PDO;
 use PHPUnit\Framework\TestCase;
 use Utopia\Abuse\Abuse;
-use Utopia\Abuse\Adapters\TimeLimit;
-use Utopia\Cache\Adapter\None as NoCache;
-use Utopia\Cache\Cache;
-use Utopia\Database\Adapter\MariaDB;
-use Utopia\Database\Adapter\MySQL;
-use Utopia\Database\Database;
-use Utopia\Database\DateTime;
-use Utopia\Exception;
+use Utopia\Abuse\Adapter;
 
-class AbuseTest extends TestCase
+abstract class Base extends TestCase
 {
     protected Abuse $abuse;
 
     protected Abuse $abuseIp;
 
-    protected Database $db;
+    abstract public function getAdapter(string $key, int $limit, int $seconds): Adapter;
 
-    /**
-     * @throws Exception
-     * @throws \Exception
-     */
-    public function setUp(): void
-    {
-        // Limit login attempts to 3 time in 5 minutes time frame
-        $dbHost = 'mysql';
-        $dbUser = 'root';
-        $dbPort = '3306';
-        $dbPass = 'password';
-
-        $pdo = new PDO("mysql:host={$dbHost};port={$dbPort};charset=utf8mb4", $dbUser, $dbPass, MariaDB::getPdoAttributes());
-
-        $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
-        $db->setDatabase('utopiaTests');
-        $db->setNamespace('namespace');
-        $this->db = $db;
-
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
-        if (! $db->exists('utopiaTests')) {
-            $db->create();
-            $adapter->setup();
-        }
-
-        $adapter->setParam('{{ip}}', '127.0.0.1');
-        $this->abuse = new Abuse($adapter);
-    }
+    abstract public function getCleanupDateTime(): string;
 
     public function tearDown(): void
     {
@@ -61,7 +26,7 @@ class AbuseTest extends TestCase
         $key = '{{ip}}';
         $value = '0.0.0.10';
 
-        $adapter = new TimeLimit($key, 1, 1, $this->db);
+        $adapter = $this->getAdapter($key, 1, 1);
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
         $this->assertEquals($this->abuseIp->check(), false);
@@ -69,7 +34,7 @@ class AbuseTest extends TestCase
 
         sleep(1);
 
-        $adapter = new TimeLimit($key, 1, 1, $this->db);
+        $adapter = $this->getAdapter($key, 1, 1);
         $adapter->setParam($key, $value);
         $this->abuseIp = new Abuse($adapter);
 
@@ -94,7 +59,8 @@ class AbuseTest extends TestCase
 
         sleep(5);
         // Delete the log
-        $status = $this->abuse->cleanup(DateTime::addSeconds(new \DateTime(), -1));
+
+        $status = $this->abuse->cleanup($this->getCleanupDateTime());
         $this->assertEquals($status, true);
 
         // Check that there are no logs in the DB

@@ -22,5 +22,6 @@ COPY --from=step0 /src/vendor /code/vendor
 COPY ./tests /code/tests
 COPY ./src /code/src
 COPY ./phpunit.xml /code/phpunit.xml
+COPY ./phpbench.json /code/phpbench.json
 
 CMD [ "tail", "-f", "/dev/null" ]
