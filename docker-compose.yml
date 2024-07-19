@@ -9,14 +9,21 @@ services:
       - abuse
     ports:
       - "9307:3306"
-  
+
+  redis:
+    image: redis:6.0-alpine
+    container_name: redis
+    networks:
+      - abuse
+
   tests:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: Dockerfile.php-${PHP_VERSION:-8.3}
     networks:
       - abuse
     depends_on:
+      - redis
       - mysql
     volumes:
       - ./phpunit.xml:/code/phpunit.xml

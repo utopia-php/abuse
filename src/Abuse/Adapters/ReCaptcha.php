@@ -5,7 +5,7 @@ namespace Utopia\Abuse\Adapters;
 use Exception;
 use Utopia\Abuse\Adapter;
 
-class ReCaptcha implements Adapter
+class ReCaptcha extends Adapter
 {
     /**
      * Use this for communication between your site and Google.

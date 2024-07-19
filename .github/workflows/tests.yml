@@ -5,6 +5,9 @@ jobs:
   lint:
     name: Tests
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: ['8.1', '8.2', '8.3']
 
     steps:
       - name: Checkout repository
@@ -16,9 +19,10 @@ jobs:
 
       - name: Build
         run: |
+          export PHP_VERSION=${{ matrix.php-versions }}
           docker compose build
           docker compose up -d
           sleep 10
 
       - name: Run Tests
-        run: docker compose exec tests vendor/bin/phpunit --configuration phpunit.xml tests
+        run: docker compose exec tests vendor/bin/phpunit --configuration phpunit.xml
