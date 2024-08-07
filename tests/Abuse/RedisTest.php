@@ -7,7 +7,7 @@ use Utopia\Abuse\Adapter;
 use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapters\Redis;
 use Redis as Client;
-use Utopia\Exception;
+use Utopia\Http\Exception;
 
 class RedisTest extends Base
 {
