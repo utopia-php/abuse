@@ -22,7 +22,7 @@
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*",
-        "utopia-php/database": "dev-feat-framework-v2 as 0.49.99"
+        "utopia-php/database": "0.51.*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.4",
