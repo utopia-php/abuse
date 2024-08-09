@@ -4,7 +4,7 @@
     "type": "library",
     "keywords": ["php","framework", "upf", "utopia", "abuse"],
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "RC",
     "autoload": {
         "psr-4": {"Utopia\\Abuse\\": "src/Abuse"}
     },
@@ -22,7 +22,7 @@
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*",
-        "utopia-php/database": "0.51.*"
+        "utopia-php/database": "1.0.*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.4",
