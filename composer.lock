@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1e53afffe12ae95f750f420f449e4c19",
+    "content-hash": "986175a38bba7f2c617617df88b8972a",
     "packages": [
         {
             "name": "jean85/pretty-package-versions",
@@ -266,16 +266,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.50.0",
+            "version": "0.51.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "ce3eaccb2f3bbd34b2b97419836fec633b26b8f7"
+                "reference": "cf723c720e5aa938709e74f1ccfc3b46ecdc6de3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/ce3eaccb2f3bbd34b2b97419836fec633b26b8f7",
-                "reference": "ce3eaccb2f3bbd34b2b97419836fec633b26b8f7",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/cf723c720e5aa938709e74f1ccfc3b46ecdc6de3",
+                "reference": "cf723c720e5aa938709e74f1ccfc3b46ecdc6de3",
                 "shasum": ""
             },
             "require": {
@@ -316,9 +316,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.50.0"
+                "source": "https://github.com/utopia-php/database/tree/0.51.0"
             },
-            "time": "2024-06-21T03:21:42+00:00"
+            "time": "2024-08-16T03:28:04+00:00"
         },
         {
             "name": "utopia-php/framework",
