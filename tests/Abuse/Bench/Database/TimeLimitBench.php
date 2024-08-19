@@ -1,18 +1,19 @@
 <?php
 
-namespace Utopia\Tests\Bench;
+namespace Abuse\Bench\Database;
 
 use PDO;
 use Utopia\Abuse\Abuse;
-use Utopia\Abuse\Adapters\Database as AdaptersDatabase;
+use Utopia\Abuse\Adapters\Database\TimeLimit;
 use Utopia\Cache\Adapter\None as NoCache;
 use Utopia\Cache\Cache;
 use Utopia\Database\Adapter\MariaDB;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
 use Utopia\Exception;
+use Utopia\Tests\Bench\Base;
 
-class DatabaseBench extends Base
+class TimeLimitBench extends Base
 {
     protected Database $db;
 
@@ -35,7 +36,7 @@ class DatabaseBench extends Base
         $db->setNamespace('namespace');
         $this->db = $db;
 
-        $adapter = new AdaptersDatabase('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
         if (! $db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();

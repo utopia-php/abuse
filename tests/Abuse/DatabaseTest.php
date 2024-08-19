@@ -5,7 +5,7 @@ namespace Utopia\Tests;
 use PDO;
 use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapter;
-use Utopia\Abuse\Adapters\Database as AdaptersDatabase;
+use Utopia\Abuse\Adapters\Database\TimeLimit as AdaptersDatabase;
 use Utopia\Cache\Adapter\None as NoCache;
 use Utopia\Cache\Cache;
 use Utopia\Database\Adapter\MariaDB;
