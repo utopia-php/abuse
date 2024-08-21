@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "986175a38bba7f2c617617df88b8972a",
+    "content-hash": "87249976d07043fb41e2794ea14d081d",
     "packages": [
         {
             "name": "jean85/pretty-package-versions",
@@ -266,16 +266,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "0.51.0",
+            "version": "0.52.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "cf723c720e5aa938709e74f1ccfc3b46ecdc6de3"
+                "reference": "0b48921dd5e9e07529983f954cf987e7d4461f6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/cf723c720e5aa938709e74f1ccfc3b46ecdc6de3",
-                "reference": "cf723c720e5aa938709e74f1ccfc3b46ecdc6de3",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/0b48921dd5e9e07529983f954cf987e7d4461f6e",
+                "reference": "0b48921dd5e9e07529983f954cf987e7d4461f6e",
                 "shasum": ""
             },
             "require": {
@@ -287,14 +287,14 @@
                 "utopia-php/mongo": "0.3.*"
             },
             "require-dev": {
-                "fakerphp/faker": "^1.14",
-                "laravel/pint": "1.13.*",
-                "pcov/clobber": "^2.0",
-                "phpstan/phpstan": "1.10.*",
-                "phpunit/phpunit": "^9.4",
-                "rregeer/phpunit-coverage-check": "^0.3.1",
-                "swoole/ide-helper": "4.8.0",
-                "utopia-php/cli": "^0.14.0"
+                "fakerphp/faker": "1.23.*",
+                "laravel/pint": "1.17.*",
+                "pcov/clobber": "2.0.*",
+                "phpstan/phpstan": "1.11.*",
+                "phpunit/phpunit": "9.6.*",
+                "rregeer/phpunit-coverage-check": "0.3.*",
+                "swoole/ide-helper": "5.1.3",
+                "utopia-php/cli": "0.14.*"
             },
             "type": "library",
             "autoload": {
@@ -316,9 +316,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/0.51.0"
+                "source": "https://github.com/utopia-php/database/tree/0.52.0"
             },
-            "time": "2024-08-16T03:28:04+00:00"
+            "time": "2024-08-21T08:11:14+00:00"
         },
         {
             "name": "utopia-php/framework",
