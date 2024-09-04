@@ -128,7 +128,7 @@ class TimeLimit extends TimeLimitAdapter
 
         /** @var array<Document> $result */
         $result = $this->db->getAuthorization()->skip(function () use ($key, $datetime) {
-            return $this->db->find(Database::COLLECTION, [
+            return $this->db->find(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
             ]);
@@ -160,7 +160,7 @@ class TimeLimit extends TimeLimitAdapter
         }
 
         $this->db->getAuthorization()->skip(function () use ($datetime, $key) {
-            $data = $this->db->findOne(Database::COLLECTION, [
+            $data = $this->db->findOne(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
             ]);
