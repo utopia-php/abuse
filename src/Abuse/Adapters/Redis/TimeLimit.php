@@ -1,10 +1,11 @@
 <?php
 
-namespace Utopia\Abuse\Adapters;
+namespace Utopia\Abuse\Adapters\Redis;
 
 use Redis as Client;
+use Utopia\Abuse\Adapters\TimeLimit as TimeLimitAdapter;
 
-class Redis extends TimeLimit
+class TimeLimit extends TimeLimitAdapter
 {
     public const NAMESPACE = 'abuse';
 

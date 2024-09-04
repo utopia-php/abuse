@@ -1,7 +1,8 @@
 <?php
 
-namespace Utopia\Abuse\Adapters;
+namespace Utopia\Abuse\Adapters\Database;
 
+use Utopia\Abuse\Adapters\TimeLimit as TimeLimitAdapter;
 use Utopia\Database\Database as UtopiaDB;
 use Utopia\Database\DateTime;
 use Utopia\Database\Document;
@@ -11,7 +12,7 @@ use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
 use Utopia\Http\Exception;
 
-class Database extends TimeLimit
+class TimeLimit extends TimeLimitAdapter
 {
     public const COLLECTION = 'abuse';
 
@@ -98,7 +99,7 @@ class Database extends TimeLimit
         ];
 
         try {
-            $this->db->createCollection(Database::COLLECTION, $attributes, $indexes);
+            $this->db->createCollection(TimeLimit::COLLECTION, $attributes, $indexes);
         } catch (Duplicate) {
             // Collection already exists
         }
@@ -170,14 +171,14 @@ class Database extends TimeLimit
                     'key' => $key,
                     'time' => $datetime,
                     'count' => 1,
-                    '$collection' => Database::COLLECTION,
+                    '$collection' => TimeLimit::COLLECTION,
                 ];
 
                 try {
-                    $this->db->createDocument(Database::COLLECTION, new Document($data));
+                    $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
                 } catch (Duplicate $e) {
                     // Duplicate in case of race condition
-                    $data = $this->db->findOne(Database::COLLECTION, [
+                    $data = $this->db->findOne(TimeLimit::COLLECTION, [
                         Query::equal('key', [$key]),
                         Query::equal('time', [$datetime]),
                     ]);
@@ -187,14 +188,14 @@ class Database extends TimeLimit
                         if (\is_numeric($count)) {
                             $this->count = intval($count);
                         }
-                        $this->db->increaseDocumentAttribute(Database::COLLECTION, $data->getId(), 'count');
+                        $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
                     } else {
                         throw new \Exception('Document Not Found');
                     }
                 }
             } else {
                 /** @var Document $data */
-                $this->db->increaseDocumentAttribute(Database::COLLECTION, $data->getId(), 'count');
+                $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
             }
         });
 
@@ -226,7 +227,7 @@ class Database extends TimeLimit
                 $queries[] = Query::limit($limit);
             }
 
-            return $this->db->find(Database::COLLECTION, $queries);
+            return $this->db->find(TimeLimit::COLLECTION, $queries);
         });
 
         return $results;
@@ -244,12 +245,12 @@ class Database extends TimeLimit
     {
         $this->db->getAuthorization()->skip(function () use ($datetime) {
             do {
-                $documents = $this->db->find(Database::COLLECTION, [
+                $documents = $this->db->find(TimeLimit::COLLECTION, [
                     Query::lessThan('time', $datetime),
                 ]);
 
                 foreach ($documents as $document) {
-                    $this->db->deleteDocument(Database::COLLECTION, $document->getId());
+                    $this->db->deleteDocument(TimeLimit::COLLECTION, $document->getId());
                 }
             } while (! empty($documents));
         });
