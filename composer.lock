@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e6a6611ef5abc949f69ba822126ffd75",
+    "content-hash": "7601e6576cde00888812fb6e2e732dbe",
     "packages": [
         {
             "name": "jean85/pretty-package-versions",
@@ -266,16 +266,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "1.0.0-RC2",
+            "version": "0.54.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "d70eb76c7cf5ee596752209a4d57e4d08fe8a986"
+                "reference": "1e97fc8b212a8daf9b9a68244677ed34c9db143e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/d70eb76c7cf5ee596752209a4d57e4d08fe8a986",
-                "reference": "d70eb76c7cf5ee596752209a4d57e4d08fe8a986",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/1e97fc8b212a8daf9b9a68244677ed34c9db143e",
+                "reference": "1e97fc8b212a8daf9b9a68244677ed34c9db143e",
                 "shasum": ""
             },
             "require": {
@@ -294,7 +294,7 @@
                 "phpunit/phpunit": "9.6.*",
                 "rregeer/phpunit-coverage-check": "0.3.*",
                 "swoole/ide-helper": "5.1.3",
-                "utopia-php/cli": "1.0.*"
+                "utopia-php/cli": "0.19.*"
             },
             "type": "library",
             "autoload": {
@@ -316,9 +316,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/1.0.0-RC2"
+                "source": "https://github.com/utopia-php/database/tree/0.54.0"
             },
-            "time": "2024-09-04T17:58:16+00:00"
+            "time": "2024-09-05T16:00:42+00:00"
         },
         {
             "name": "utopia-php/di",
@@ -370,22 +370,22 @@
         },
         {
             "name": "utopia-php/framework",
-            "version": "1.0.0-RC2",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/http.git",
-                "reference": "d1e9674dbf33bed03fa53854ec1f2c6e074cf4d7"
+                "reference": "cc880ec41f7f163d4f9956fec26cc6be51b412cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/http/zipball/d1e9674dbf33bed03fa53854ec1f2c6e074cf4d7",
-                "reference": "d1e9674dbf33bed03fa53854ec1f2c6e074cf4d7",
+                "url": "https://api.github.com/repos/utopia-php/http/zipball/cc880ec41f7f163d4f9956fec26cc6be51b412cf",
+                "reference": "cc880ec41f7f163d4f9956fec26cc6be51b412cf",
                 "shasum": ""
             },
             "require": {
                 "ext-swoole": "*",
                 "php": ">=8.0",
-                "utopia-php/servers": "0.1.* "
+                "utopia-php/servers": "0.1.*"
             },
             "require-dev": {
                 "ext-xdebug": "*",
@@ -414,9 +414,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/http/issues",
-                "source": "https://github.com/utopia-php/http/tree/1.0.0-RC2"
+                "source": "https://github.com/utopia-php/http/tree/1.0.0"
             },
-            "time": "2024-08-08T14:46:41+00:00"
+            "time": "2024-09-05T15:38:08+00:00"
         },
         {
             "name": "utopia-php/mongo",
@@ -535,16 +535,16 @@
     "packages-dev": [
         {
             "name": "doctrine/annotations",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "e157ef3f3124bbf6fe7ce0ffd109e8a8ef284e7f"
+                "reference": "901c2ee5d26eb64ff43c47976e114bf00843acf7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/e157ef3f3124bbf6fe7ce0ffd109e8a8ef284e7f",
-                "reference": "e157ef3f3124bbf6fe7ce0ffd109e8a8ef284e7f",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/901c2ee5d26eb64ff43c47976e114bf00843acf7",
+                "reference": "901c2ee5d26eb64ff43c47976e114bf00843acf7",
                 "shasum": ""
             },
             "require": {
@@ -556,10 +556,10 @@
             "require-dev": {
                 "doctrine/cache": "^2.0",
                 "doctrine/coding-standard": "^10",
-                "phpstan/phpstan": "^1.8.0",
+                "phpstan/phpstan": "^1.10.28",
                 "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
-                "symfony/cache": "^5.4 || ^6",
-                "vimeo/psalm": "^4.10"
+                "symfony/cache": "^5.4 || ^6.4 || ^7",
+                "vimeo/psalm": "^4.30 || ^5.14"
             },
             "suggest": {
                 "php": "PHP 8.0 or higher comes with attributes, a native replacement for annotations"
@@ -605,9 +605,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/annotations/issues",
-                "source": "https://github.com/doctrine/annotations/tree/2.0.1"
+                "source": "https://github.com/doctrine/annotations/tree/2.0.2"
             },
-            "time": "2023-02-02T22:02:53+00:00"
+            "time": "2024-09-05T10:17:24+00:00"
         },
         {
             "name": "doctrine/instantiator",
