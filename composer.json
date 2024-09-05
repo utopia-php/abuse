@@ -4,7 +4,7 @@
     "type": "library",
     "keywords": ["php","framework", "upf", "utopia", "abuse"],
     "license": "MIT",
-    "minimum-stability": "RC",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {"Utopia\\Abuse\\": "src/Abuse"}
     },
