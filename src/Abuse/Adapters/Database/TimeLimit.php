@@ -165,7 +165,7 @@ class TimeLimit extends TimeLimitAdapter
                 Query::equal('time', [$datetime]),
             ]);
 
-            if ($data === false) {
+            if ($data->isEmpty()) {
                 $data = [
                     '$permissions' => [],
                     'key' => $key,
@@ -183,7 +183,7 @@ class TimeLimit extends TimeLimitAdapter
                         Query::equal('time', [$datetime]),
                     ]);
 
-                    if ($data !== false && $data instanceof Document) {
+                    if (!$data->isEmpty()) {
                         $count = $data->getAttribute('count', 0);
                         if (\is_numeric($count)) {
                             $this->count = intval($count);
