@@ -17,6 +17,50 @@ class TimeLimit extends TimeLimitAdapter
 {
     public const COLLECTION = 'abuse';
 
+    public const ATTRIBUTES = [
+        [
+            '$id' => 'key',
+            'type' => UtopiaDB::VAR_STRING,
+            'size' => UtopiaDB::LENGTH_KEY,
+            'required' => true,
+            'signed' => true,
+            'array' => false,
+            'filters' => [],
+        ], [
+            '$id' => 'time',
+            'type' => UtopiaDB::VAR_DATETIME,
+            'size' => 0,
+            'required' => true,
+            'signed' => false,
+            'array' => false,
+            'filters' => ['datetime'],
+        ], [
+            '$id' => 'count',
+            'type' => UtopiaDB::VAR_INTEGER,
+            'size' => 11,
+            'required' => true,
+            'signed' => false,
+            'array' => false,
+            'filters' => [],
+        ],
+    ];
+
+    public const INDEXES = [
+        [
+            '$id' => 'unique1',
+            'type' => UtopiaDB::INDEX_UNIQUE,
+            'attributes' => ['key', 'time'],
+            'lengths' => [],
+            'orders' => [],
+        ], [
+            '$id' => 'index2',
+            'type' => UtopiaDB::INDEX_KEY,
+            'attributes' => ['time'],
+            'lengths' => [],
+            'orders' => [],
+        ],
+    ];
+
     /**
      * @var UtopiaDB
      */
@@ -52,55 +96,20 @@ class TimeLimit extends TimeLimitAdapter
             throw new Exception('You need to create database before running timelimit setup');
         }
 
-        $attributes = [
-            new Document([
-                '$id' => 'key',
-                'type' => UtopiaDB::VAR_STRING,
-                'size' => UtopiaDB::LENGTH_KEY,
-                'required' => true,
-                'signed' => true,
-                'array' => false,
-                'filters' => [],
-            ]),
-            new Document([
-                '$id' => 'time',
-                'type' => UtopiaDB::VAR_DATETIME,
-                'size' => 0,
-                'required' => true,
-                'signed' => false,
-                'array' => false,
-                'filters' => ['datetime'],
-            ]),
-            new Document([
-                '$id' => 'count',
-                'type' => UtopiaDB::VAR_INTEGER,
-                'size' => 11,
-                'required' => true,
-                'signed' => false,
-                'array' => false,
-                'filters' => [],
-            ]),
-        ];
+        $attributes = \array_map(function ($attribute) {
+            return new Document($attribute);
+        }, self::ATTRIBUTES);
 
-        $indexes = [
-            new Document([
-                '$id' => 'unique1',
-                'type' => UtopiaDB::INDEX_UNIQUE,
-                'attributes' => ['key', 'time'],
-                'lengths' => [],
-                'orders' => [],
-            ]),
-            new Document([
-                '$id' => 'index2',
-                'type' => UtopiaDB::INDEX_KEY,
-                'attributes' => ['time'],
-                'lengths' => [],
-                'orders' => [],
-            ]),
-        ];
+        $indexes = \array_map(function ($index) {
+            return new Document($index);
+        }, self::INDEXES);
 
         try {
-            $this->db->createCollection(TimeLimit::COLLECTION, $attributes, $indexes);
+            $this->db->createCollection(
+                TimeLimit::COLLECTION,
+                $attributes,
+                $indexes
+            );
         } catch (Duplicate) {
             // Collection already exists
         }
