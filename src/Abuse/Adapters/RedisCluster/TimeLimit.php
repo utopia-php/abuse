@@ -7,8 +7,6 @@ use Utopia\Abuse\Adapters\Redis\TimeLimit as RedisTimeLimit;
 
 class TimeLimit extends RedisTimeLimit
 {
-    public const NAMESPACE = 'abuse';
-
     /**
      * @var Client
      */
