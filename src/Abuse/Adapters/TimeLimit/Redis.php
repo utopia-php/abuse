@@ -80,13 +80,14 @@ class Redis extends TimeLimit
      *
      * Return logs with an offset and limit
      *
-     * @param  int  $offset
+     * @param  int|null  $offset
      * @param  int|null  $limit
      * @return array<string, mixed>
      */
-    public function getLogs(int $offset = 0, ?int $limit = 25): array
+    public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         // TODO limit potential is SCAN but needs cursor no offset
+        $cursor = null;
         $keys = $this->redis->scan($offset, self::NAMESPACE . '__*', $limit);
         if (!$keys) {
             return [];
@@ -109,7 +110,7 @@ class Redis extends TimeLimit
     {
         $iterator = null;
         while ($iterator !== 0) {
-            $keys = $this->redis->scan($iterator, self::NAMESPACE . '__*__*', 10);
+            $keys = $this->redis->scan($iterator, self::NAMESPACE . '__*__*', 1000);
             $keys = $this->filterKeys($keys ? $keys : [], (int) $datetime);
             $this->redis->del($keys);
         }

@@ -63,7 +63,7 @@ abstract class Base extends TestCase
         $status = $this->abuse->cleanup($this->getCleanupDateTime());
         $this->assertEquals($status, true);
 
-        // // Check that there are no logs in the DB
+        // Check that there are no logs in the DB
         $logs = $this->abuse->getLogs(0, 10);
         $this->assertEquals(0, \count($logs));
     }
