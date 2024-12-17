@@ -1,11 +1,11 @@
 <?php
 
-namespace Utopia\Abuse\Adapters\Redis;
+namespace Utopia\Abuse\Adapters\TimeLimit;
 
 use Redis as Client;
-use Utopia\Abuse\Adapters\TimeLimit as TimeLimitAdapter;
+use Utopia\Abuse\Adapters\TimeLimit;
 
-class TimeLimit extends TimeLimitAdapter
+class Redis extends TimeLimit
 {
     public const NAMESPACE = 'abuse';
 
@@ -80,15 +80,14 @@ class TimeLimit extends TimeLimitAdapter
      *
      * Return logs with an offset and limit
      *
-     * @param  int|null  $offset
+     * @param  int  $offset
      * @param  int|null  $limit
      * @return array<string, mixed>
      */
-    public function getLogs(?int $offset = null, ?int $limit = 25): array
+    public function getLogs(int $offset = 0, ?int $limit = 25): array
     {
         // TODO limit potential is SCAN but needs cursor no offset
-        $cursor = null;
-        $keys = $this->redis->scan($cursor, self::NAMESPACE . '__*', $limit);
+        $keys = $this->redis->scan($offset, self::NAMESPACE . '__*', $limit);
         if (!$keys) {
             return [];
         }
@@ -110,7 +109,7 @@ class TimeLimit extends TimeLimitAdapter
     {
         $iterator = null;
         while ($iterator !== 0) {
-            $keys = $this->redis->scan($iterator, self::NAMESPACE . '__*__*', 1000);
+            $keys = $this->redis->scan($iterator, self::NAMESPACE . '__*__*', 10);
             $keys = $this->filterKeys($keys ? $keys : [], (int) $datetime);
             $this->redis->del($keys);
         }

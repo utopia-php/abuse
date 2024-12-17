@@ -5,7 +5,7 @@ namespace Utopia\Tests;
 use PDO;
 use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapter;
-use Utopia\Abuse\Adapters\Database\TimeLimit as AdaptersDatabase;
+use Utopia\Abuse\Adapters\TimeLimit\Database as TimeLimitDatabase;
 use Utopia\Cache\Adapter\None as NoCache;
 use Utopia\Cache\Cache;
 use Utopia\Database\Adapter\MariaDB;
@@ -37,7 +37,7 @@ class DatabaseTest extends Base
         $db->setNamespace('namespace');
         $this->db = $db;
 
-        $adapter = new AdaptersDatabase('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
+        $adapter = new TimeLimitDatabase('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
         if (! $db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();
@@ -45,11 +45,12 @@ class DatabaseTest extends Base
 
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $this->abuse = new Abuse($adapter);
+        $this->abuse->cleanup($this->getCleanupDateTime());
     }
 
     public function getAdapter(string $key, int $limit, int $seconds): Adapter
     {
-        return new AdaptersDatabase($key, $limit, $seconds, $this->db);
+        return new TimeLimitDatabase($key, $limit, $seconds, $this->db);
     }
 
     public function getCleanupDateTime(): string

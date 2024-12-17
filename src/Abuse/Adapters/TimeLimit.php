@@ -37,8 +37,6 @@ abstract class TimeLimit extends Adapter
 
     abstract protected function hit(string $key, string $datetime): void;
 
-
-
     /**
      * Check
      *

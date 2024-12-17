@@ -1,8 +1,8 @@
 <?php
 
-namespace Utopia\Abuse\Adapters\Database;
+namespace Utopia\Abuse\Adapters\TimeLimit;
 
-use Utopia\Abuse\Adapters\TimeLimit as TimeLimitAdapter;
+use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Database\Database as UtopiaDB;
 use Utopia\Database\DateTime;
 use Utopia\Database\Document;
@@ -13,7 +13,7 @@ use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
 use Utopia\Exception;
 
-class TimeLimit extends TimeLimitAdapter
+class Database extends TimeLimit
 {
     public const COLLECTION = 'abuse';
 
@@ -106,7 +106,7 @@ class TimeLimit extends TimeLimitAdapter
 
         try {
             $this->db->createCollection(
-                TimeLimit::COLLECTION,
+                self::COLLECTION,
                 $attributes,
                 $indexes
             );
@@ -138,7 +138,7 @@ class TimeLimit extends TimeLimitAdapter
 
         /** @var array<Document> $result */
         $result = Authorization::skip(function () use ($key, $datetime) {
-            return $this->db->find(TimeLimit::COLLECTION, [
+            return $this->db->find(self::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
             ]);
@@ -170,7 +170,7 @@ class TimeLimit extends TimeLimitAdapter
         }
 
         Authorization::skip(function () use ($datetime, $key) {
-            $data = $this->db->findOne(TimeLimit::COLLECTION, [
+            $data = $this->db->findOne(self::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
             ]);
@@ -181,14 +181,14 @@ class TimeLimit extends TimeLimitAdapter
                     'key' => $key,
                     'time' => $datetime,
                     'count' => 1,
-                    '$collection' => TimeLimit::COLLECTION,
+                    '$collection' => self::COLLECTION,
                 ];
 
                 try {
-                    $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+                    $this->db->createDocument(self::COLLECTION, new Document($data));
                 } catch (Duplicate $e) {
                     // Duplicate in case of race condition
-                    $data = $this->db->findOne(TimeLimit::COLLECTION, [
+                    $data = $this->db->findOne(self::COLLECTION, [
                         Query::equal('key', [$key]),
                         Query::equal('time', [$datetime]),
                     ]);
@@ -198,14 +198,14 @@ class TimeLimit extends TimeLimitAdapter
                         if (\is_numeric($count)) {
                             $this->count = intval($count);
                         }
-                        $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
+                        $this->db->increaseDocumentAttribute(self::COLLECTION, $data->getId(), 'count');
                     } else {
                         throw new \Exception('Document Not Found');
                     }
                 }
             } else {
                 /** @var Document $data */
-                $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
+                $this->db->increaseDocumentAttribute(self::COLLECTION, $data->getId(), 'count');
             }
         });
 
@@ -237,7 +237,7 @@ class TimeLimit extends TimeLimitAdapter
                 $queries[] = Query::limit($limit);
             }
 
-            return $this->db->find(TimeLimit::COLLECTION, $queries);
+            return $this->db->find(self::COLLECTION, $queries);
         });
 
         return $results;
@@ -255,12 +255,12 @@ class TimeLimit extends TimeLimitAdapter
     {
         Authorization::skip(function () use ($datetime) {
             do {
-                $documents = $this->db->find(TimeLimit::COLLECTION, [
+                $documents = $this->db->find(self::COLLECTION, [
                     Query::lessThan('time', $datetime),
                 ]);
 
                 foreach ($documents as $document) {
-                    $this->db->deleteDocument(TimeLimit::COLLECTION, $document->getId());
+                    $this->db->deleteDocument(self::COLLECTION, $document->getId());
                 }
             } while (! empty($documents));
         });

@@ -30,5 +30,53 @@ services:
       - ./src:/code/src
       - ./tests:/code/tests
 
+  redis-insight:
+    image: redis/redisinsight:latest
+    restart: unless-stopped
+    networks:
+      - abuse
+    environment:
+      - REDIS_HOSTS=redis-cluster-0:6379
+    ports:
+      - "8081:5540"
+
+  redis-cluster-0:
+    image: docker.io/bitnami/redis-cluster:7.4
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2 redis-cluster-3
+      - REDIS_CLUSTER_CREATOR=yes
+      - REDIS_CLUSTER_REPLICAS=0
+    networks:
+      - abuse
+    depends_on:
+      - redis-cluster-1
+      - redis-cluster-2
+      - redis-cluster-3
+
+  redis-cluster-1:
+    image: docker.io/bitnami/redis-cluster:7.4
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2 redis-cluster-3
+    networks:
+      - abuse
+
+  redis-cluster-2:
+    image: docker.io/bitnami/redis-cluster:7.4
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2 redis-cluster-3
+    networks:
+      - abuse
+
+  redis-cluster-3:
+    image: docker.io/bitnami/redis-cluster:7.4
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2 redis-cluster-3
+    networks:
+      - abuse
+
 networks:
   abuse:

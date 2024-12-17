@@ -70,11 +70,11 @@ abstract class Adapter
      *
      * Return logs with an offset and limit
      *
-     * @param  int|null  $offset
+     * @param  int  $offset
      * @param  int|null  $limit
      * @return array<string, mixed>
      */
-    abstract public function getLogs(?int $offset = null, ?int $limit = 25): array;
+    abstract public function getLogs(int $offset = 0, ?int $limit = 25): array;
 
     /**
      * Delete all logs older than $datetime
