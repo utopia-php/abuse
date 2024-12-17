@@ -6,7 +6,7 @@ use DateInterval;
 use Redis as Client;
 use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapter;
-use Utopia\Abuse\Adapters\TimeLimit\Redis as TimeLimitRedis;
+use Utopia\Abuse\Adapters\TimeLimit\Redis as TimeLimit;
 use Utopia\Exception;
 
 class RedisTest extends Base
@@ -21,7 +21,7 @@ class RedisTest extends Base
     {
         $this->redis = new Client();
         $this->redis->connect('redis', 6379);
-        $adapter = new TimeLimitRedis('login-attempt-from-{{ip}}', 3, 1, $this->redis);
+        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 1, $this->redis);
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $this->abuse = new Abuse($adapter);
         $this->abuse->cleanup($this->getCleanupDateTime());
@@ -29,7 +29,7 @@ class RedisTest extends Base
 
     public function getAdapter(string $key, int $limit, int $seconds): Adapter
     {
-        return new TimeLimitRedis($key, $limit, $seconds, $this->redis);
+        return new TimeLimit($key, $limit, $seconds, $this->redis);
     }
 
     public function getCleanupDateTime(): string
