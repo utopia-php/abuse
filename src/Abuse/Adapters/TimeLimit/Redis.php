@@ -88,7 +88,7 @@ class Redis extends TimeLimit
     {
         // TODO limit potential is SCAN but needs cursor no offset
         $cursor = null;
-        $keys = $this->redis->scan($offset, self::NAMESPACE . '__*', $limit);
+        $keys = $this->redis->scan($cursor, self::NAMESPACE . '__*', $limit);
         if (!$keys) {
             return [];
         }
