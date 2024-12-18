@@ -7,7 +7,7 @@ use Redis as Client;
 use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapter;
 use Utopia\Abuse\Adapters\Redis\TimeLimit;
-use Utopia\Http\Exception;
+use Utopia\Exception;
 
 class RedisTest extends Base
 {

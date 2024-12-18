@@ -10,7 +10,8 @@ use Utopia\Database\Exception\Authorization as AuthorizationException;
 use Utopia\Database\Exception\Duplicate;
 use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
-use Utopia\Http\Exception;
+use Utopia\Database\Validator\Authorization;
+use Utopia\Exception;
 
 class TimeLimit extends TimeLimitAdapter
 {
@@ -127,7 +128,7 @@ class TimeLimit extends TimeLimitAdapter
         }
 
         /** @var array<Document> $result */
-        $result = $this->db->getAuthorization()->skip(function () use ($key, $datetime) {
+        $result = Authorization::skip(function () use ($key, $datetime) {
             return $this->db->find(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
@@ -159,7 +160,7 @@ class TimeLimit extends TimeLimitAdapter
             return;
         }
 
-        $this->db->getAuthorization()->skip(function () use ($datetime, $key) {
+        Authorization::skip(function () use ($datetime, $key) {
             $data = $this->db->findOne(TimeLimit::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$datetime]),
@@ -216,7 +217,7 @@ class TimeLimit extends TimeLimitAdapter
     public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         /** @var array<Document> $results */
-        $results = $this->db->getAuthorization()->skip(function () use ($offset, $limit) {
+        $results = Authorization::skip(function () use ($offset, $limit) {
             $queries = [];
             $queries[] = Query::orderDesc('');
 
@@ -243,7 +244,7 @@ class TimeLimit extends TimeLimitAdapter
      */
     public function cleanup(string $datetime): bool
     {
-        $this->db->getAuthorization()->skip(function () use ($datetime) {
+        Authorization::skip(function () use ($datetime) {
             do {
                 $documents = $this->db->find(TimeLimit::COLLECTION, [
                     Query::lessThan('time', $datetime),
@@ -256,71 +257,5 @@ class TimeLimit extends TimeLimitAdapter
         });
 
         return true;
-    }
-
-    /**
-     * Check
-     *
-     * Checks if number of counts is bigger or smaller than current limit. limit 0 is equal to unlimited
-     *
-     * @return bool
-     *
-     * @throws \Throwable
-     */
-    public function check(): bool
-    {
-        if (0 == $this->limit) {
-            return false;
-        }
-
-        $key = $this->parseKey();
-
-        if ($this->limit > $this->count($key, $this->time)) {
-            $this->hit($key, $this->time);
-
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Remaining
-     *
-     * Returns the number of current remaining counts
-     *
-     * @return int
-     *
-     * @throws \Exception
-     */
-    public function remaining(): int
-    {
-        $left = $this->limit - ($this->count($this->parseKey(), $this->time) + 1); // Add one because we need to say how many left not how many done
-
-        return (0 > $left) ? 0 : $left;
-    }
-
-    /**
-     * Limit
-     *
-     * Return the limit integer
-     *
-     * @return int
-     */
-    public function limit(): int
-    {
-        return $this->limit;
-    }
-
-    /**
-     * Time
-     *
-     * Return the Datetime
-     *
-     * @return string
-     */
-    public function time(): string
-    {
-        return $this->time;
     }
 }
