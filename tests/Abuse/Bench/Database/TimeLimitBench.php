@@ -10,8 +10,8 @@ use Utopia\Cache\Cache;
 use Utopia\Database\Adapter\MariaDB;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
+use Utopia\Exception;
 use Utopia\Tests\Bench\Base;
-use Utopia\Http\Exception;
 
 class TimeLimitBench extends Base
 {
