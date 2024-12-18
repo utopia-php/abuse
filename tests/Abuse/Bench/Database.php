@@ -1,6 +1,6 @@
 <?php
 
-namespace Abuse\Bench\Database;
+namespace Abuse\Bench;
 
 use PDO;
 use Utopia\Abuse\Abuse;
@@ -13,7 +13,7 @@ use Utopia\Database\Database;
 use Utopia\Exception;
 use Utopia\Tests\Bench\Base;
 
-class TimeLimitBench extends Base
+class DatabaseBench extends Base
 {
     protected Database $db;
 

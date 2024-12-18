@@ -53,11 +53,11 @@ abstract class Base extends TestCase
 
     public function testCleanup(): void
     {
-        // Check that there is only one log
+        // Check that there are 3 logs
         $logs = $this->abuse->getLogs(0, 10);
         $this->assertEquals(3, \count($logs));
 
-        sleep(5);
+        sleep(2);
         // Delete the log
 
         $status = $this->abuse->cleanup($this->getCleanupDateTime());

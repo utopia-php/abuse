@@ -45,7 +45,6 @@ class DatabaseTest extends Base
 
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $this->abuse = new Abuse($adapter);
-        $this->abuse->cleanup($this->getCleanupDateTime());
     }
 
     public function getAdapter(string $key, int $limit, int $seconds): Adapter
@@ -55,6 +54,6 @@ class DatabaseTest extends Base
 
     public function getCleanupDateTime(): string
     {
-        return DateTime::addSeconds(new \DateTime(), -1);
+        return DateTime::format(new \DateTime());
     }
 }

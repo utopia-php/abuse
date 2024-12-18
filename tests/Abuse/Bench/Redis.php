@@ -1,13 +1,13 @@
 <?php
 
-namespace Abuse\Bench\Redis;
+namespace Abuse\Bench;
 
 use Redis as Client;
 use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapters\TimeLimit\Redis as TimeLimit;
 use Utopia\Tests\Bench\Base;
 
-final class TimeLimitBench extends Base
+final class RedisBench extends Base
 {
     protected Client $redis;
 

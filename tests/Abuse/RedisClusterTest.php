@@ -23,7 +23,6 @@ class RedisClusterTest extends Base
         $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 1, $this->redis);
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $this->abuse = new Abuse($adapter);
-        $this->abuse->cleanup($this->getCleanupDateTime());
     }
 
     public function getAdapter(string $key, int $limit, int $seconds): Adapter
@@ -33,7 +32,7 @@ class RedisClusterTest extends Base
 
     public function getCleanupDateTime(): string
     {
-        $interval = DateInterval::createFromDateString(1 . ' seconds');
+        $interval = DateInterval::createFromDateString('now');
         return strval((new \DateTime())->sub($interval)->getTimestamp());
     }
 }
