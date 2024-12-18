@@ -1,20 +1,19 @@
 <?php
 
-namespace Utopia\Abuse\Adapters\Redis;
+namespace Utopia\Abuse\Adapters\TimeLimit;
 
-use Redis as Client;
-use Utopia\Abuse\Adapters\TimeLimit as TimeLimitAdapter;
+use Utopia\Abuse\Adapters\TimeLimit;
 
-class TimeLimit extends TimeLimitAdapter
+class RedisCluster extends TimeLimit
 {
     public const NAMESPACE = 'abuse';
 
     /**
-     * @var Client
+     * @var \RedisCluster
      */
-    protected Client $redis;
+    protected \RedisCluster $redis;
 
-    public function __construct(string $key, int $limit, int $seconds, Client $redis)
+    public function __construct(string $key, int $limit, int $seconds, \RedisCluster $redis)
     {
         $this->redis = $redis;
         $this->key = $key;
@@ -24,7 +23,7 @@ class TimeLimit extends TimeLimitAdapter
     }
 
     /**
-     * Undocumented function
+     * Get count for a key at specific datetime
      *
      * @param string $key
      * @param string $datetime
@@ -40,9 +39,9 @@ class TimeLimit extends TimeLimitAdapter
             return $this->count;
         }
 
-        /** @var string $count */
+        /** @var string|false $count */
         $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $datetime);
-        if (!$count) {
+        if ($count === false) {
             $this->count = 0;
         } else {
             $this->count = intval($count);
@@ -52,10 +51,11 @@ class TimeLimit extends TimeLimitAdapter
     }
 
     /**
-     * @param  string  $key
-     * @param  string  $datetime
-     * @return void
+     * Record a hit for a key at specific datetime
      *
+     * @param string $key
+     * @param string $datetime
+     * @return void
      */
     protected function hit(string $key, string $datetime): void
     {
@@ -63,9 +63,9 @@ class TimeLimit extends TimeLimitAdapter
             return;
         }
 
-        /** @var string $count */
+        /** @var string|false $count */
         $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $datetime);
-        if (!$count) {
+        if ($count === false) {
             $this->count = 0;
         } else {
             $this->count = intval($count);
@@ -80,16 +80,15 @@ class TimeLimit extends TimeLimitAdapter
      *
      * Return logs with an offset and limit
      *
-     * @param  int|null  $offset
-     * @param  int|null  $limit
+     * @param int|null $offset
+     * @param int|null $limit
      * @return array<string, mixed>
      */
-    public function getLogs(?int $offset = null, ?int $limit = 25): array
+    public function getLogs(?int $offset = 0, ?int $limit = 25): array
     {
         // TODO limit potential is SCAN but needs cursor no offset
-        $cursor = null;
-        $keys = $this->redis->scan($cursor, self::NAMESPACE . '__*', $limit);
-        if (!$keys) {
+        $keys = $this->scan(self::NAMESPACE . '__*', $offset, $limit);
+        if ($keys === false) {
             return [];
         }
 
@@ -103,17 +102,15 @@ class TimeLimit extends TimeLimitAdapter
     /**
      * Delete all logs older than $datetime
      *
-     * @param  string  $datetime
+     * @param string $datetime
      * @return bool
      */
     public function cleanup(string $datetime): bool
     {
-        $iterator = null;
-        while ($iterator !== 0) {
-            $keys = $this->redis->scan($iterator, self::NAMESPACE . '__*__*', 1000);
-            $keys = $this->filterKeys($keys ? $keys : [], (int) $datetime);
-            $this->redis->del($keys);
-        }
+        $keys = $this->scan(self::NAMESPACE . '__*__*');
+        $keys = $this->filterKeys($keys ? $keys : [], (int) $datetime);
+        /** @phpstan-ignore-next-line */
+        $this->redis->del($keys);
         return true;
     }
 
@@ -135,5 +132,30 @@ class TimeLimit extends TimeLimitAdapter
             }
         }
         return $filteredKeys;
+    }
+
+    /**
+     * Scan keys across all masters in the Redis cluster
+     *
+     * @param string $pattern Pattern to match keys
+     * @param int|null $cursor Reference to the cursor for scanning
+     * @param int|null $count Number of keys to return per iteration
+     * @return array<string>|false
+     */
+    protected function scan(string $pattern, ?int &$cursor = null, ?int $count = 1000): array|false
+    {
+        $matches = [];
+        foreach ($this->redis->_masters() as $master) {
+            $cursor = null;
+            do {
+                /** @phpstan-ignore-next-line */
+                $keys = $this->redis->scan($cursor, $master, $pattern, $count);
+                if ($keys !== false) {
+                    $matches = array_merge($matches, $keys);
+                }
+            } while ($cursor > 0);
+        }
+
+        return empty($matches) ? false : $matches;
     }
 }
