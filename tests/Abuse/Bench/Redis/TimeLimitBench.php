@@ -4,7 +4,7 @@ namespace Abuse\Bench\Redis;
 
 use Redis as Client;
 use Utopia\Abuse\Abuse;
-use Utopia\Abuse\Adapters\Redis\TimeLimit;
+use Utopia\Abuse\Adapters\TimeLimit\Redis as TimeLimit;
 use Utopia\Tests\Bench\Base;
 
 final class TimeLimitBench extends Base

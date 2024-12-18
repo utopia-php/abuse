@@ -4,7 +4,7 @@ namespace Abuse\Bench\Database;
 
 use PDO;
 use Utopia\Abuse\Abuse;
-use Utopia\Abuse\Adapters\Database\TimeLimit;
+use Utopia\Abuse\Adapters\TimeLimit\Database as TimeLimit;
 use Utopia\Cache\Adapter\None as NoCache;
 use Utopia\Cache\Cache;
 use Utopia\Database\Adapter\MariaDB;

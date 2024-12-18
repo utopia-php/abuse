@@ -2,7 +2,6 @@
 
 namespace Utopia\Abuse\Adapters\TimeLimit;
 
-use Redis as Client;
 use Utopia\Abuse\Adapters\TimeLimit;
 
 class Redis extends TimeLimit
@@ -10,11 +9,11 @@ class Redis extends TimeLimit
     public const NAMESPACE = 'abuse';
 
     /**
-     * @var Client
+     * @var \Redis
      */
-    protected Client $redis;
+    protected \Redis $redis;
 
-    public function __construct(string $key, int $limit, int $seconds, Client $redis)
+    public function __construct(string $key, int $limit, int $seconds, \Redis $redis)
     {
         $this->redis = $redis;
         $this->key = $key;
