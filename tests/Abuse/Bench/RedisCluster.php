@@ -4,7 +4,6 @@ namespace Abuse\Bench;
 
 use RedisCluster as Client;
 use Utopia\Abuse\Abuse;
-use Utopia\Abuse\Adapters\TimeLimit\RedisCluster as TimeLimit;
 use Utopia\Abuse\Adapters\TimeLimit\RedisCluster;
 use Utopia\Tests\Bench\Base;
 
