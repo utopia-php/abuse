@@ -3,57 +3,57 @@
 namespace Utopia\Tests;
 
 use PDO;
-use Utopia\Abuse\Abuse;
-use Utopia\Abuse\Adapter;
-use Utopia\Abuse\Adapters\TimeLimit\Database as TimeLimit;
+use Utopia\Abuse\Adapters\TimeLimit;
+use Utopia\Abuse\Adapters\TimeLimit\Database as AdapterDatabase;
 use Utopia\Cache\Adapter\None as NoCache;
 use Utopia\Cache\Cache;
 use Utopia\Database\Adapter\MariaDB;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Database;
-use Utopia\Database\DateTime;
-use Utopia\Exception;
 
 class DatabaseTest extends Base
 {
-    protected Database $db;
+    protected static Database $db;
 
-    /**
-     * @throws Exception
-     * @throws \Exception
-     */
-    public function setUp(): void
+    public static function setUpBeforeClass(): void
     {
-        // Limit login attempts to 3 time in 5 minutes time frame
+        if (isset(self::$db)) {
+            return;
+        }
+
+        self::$db = self::initialiseDatabase();
+    }
+
+    private static function initialiseDatabase(): Database
+    {
         $dbHost = 'mysql';
         $dbUser = 'root';
         $dbPort = '3306';
         $dbPass = 'password';
 
         $pdo = new PDO("mysql:host={$dbHost};port={$dbPort};charset=utf8mb4", $dbUser, $dbPass, MariaDB::getPdoAttributes());
-
         $db = new Database(new MySQL($pdo), new Cache(new NoCache()));
         $db->setDatabase('utopiaTests');
         $db->setNamespace('namespace');
-        $this->db = $db;
 
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 60 * 5, $db);
-        if (! $db->exists('utopiaTests')) {
+        $adapter = new AdapterDatabase('', 1, 1, $db);
+        if (!$db->exists('utopiaTests')) {
             $db->create();
             $adapter->setup();
         }
 
-        $adapter->setParam('{{ip}}', '127.0.0.1');
-        $this->abuse = new Abuse($adapter);
+        return $db;
     }
 
-    public function getAdapter(string $key, int $limit, int $seconds): Adapter
+    public function getAdapter(string $key, int $limit, int $seconds): TimeLimit
     {
-        return new TimeLimit($key, $limit, $seconds, $this->db);
+        return new AdapterDatabase($key, $limit, $seconds, self::$db);
     }
 
-    public function getCleanupDateTime(): string
+    public static function tearDownAfterClass(): void
     {
-        return DateTime::format(new \DateTime());
+        if (isset(self::$db)) {
+            self::$db->delete();
+        }
     }
 }

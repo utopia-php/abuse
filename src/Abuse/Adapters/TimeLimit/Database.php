@@ -80,8 +80,8 @@ class Database extends TimeLimit
     public function __construct(string $key, int $limit, int $seconds, UtopiaDB $db)
     {
         $this->key = $key;
-        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
-        $this->time = DateTime::format((new \DateTime())->setTimestamp($time));
+        $now = \time();
+        $this->timestamp = (int)($now - ($now % $seconds));
         $this->limit = $limit;
         $this->db = $db;
     }
@@ -121,12 +121,12 @@ class Database extends TimeLimit
      * Checks if number of counts is bigger or smaller than current limit
      *
      * @param  string  $key
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return int
      *
      * @throws \Exception
      */
-    protected function count(string $key, string $datetime): int
+    protected function count(string $key, int $timestamp): int
     {
         if (0 == $this->limit) { // No limit no point for counting
             return 0;
@@ -136,11 +136,13 @@ class Database extends TimeLimit
             return $this->count;
         }
 
+        $timestamp = $this->toDateTime($timestamp);
+
         /** @var array<Document> $result */
-        $result = Authorization::skip(function () use ($key, $datetime) {
+        $result = Authorization::skip(function () use ($key, $timestamp) {
             return $this->db->find(self::COLLECTION, [
                 Query::equal('key', [$key]),
-                Query::equal('time', [$datetime]),
+                Query::equal('time', [$timestamp]),
             ]);
         });
 
@@ -158,28 +160,29 @@ class Database extends TimeLimit
 
     /**
      * @param  string  $key
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return void
      *
      * @throws AuthorizationException|Structure|\Exception|\Throwable
      */
-    protected function hit(string $key, string $datetime): void
+    protected function hit(string $key, int $timestamp): void
     {
         if (0 == $this->limit) { // No limit no point for counting
             return;
         }
 
-        Authorization::skip(function () use ($datetime, $key) {
+        $timestamp = $this->toDateTime($timestamp);
+        Authorization::skip(function () use ($timestamp, $key) {
             $data = $this->db->findOne(self::COLLECTION, [
                 Query::equal('key', [$key]),
-                Query::equal('time', [$datetime]),
+                Query::equal('time', [$timestamp]),
             ]);
 
             if ($data->isEmpty()) {
                 $data = [
                     '$permissions' => [],
                     'key' => $key,
-                    'time' => $datetime,
+                    'time' => $timestamp,
                     'count' => 1,
                     '$collection' => self::COLLECTION,
                 ];
@@ -190,7 +193,7 @@ class Database extends TimeLimit
                     // Duplicate in case of race condition
                     $data = $this->db->findOne(self::COLLECTION, [
                         Query::equal('key', [$key]),
-                        Query::equal('time', [$datetime]),
+                        Query::equal('time', [$timestamp]),
                     ]);
 
                     if (!$data->isEmpty()) {
@@ -246,17 +249,18 @@ class Database extends TimeLimit
     /**
      * Delete logs older than $timestamp seconds
      *
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return bool
      *
      * @throws AuthorizationException|\Exception
      */
-    public function cleanup(string $datetime): bool
+    public function cleanup(int $timestamp): bool
     {
-        Authorization::skip(function () use ($datetime) {
+        $timestamp = $this->toDateTime($timestamp);
+        Authorization::skip(function () use ($timestamp) {
             do {
                 $documents = $this->db->find(self::COLLECTION, [
-                    Query::lessThan('time', $datetime),
+                    Query::lessThan('time', $timestamp),
                 ]);
 
                 foreach ($documents as $document) {
@@ -266,5 +270,10 @@ class Database extends TimeLimit
         });
 
         return true;
+    }
+
+    protected function toDateTime(int $timestamp): string
+    {
+        return DateTime::format((new \DateTime())->setTimestamp($timestamp));
     }
 }

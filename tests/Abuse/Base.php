@@ -4,67 +4,116 @@ namespace Utopia\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Utopia\Abuse\Abuse;
-use Utopia\Abuse\Adapter;
+use Utopia\Abuse\Adapters\TimeLimit;
 
 abstract class Base extends TestCase
 {
-    protected Abuse $abuse;
+    abstract public function getAdapter(string $key, int $limit, int $seconds): TimeLimit;
 
-    protected Abuse $abuseIp;
-
-    abstract public function getAdapter(string $key, int $limit, int $seconds): Adapter;
-
-    abstract public function getCleanupDateTime(): string;
-
-    public function tearDown(): void
+    /**
+     * Test a static key with a limit of 2 requests per second
+     */
+    public function testStaticKey(): void
     {
-        unset($this->abuse);
+        $adapter = $this->getAdapter('static-key', 2, 1);
+        $abuse = new Abuse($adapter);
+        $this->assertEquals($abuse->check(), false);
+        $this->assertEquals($abuse->check(), false);
+        $this->assertEquals($abuse->check(), true);
     }
 
-    public function testImitate2Requests(): void
+    /**
+     * Test a dynamic key with a limit of 2 requests per second
+     */
+    public function testDynamicKey(): void
     {
-        $key = '{{ip}}';
-        $value = '0.0.0.10';
+        $adapter = $this->getAdapter('dynamic-key-{{ip}}', 2, 1);
+        $adapter->setParam('{{ip}}', '0.0.0.10');
+        $abuse = new Abuse($adapter);
+        $this->assertEquals($abuse->check(), false);
+        $this->assertEquals($abuse->check(), false);
+        $this->assertEquals($abuse->check(), true);
+    }
 
-        $adapter = $this->getAdapter($key, 1, 1);
-        $adapter->setParam($key, $value);
-        $this->abuseIp = new Abuse($adapter);
-        $this->assertEquals($this->abuseIp->check(), false);
-        $this->assertEquals($this->abuseIp->check(), true);
+    /**
+     * Test a dynamic key with 2 params
+     */
+    public function testDynamicKeyWith2Params(): void
+    {
+        $adapter = $this->getAdapter('two-params-{{ip}}-{{email}}', 2, 1);
+        $adapter->setParam('{{ip}}', '0.0.0.10');
+        $adapter->setParam('{{email}}', 'test@test.com');
+        $abuse = new Abuse($adapter);
+        $this->assertEquals($abuse->check(), false);
+        $this->assertEquals($abuse->check(), false);
+        $this->assertEquals($abuse->check(), true);
+    }
+
+    /**
+     * Test a dynamic key with higher request rate like 100 requests per second
+     */
+    public function testDynamicKeyFastRequests(): void
+    {
+        $adapter = $this->getAdapter('fast-requests-{{ip}}', 100, 1);
+        $adapter->setParam('{{ip}}', '0.0.0.10');
+        $abuse = new Abuse($adapter);
+        for ($i = 0; $i < 100; $i++) {
+            $this->assertEquals($abuse->check(), false);
+        }
+        $this->assertEquals($abuse->check(), true);
+    }
+
+    /**
+     * Test that the limit is reset after the time limit
+     */
+    public function testLimitReset(): void
+    {
+        $adapter = $this->getAdapter('limit-reset-{{ip}}', 100, 2);
+        $adapter->setParam('{{ip}}', '127.0.0.1');
+        $abuse = new Abuse($adapter);
+        for ($i = 0; $i < 100; $i++) {
+            $this->assertEquals($abuse->check(), false);
+        }
+        $this->assertEquals($abuse->check(), true);
+
+        // Wait for the limit to reset
+        sleep(2);
+
+        /** Seems to be a bug in the code where if use the same adapter, it caches the result of the previous check */
+        $adapter = $this->getAdapter('limit-reset-{{ip}}', 100, 1);
+        $adapter->setParam('{{ip}}', '127.0.0.1');
+        $abuse = new Abuse($adapter);
+        $this->assertEquals($abuse->check(), false);
+    }
+
+    /**
+     * Test logs are deleted after cleanup
+     */
+    public function testCleanup(): void
+    {
+        $adapter = $this->getAdapter('', 1, 1);
+        $abuse = new Abuse($adapter);
+
+        $logs = $abuse->getLogs(0, 100);
+        $this->assertEquals(6, \count($logs)); // 6 keys are created in the test
 
         sleep(1);
 
-        $adapter = $this->getAdapter($key, 1, 1);
-        $adapter->setParam($key, $value);
-        $this->abuseIp = new Abuse($adapter);
-
-        $this->assertEquals($this->abuseIp->check(), false);
-        $this->assertEquals($this->abuseIp->check(), true);
-    }
-
-    public function testIsValid(): void
-    {
-        // Use vars to resolve adapter key
-        $this->assertEquals($this->abuse->check(), false);
-        $this->assertEquals($this->abuse->check(), false);
-        $this->assertEquals($this->abuse->check(), false);
-        $this->assertEquals($this->abuse->check(), true);
-    }
-
-    public function testCleanup(): void
-    {
-        // Check that there are 3 logs
-        $logs = $this->abuse->getLogs(0, 10);
-        $this->assertEquals(3, \count($logs));
-
-        sleep(2);
-        // Delete the log
-
-        $status = $this->abuse->cleanup($this->getCleanupDateTime());
+        $status = $abuse->cleanup(time());
         $this->assertEquals($status, true);
 
-        // Check that there are no logs in the DB
-        $logs = $this->abuse->getLogs(0, 10);
+        $logs = $abuse->getLogs(0, 100);
         $this->assertEquals(0, \count($logs));
+    }
+
+    /**
+     * Verify that the time format is correct
+     */
+    public function testTimeFormat(): void
+    {
+        $now = time();
+        $adapter = $this->getAdapter('', 1, 1);
+        $this->assertEquals($adapter->time(), $now);
+        $this->assertEquals(true, \is_int($adapter->time()));
     }
 }

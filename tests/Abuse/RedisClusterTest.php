@@ -2,37 +2,49 @@
 
 namespace Utopia\Tests;
 
-use DateInterval;
-use RedisCluster;
-use Utopia\Abuse\Abuse;
-use Utopia\Abuse\Adapter;
-use Utopia\Abuse\Adapters\TimeLimit\RedisCluster as TimeLimit;
+use Utopia\Abuse\Adapters\TimeLimit;
+use Utopia\Abuse\Adapters\TimeLimit\RedisCluster as AdapterRedisCluster;
 use Utopia\Exception;
 
 class RedisClusterTest extends Base
 {
-    protected RedisCluster $redis;
+    protected static \RedisCluster $redis;
 
     /**
      * @throws Exception
      * @throws \Exception
      */
-    public function setUp(): void
+    public static function setUpBeforeClass(): void
     {
-        $this->redis = new RedisCluster(null, ['redis-cluster-0:6379', 'redis-cluster-1:6379', 'redis-cluster-2:6379', 'redis-cluster-3:6379']);
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 1, $this->redis);
-        $adapter->setParam('{{ip}}', '127.0.0.1');
-        $this->abuse = new Abuse($adapter);
+        if (isset(self::$redis)) {
+            return;
+        }
+
+        self::$redis = self::initialiseRedis();
     }
 
-    public function getAdapter(string $key, int $limit, int $seconds): Adapter
+    private static function initialiseRedis(): \RedisCluster
     {
-        return new TimeLimit($key, $limit, $seconds, $this->redis);
+        return new \RedisCluster(null, [
+            'redis-cluster-0:6379',
+            'redis-cluster-1:6379',
+            'redis-cluster-2:6379',
+            'redis-cluster-3:6379'
+        ]);
     }
 
-    public function getCleanupDateTime(): string
+    public function getAdapter(string $key, int $limit, int $seconds): TimeLimit
     {
-        $interval = DateInterval::createFromDateString('now');
-        return strval((new \DateTime())->sub($interval)->getTimestamp());
+        return new AdapterRedisCluster($key, $limit, $seconds, self::$redis);
+    }
+
+    /**
+     * Clean up Redis connection after all tests
+     */
+    public static function tearDownAfterClass(): void
+    {
+        if (isset(self::$redis)) {
+            self::$redis->close();
+        }
     }
 }
