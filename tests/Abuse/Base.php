@@ -27,7 +27,7 @@ abstract class Base extends TestCase
      */
     public function testDynamicKey(): void
     {
-        $adapter = $this->getAdapter('dyamic-key-{{ip}}', 2, 1);
+        $adapter = $this->getAdapter('dynamic-key-{{ip}}', 2, 1);
         $adapter->setParam('{{ip}}', '0.0.0.10');
         $abuse = new Abuse($adapter);
         $this->assertEquals($abuse->check(), false);
