@@ -2,38 +2,46 @@
 
 namespace Utopia\Tests;
 
-use DateInterval;
-use Redis as Client;
-use Utopia\Abuse\Abuse;
-use Utopia\Abuse\Adapter;
-use Utopia\Abuse\Adapters\TimeLimit\Redis as TimeLimit;
+use Redis;
+use Utopia\Abuse\Adapters\TimeLimit;
+use Utopia\Abuse\Adapters\TimeLimit\Redis as AdapterRedis;
 use Utopia\Exception;
 
 class RedisTest extends Base
 {
-    protected Client $redis;
+    protected static ?\Redis $redis = null;
 
     /**
      * @throws Exception
      * @throws \Exception
      */
-    public function setUp(): void
+    public static function setUpBeforeClass(): void
     {
-        $this->redis = new Client();
-        $this->redis->connect('redis', 6379);
-        $adapter = new TimeLimit('login-attempt-from-{{ip}}', 3, 1, $this->redis);
-        $adapter->setParam('{{ip}}', '127.0.0.1');
-        $this->abuse = new Abuse($adapter);
+        if (self::$redis === null) {
+            self::$redis = self::initialiseRedis();
+        }
     }
 
-    public function getAdapter(string $key, int $limit, int $seconds): Adapter
+    private static function initialiseRedis(): \Redis
     {
-        return new TimeLimit($key, $limit, $seconds, $this->redis);
+        $redis = new \Redis();
+        $redis->connect('redis', 6379);
+        return $redis;
     }
 
-    public function getCleanupDateTime(): string
+    public function getAdapter(string $key, int $limit, int $seconds): TimeLimit
     {
-        $interval = DateInterval::createFromDateString('now');
-        return strval((new \DateTime())->sub($interval)->getTimestamp());
+        return new AdapterRedis($key, $limit, $seconds, self::$redis);
+    }
+
+    /**
+     * Clean up Redis connection after all tests
+     */
+    public static function tearDownAfterClass(): void
+    {
+        if (self::$redis !== null) {
+            self::$redis->close();
+            self::$redis = null;
+        }
     }
 }

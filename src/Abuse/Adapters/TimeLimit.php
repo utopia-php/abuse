@@ -18,9 +18,9 @@ abstract class TimeLimit extends Adapter
     protected ?int $count = null;
 
     /**
-     * @var string
+     * @var int
      */
-    protected string $time;
+    protected int $timestamp;
 
     /**
      * Check
@@ -28,14 +28,14 @@ abstract class TimeLimit extends Adapter
      * Checks if number of counts is bigger or smaller than current limit
      *
      * @param  string  $key
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return int
      *
      * @throws \Exception
      */
-    abstract protected function count(string $key, string $datetime): int;
+    abstract protected function count(string $key, int $timestamp): int;
 
-    abstract protected function hit(string $key, string $datetime): void;
+    abstract protected function hit(string $key, int $timestamp): void;
 
     /**
      * Check
@@ -54,8 +54,8 @@ abstract class TimeLimit extends Adapter
 
         $key = $this->parseKey();
 
-        if ($this->limit > $this->count($key, $this->time)) {
-            $this->hit($key, $this->time);
+        if ($this->limit > $this->count($key, $this->timestamp)) {
+            $this->hit($key, $this->timestamp);
 
             return false;
         }
@@ -74,7 +74,7 @@ abstract class TimeLimit extends Adapter
      */
     public function remaining(): int
     {
-        $left = $this->limit - ($this->count($this->parseKey(), $this->time) + 1); // Add one because we need to say how many left not how many done
+        $left = $this->limit - ($this->count($this->parseKey(), $this->timestamp) + 1); // Add one because we need to say how many left not how many done
 
         return (0 > $left) ? 0 : $left;
     }
@@ -94,12 +94,12 @@ abstract class TimeLimit extends Adapter
     /**
      * Time
      *
-     * Return the Datetime
+     * Return the timestamp
      *
-     * @return string
+     * @return int
      */
-    public function time(): string
+    public function time(): int
     {
-        return $this->time;
+        return $this->timestamp;
     }
 }

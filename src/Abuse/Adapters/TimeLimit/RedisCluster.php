@@ -17,8 +17,8 @@ class RedisCluster extends TimeLimit
     {
         $this->redis = $redis;
         $this->key = $key;
-        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds);
-        $this->time = strval($time);
+        $now = \time();
+        $this->timestamp = (int)($now - ($now % $seconds));
         $this->limit = $limit;
     }
 
@@ -29,7 +29,7 @@ class RedisCluster extends TimeLimit
      * @param string $datetime
      * @return integer
      */
-    protected function count(string $key, string $datetime): int
+    protected function count(string $key, int $timestamp): int
     {
         if (0 == $this->limit) { // No limit no point for counting
             return 0;
@@ -40,7 +40,7 @@ class RedisCluster extends TimeLimit
         }
 
         /** @var string|false $count */
-        $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $datetime);
+        $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $timestamp);
         if ($count === false) {
             $this->count = 0;
         } else {
@@ -57,21 +57,21 @@ class RedisCluster extends TimeLimit
      * @param string $datetime
      * @return void
      */
-    protected function hit(string $key, string $datetime): void
+    protected function hit(string $key, int $timestamp): void
     {
         if (0 == $this->limit) { // No limit no point for counting
             return;
         }
 
         /** @var string|false $count */
-        $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $datetime);
+        $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $timestamp);
         if ($count === false) {
             $this->count = 0;
         } else {
             $this->count = intval($count);
         }
 
-        $this->redis->incr(self::NAMESPACE . '__'. $key .'__'. $datetime);
+        $this->redis->incr(self::NAMESPACE . '__'. $key .'__'. $timestamp);
         $this->count++;
     }
 
@@ -100,15 +100,15 @@ class RedisCluster extends TimeLimit
     }
 
     /**
-     * Delete all logs older than $datetime
+     * Delete all logs older than $timestamp
      *
-     * @param string $datetime
+     * @param int $timestamp
      * @return bool
      */
-    public function cleanup(string $datetime): bool
+    public function cleanup(int $timestamp): bool
     {
         $keys = $this->scan(self::NAMESPACE . '__*__*');
-        $keys = $this->filterKeys($keys ? $keys : [], (int) $datetime);
+        $keys = $this->filterKeys($keys ? $keys : [], $timestamp);
         /** @phpstan-ignore-next-line */
         $this->redis->del($keys);
         return true;

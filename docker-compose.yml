@@ -48,6 +48,8 @@ services:
       - REDIS_HOSTS=redis-cluster-0:6379
     ports:
       - "8081:5540"
+    volumes:
+      - redisinsight:/data
 
   redis-cluster-0:
     image: docker.io/bitnami/redis-cluster:7.4
@@ -89,3 +91,5 @@ services:
 
 networks:
   abuse:
+volumes:
+  redisinsight:
