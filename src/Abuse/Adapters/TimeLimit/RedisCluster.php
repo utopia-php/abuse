@@ -23,10 +23,10 @@ class RedisCluster extends TimeLimit
     }
 
     /**
-     * Get count for a key at specific datetime
+     * Get count for a key at specific timestamp
      *
      * @param string $key
-     * @param string $datetime
+     * @param int $timestamp
      * @return integer
      */
     protected function count(string $key, int $timestamp): int
@@ -51,10 +51,10 @@ class RedisCluster extends TimeLimit
     }
 
     /**
-     * Record a hit for a key at specific datetime
+     * Record a hit for a key at specific timestamp
      *
      * @param string $key
-     * @param string $datetime
+     * @param int $timestamp
      * @return void
      */
     protected function hit(string $key, int $timestamp): void

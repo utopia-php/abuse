@@ -9,7 +9,7 @@ use Utopia\Exception;
 
 class RedisTest extends Base
 {
-    protected static ?\Redis $redis = null;
+    protected static \Redis $redis;
 
     /**
      * @throws Exception
@@ -17,9 +17,11 @@ class RedisTest extends Base
      */
     public static function setUpBeforeClass(): void
     {
-        if (self::$redis === null) {
-            self::$redis = self::initialiseRedis();
+        if (isset(self::$redis)) {
+            return;
         }
+
+        self::$redis = self::initialiseRedis();
     }
 
     private static function initialiseRedis(): \Redis
@@ -39,9 +41,8 @@ class RedisTest extends Base
      */
     public static function tearDownAfterClass(): void
     {
-        if (self::$redis !== null) {
+        if (isset(self::$redis)) {
             self::$redis->close();
-            self::$redis = null;
         }
     }
 }

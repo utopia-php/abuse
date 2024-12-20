@@ -8,10 +8,7 @@ use Utopia\Exception;
 
 class RedisClusterTest extends Base
 {
-    /**
-     * @var \RedisCluster|null
-     */
-    protected static ?\RedisCluster $redis = null;
+    protected static \RedisCluster $redis;
 
     /**
      * @throws Exception
@@ -19,9 +16,11 @@ class RedisClusterTest extends Base
      */
     public static function setUpBeforeClass(): void
     {
-        if (self::$redis === null) {
-            self::$redis = self::initialiseRedis();
+        if (isset(self::$redis)) {
+            return;
         }
+
+        self::$redis = self::initialiseRedis();
     }
 
     private static function initialiseRedis(): \RedisCluster
@@ -44,9 +43,8 @@ class RedisClusterTest extends Base
      */
     public static function tearDownAfterClass(): void
     {
-        if (self::$redis !== null) {
+        if (isset(self::$redis)) {
             self::$redis->close();
-            self::$redis = null;
         }
     }
 }

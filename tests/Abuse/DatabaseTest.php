@@ -13,13 +13,15 @@ use Utopia\Database\Database;
 
 class DatabaseTest extends Base
 {
-    protected static ?Database $db = null;
+    protected static Database $db;
 
     public static function setUpBeforeClass(): void
     {
-        if (self::$db === null) {
-            self::$db = self::initialiseDatabase();
+        if (isset(self::$db)) {
+            return;
         }
+
+        self::$db = self::initialiseDatabase();
     }
 
     private static function initialiseDatabase(): Database
@@ -50,9 +52,8 @@ class DatabaseTest extends Base
 
     public static function tearDownAfterClass(): void
     {
-        if (self::$db !== null) {
+        if (isset(self::$db)) {
             self::$db->delete();
-            self::$db = null;
         }
     }
 }

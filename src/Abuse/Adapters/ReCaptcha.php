@@ -90,14 +90,14 @@ class ReCaptcha extends Adapter
     }
 
     /**
-     * Delete logs older than $datetime
+     * Delete logs older than $timestamp
      *
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return bool
      *
      * @throws Exception
      */
-    public function cleanup(string $datetime): bool
+    public function cleanup(int $timestamp): bool
     {
         throw new Exception('Method not supported');
     }

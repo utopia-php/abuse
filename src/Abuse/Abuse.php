@@ -44,13 +44,13 @@ class Abuse
     }
 
     /**
-     * Delete all logs older than $datetime
+     * Delete all logs older than $timestamp
      *
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return bool
      */
-    public function cleanup(string $datetime): bool
+    public function cleanup(int $timestamp): bool
     {
-        return $this->adapter->cleanup($datetime);
+        return $this->adapter->cleanup($timestamp);
     }
 }
