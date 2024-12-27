@@ -84,38 +84,22 @@ class Redis extends TimeLimit
      *
      * @param  int|null  $offset
      * @param  int|null  $limit
-     * @return array<string, string|false>
+     * @return array<string, mixed>
      */
     public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
-        $cursor = 0;
-        $matches = [];
-        $pattern = self::NAMESPACE . '__*';
+        // TODO limit potential is SCAN but needs cursor no offset
+        $cursor = null;
+        $keys = $this->redis->scan($cursor, self::NAMESPACE . '__*', $limit);
+        if (!$keys) {
+            return [];
+        }
 
-        do {
-            $result = $this->redis->scan($cursor, $pattern, $limit);
-            
-            // Early return if scan failed
-            if (!is_array($result)) {
-                return [];
-            }
-
-            [$newCursor, $keys] = $result;
-            $cursor = (int)$newCursor;
-
-            if (!empty($keys)) {
-                $values = $this->redis->mget($keys);
-                if (is_array($values)) {
-                    /** @var array<string, string|false> */
-                    $combinedArray = array_combine($keys, $values);
-                    if ($combinedArray !== false) {
-                        $matches = array_merge($matches, $combinedArray);
-                    }
-                }
-            }
-        } while ($cursor > 0 && (!$limit || count($matches) < $limit));
-
-        return $matches;
+        $logs = [];
+        foreach ($keys as $key) {
+            $logs[$key] = $this->redis->get($key);
+        }
+        return $logs;
     }
 
     /**
