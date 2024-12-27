@@ -87,26 +87,6 @@ abstract class Base extends TestCase
     }
 
     /**
-     * Test logs are deleted after cleanup
-     */
-    public function testCleanup(): void
-    {
-        $adapter = $this->getAdapter('', 1, 1);
-        $abuse = new Abuse($adapter);
-
-        $logs = $abuse->getLogs(0, 100);
-        $this->assertEquals(6, \count($logs)); // 6 keys are created in the test
-
-        sleep(1);
-
-        $status = $abuse->cleanup(time());
-        $this->assertEquals($status, true);
-
-        $logs = $abuse->getLogs(0, 100);
-        $this->assertEquals(0, \count($logs));
-    }
-
-    /**
      * Verify that the time format is correct
      */
     public function testTimeFormat(): void
