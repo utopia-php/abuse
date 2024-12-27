@@ -93,20 +93,19 @@ class Redis extends TimeLimit
         $pattern = self::NAMESPACE . '__*';
 
         do {
-            /** @var array{0: string|false, 1: array<int, string>} */
             $result = $this->redis->scan($cursor, $pattern, $limit);
-
-            if ($result === false) {
-                break;
+            
+            // Early return if scan failed
+            if (!is_array($result)) {
+                return [];
             }
 
             [$newCursor, $keys] = $result;
             $cursor = (int)$newCursor;
 
             if (!empty($keys)) {
-                /** @var array<string|false> */
                 $values = $this->redis->mget($keys);
-                if ($values !== false) {
+                if (is_array($values)) {
                     /** @var array<string, string|false> */
                     $combinedArray = array_combine($keys, $values);
                     if ($combinedArray !== false) {
