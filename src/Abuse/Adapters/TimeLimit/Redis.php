@@ -84,7 +84,7 @@ class Redis extends TimeLimit
      *
      * @param  int|null  $offset
      * @param  int|null  $limit
-     * @return array<string, mixed>
+     * @return array<string, string|false>
      */
     public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
@@ -93,10 +93,26 @@ class Redis extends TimeLimit
         $pattern = self::NAMESPACE . '__*';
         
         do {
-            [$cursor, $keys] = $this->redis->scan($cursor, $pattern, $limit);
+            /** @var array{0: string|false, 1: array<int, string>} */
+            $result = $this->redis->scan($cursor, $pattern, $limit);
+            
+            if ($result === false) {
+                break;
+            }
+            
+            [$newCursor, $keys] = $result;
+            $cursor = (int)$newCursor;
+            
             if (!empty($keys)) {
+                /** @var array<string|false> */
                 $values = $this->redis->mget($keys);
-                $matches = array_merge($matches, array_combine($keys, $values));
+                if ($values !== false) {
+                    /** @var array<string, string|false> */
+                    $combinedArray = array_combine($keys, $values);
+                    if ($combinedArray !== false) {
+                        $matches = array_merge($matches, $combinedArray);
+                    }
+                }
             }
         } while ($cursor > 0 && (!$limit || count($matches) < $limit));
 
