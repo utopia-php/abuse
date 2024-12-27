@@ -70,7 +70,7 @@ class RedisCluster extends TimeLimit
         }
 
         $key = self::NAMESPACE . '__'. $key .'__'. $timestamp;
-        
+
         $this->redis->multi(\RedisCluster::MULTI);
         $this->redis->incr($key);
         $this->redis->expire($key, $this->ttl);
