@@ -29,5 +29,11 @@
         "phpstan/phpstan": "^1.9",
         "laravel/pint": "1.5.*",
         "phpbench/phpbench": "^1.2"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true,
+            "tbachert/spi": true
+        }
     }
 }

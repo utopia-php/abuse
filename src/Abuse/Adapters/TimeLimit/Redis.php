@@ -13,10 +13,16 @@ class Redis extends TimeLimit
      */
     protected \Redis $redis;
 
+    /**
+     * @var int
+     */
+    protected int $ttl;
+
     public function __construct(string $key, int $limit, int $seconds, \Redis $redis)
     {
         $this->redis = $redis;
         $this->key = $key;
+        $this->ttl = $seconds;
         $now = \time();
         $this->timestamp = (int)($now - ($now % $seconds));
         $this->limit = $limit;
@@ -62,16 +68,13 @@ class Redis extends TimeLimit
             return;
         }
 
-        /** @var string $count */
-        $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $timestamp);
-        if (!$count) {
-            $this->count = 0;
-        } else {
-            $this->count = intval($count);
-        }
+        $key = self::NAMESPACE . '__' . $key . '__' . $timestamp;
+        $this->redis->multi()
+            ->incr($key)
+            ->expire($key, $this->ttl)
+            ->exec();
 
-        $this->redis->incr(self::NAMESPACE . '__'. $key .'__'. $timestamp);
-        $this->count++;
+        $this->count = ($this->count ?? 0) + 1;
     }
 
     /**
@@ -107,32 +110,7 @@ class Redis extends TimeLimit
      */
     public function cleanup(int $timestamp): bool
     {
-        $iterator = null;
-        while ($iterator !== 0) {
-            $keys = $this->redis->scan($iterator, self::NAMESPACE . '__*__*', 1000);
-            $keys = $this->filterKeys($keys ? $keys : [], $timestamp);
-            $this->redis->del($keys);
-        }
+        // No need for manual cleanup - Redis TTL handles this automatically
         return true;
-    }
-
-    /**
-     * Filter keys
-     *
-     * @param array<string> $keys
-     * @param integer $timestamp
-     * @return array<string>
-     */
-    protected function filterKeys(array $keys, int $timestamp): array
-    {
-        $filteredKeys = [];
-        foreach ($keys as $key) {
-            $parts = explode('__', $key);
-            $keyTimestamp = (int)end($parts); // Assuming the last part is always the timestamp
-            if ($keyTimestamp < $timestamp) {
-                $filteredKeys[] = $key;
-            }
-        }
-        return $filteredKeys;
     }
 }
