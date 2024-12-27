@@ -13,10 +13,16 @@ class RedisCluster extends TimeLimit
      */
     protected \RedisCluster $redis;
 
+    /**
+     * @var int
+     */
+    protected int $ttl;
+
     public function __construct(string $key, int $limit, int $seconds, \RedisCluster $redis)
     {
         $this->redis = $redis;
         $this->key = $key;
+        $this->ttl = $seconds;
         $now = \time();
         $this->timestamp = (int)($now - ($now % $seconds));
         $this->limit = $limit;
@@ -63,22 +69,18 @@ class RedisCluster extends TimeLimit
             return;
         }
 
-        /** @var string|false $count */
-        $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $timestamp);
-        if ($count === false) {
-            $this->count = 0;
-        } else {
-            $this->count = intval($count);
-        }
+        $key = self::NAMESPACE . '__'. $key .'__'. $timestamp;
+        
+        $this->redis->multi(\RedisCluster::MULTI);
+        $this->redis->incr($key);
+        $this->redis->expire($key, $this->ttl);
+        $this->redis->exec();
 
-        $this->redis->incr(self::NAMESPACE . '__'. $key .'__'. $timestamp);
-        $this->count++;
+        $this->count = ($this->count ?? 0) + 1;
     }
 
     /**
-     * Get abuse logs
-     *
-     * Return logs with an offset and limit
+     * Get abuse logs with proper cursor-based pagination
      *
      * @param int|null $offset
      * @param int|null $limit
@@ -86,76 +88,46 @@ class RedisCluster extends TimeLimit
      */
     public function getLogs(?int $offset = 0, ?int $limit = 25): array
     {
-        // TODO limit potential is SCAN but needs cursor no offset
-        $keys = $this->scan(self::NAMESPACE . '__*', $offset, $limit);
-        if ($keys === false) {
+        $offset = $offset ?? 0;
+        $limit = $limit ?? 25;
+        $matches = [];
+        $pattern = self::NAMESPACE . '__*';
+
+        // Get all keys from each master
+        foreach ($this->redis->_masters() as $master) {
+            $cursor = null;
+            do {
+                /** @phpstan-ignore-next-line */
+                $keys = $this->redis->scan($cursor, $master, $pattern, 100);
+                if ($keys !== false) {
+                    $matches = array_merge($matches, $keys);
+                }
+            } while ($cursor > 0 && count($matches) < $offset + $limit);
+        }
+
+        // Sort to ensure consistent ordering
+        sort($matches);
+
+        // Apply offset and limit
+        $matches = array_slice($matches, $offset, $limit);
+
+        if (empty($matches)) {
             return [];
         }
 
-        $logs = [];
-        foreach ($keys as $key) {
-            $logs[$key] = $this->redis->get($key);
-        }
-        return $logs;
+        // Batch fetch values using mget
+        $values = $this->redis->mget($matches);
+        return array_combine($matches, $values);
     }
 
     /**
-     * Delete all logs older than $timestamp
+     * No need for manual cleanup - using Redis TTL
      *
      * @param int $timestamp
      * @return bool
      */
     public function cleanup(int $timestamp): bool
     {
-        $keys = $this->scan(self::NAMESPACE . '__*__*');
-        $keys = $this->filterKeys($keys ? $keys : [], $timestamp);
-        /** @phpstan-ignore-next-line */
-        $this->redis->del($keys);
         return true;
-    }
-
-    /**
-     * Filter keys
-     *
-     * @param array<string> $keys
-     * @param integer $timestamp
-     * @return array<string>
-     */
-    protected function filterKeys(array $keys, int $timestamp): array
-    {
-        $filteredKeys = [];
-        foreach ($keys as $key) {
-            $parts = explode('__', $key);
-            $keyTimestamp = (int)end($parts); // Assuming the last part is always the timestamp
-            if ($keyTimestamp < $timestamp) {
-                $filteredKeys[] = $key;
-            }
-        }
-        return $filteredKeys;
-    }
-
-    /**
-     * Scan keys across all masters in the Redis cluster
-     *
-     * @param string $pattern Pattern to match keys
-     * @param int|null $cursor Reference to the cursor for scanning
-     * @param int|null $count Number of keys to return per iteration
-     * @return array<string>|false
-     */
-    protected function scan(string $pattern, ?int &$cursor = null, ?int $count = 1000): array|false
-    {
-        $matches = [];
-        foreach ($this->redis->_masters() as $master) {
-            $cursor = null;
-            do {
-                /** @phpstan-ignore-next-line */
-                $keys = $this->redis->scan($cursor, $master, $pattern, $count);
-                if ($keys !== false) {
-                    $matches = array_merge($matches, $keys);
-                }
-            } while ($cursor > 0);
-        }
-
-        return empty($matches) ? false : $matches;
     }
 }
