@@ -12,7 +12,7 @@ class Redis extends TimeLimit
      * @var \Redis
      */
     protected \Redis $redis;
-    
+
     /**
      * @var int
      */
@@ -73,7 +73,7 @@ class Redis extends TimeLimit
             ->incr($key)
             ->expire($key, $this->ttl)
             ->exec();
-            
+
         $this->count = ($this->count ?? 0) + 1;
     }
 
@@ -91,18 +91,18 @@ class Redis extends TimeLimit
         $cursor = 0;
         $matches = [];
         $pattern = self::NAMESPACE . '__*';
-        
+
         do {
             /** @var array{0: string|false, 1: array<int, string>} */
             $result = $this->redis->scan($cursor, $pattern, $limit);
-            
+
             if ($result === false) {
                 break;
             }
-            
+
             [$newCursor, $keys] = $result;
             $cursor = (int)$newCursor;
-            
+
             if (!empty($keys)) {
                 /** @var array<string|false> */
                 $values = $this->redis->mget($keys);
