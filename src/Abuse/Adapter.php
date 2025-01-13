@@ -79,8 +79,8 @@ abstract class Adapter
     /**
      * Delete all logs older than $datetime
      *
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return bool
      */
-    abstract public function cleanup(string $datetime): bool;
+    abstract public function cleanup(int $timestamp): bool;
 }

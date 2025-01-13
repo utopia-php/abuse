@@ -1,8 +1,8 @@
 <?php
 
-namespace Utopia\Abuse\Adapters\Database;
+namespace Utopia\Abuse\Adapters\TimeLimit;
 
-use Utopia\Abuse\Adapters\TimeLimit as TimeLimitAdapter;
+use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Database\Database as UtopiaDB;
 use Utopia\Database\DateTime;
 use Utopia\Database\Document;
@@ -13,7 +13,7 @@ use Utopia\Database\Query;
 use Utopia\Database\Validator\Authorization;
 use Utopia\Exception;
 
-class TimeLimit extends TimeLimitAdapter
+class Database extends TimeLimit
 {
     public const COLLECTION = 'abuse';
 
@@ -80,8 +80,8 @@ class TimeLimit extends TimeLimitAdapter
     public function __construct(string $key, int $limit, int $seconds, UtopiaDB $db)
     {
         $this->key = $key;
-        $time = (int) \date('U', (int) (\floor(\time() / $seconds)) * $seconds); // todo: any good Idea without time()?
-        $this->time = DateTime::format((new \DateTime())->setTimestamp($time));
+        $now = \time();
+        $this->timestamp = (int)($now - ($now % $seconds));
         $this->limit = $limit;
         $this->db = $db;
     }
@@ -106,7 +106,7 @@ class TimeLimit extends TimeLimitAdapter
 
         try {
             $this->db->createCollection(
-                TimeLimit::COLLECTION,
+                self::COLLECTION,
                 $attributes,
                 $indexes
             );
@@ -121,12 +121,12 @@ class TimeLimit extends TimeLimitAdapter
      * Checks if number of counts is bigger or smaller than current limit
      *
      * @param  string  $key
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return int
      *
      * @throws \Exception
      */
-    protected function count(string $key, string $datetime): int
+    protected function count(string $key, int $timestamp): int
     {
         if (0 == $this->limit) { // No limit no point for counting
             return 0;
@@ -136,11 +136,13 @@ class TimeLimit extends TimeLimitAdapter
             return $this->count;
         }
 
+        $timestamp = $this->toDateTime($timestamp);
+
         /** @var array<Document> $result */
-        $result = Authorization::skip(function () use ($key, $datetime) {
-            return $this->db->find(TimeLimit::COLLECTION, [
+        $result = Authorization::skip(function () use ($key, $timestamp) {
+            return $this->db->find(self::COLLECTION, [
                 Query::equal('key', [$key]),
-                Query::equal('time', [$datetime]),
+                Query::equal('time', [$timestamp]),
             ]);
         });
 
@@ -158,39 +160,40 @@ class TimeLimit extends TimeLimitAdapter
 
     /**
      * @param  string  $key
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return void
      *
      * @throws AuthorizationException|Structure|\Exception|\Throwable
      */
-    protected function hit(string $key, string $datetime): void
+    protected function hit(string $key, int $timestamp): void
     {
         if (0 == $this->limit) { // No limit no point for counting
             return;
         }
 
-        Authorization::skip(function () use ($datetime, $key) {
-            $data = $this->db->findOne(TimeLimit::COLLECTION, [
+        $timestamp = $this->toDateTime($timestamp);
+        Authorization::skip(function () use ($timestamp, $key) {
+            $data = $this->db->findOne(self::COLLECTION, [
                 Query::equal('key', [$key]),
-                Query::equal('time', [$datetime]),
+                Query::equal('time', [$timestamp]),
             ]);
 
             if ($data->isEmpty()) {
                 $data = [
                     '$permissions' => [],
                     'key' => $key,
-                    'time' => $datetime,
+                    'time' => $timestamp,
                     'count' => 1,
-                    '$collection' => TimeLimit::COLLECTION,
+                    '$collection' => self::COLLECTION,
                 ];
 
                 try {
-                    $this->db->createDocument(TimeLimit::COLLECTION, new Document($data));
+                    $this->db->createDocument(self::COLLECTION, new Document($data));
                 } catch (Duplicate $e) {
                     // Duplicate in case of race condition
-                    $data = $this->db->findOne(TimeLimit::COLLECTION, [
+                    $data = $this->db->findOne(self::COLLECTION, [
                         Query::equal('key', [$key]),
-                        Query::equal('time', [$datetime]),
+                        Query::equal('time', [$timestamp]),
                     ]);
 
                     if (!$data->isEmpty()) {
@@ -198,14 +201,14 @@ class TimeLimit extends TimeLimitAdapter
                         if (\is_numeric($count)) {
                             $this->count = intval($count);
                         }
-                        $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
+                        $this->db->increaseDocumentAttribute(self::COLLECTION, $data->getId(), 'count');
                     } else {
                         throw new \Exception('Document Not Found');
                     }
                 }
             } else {
                 /** @var Document $data */
-                $this->db->increaseDocumentAttribute(TimeLimit::COLLECTION, $data->getId(), 'count');
+                $this->db->increaseDocumentAttribute(self::COLLECTION, $data->getId(), 'count');
             }
         });
 
@@ -237,7 +240,7 @@ class TimeLimit extends TimeLimitAdapter
                 $queries[] = Query::limit($limit);
             }
 
-            return $this->db->find(TimeLimit::COLLECTION, $queries);
+            return $this->db->find(self::COLLECTION, $queries);
         });
 
         return $results;
@@ -246,25 +249,31 @@ class TimeLimit extends TimeLimitAdapter
     /**
      * Delete logs older than $timestamp seconds
      *
-     * @param  string  $datetime
+     * @param  int  $timestamp
      * @return bool
      *
      * @throws AuthorizationException|\Exception
      */
-    public function cleanup(string $datetime): bool
+    public function cleanup(int $timestamp): bool
     {
-        Authorization::skip(function () use ($datetime) {
+        $timestamp = $this->toDateTime($timestamp);
+        Authorization::skip(function () use ($timestamp) {
             do {
-                $documents = $this->db->find(TimeLimit::COLLECTION, [
-                    Query::lessThan('time', $datetime),
+                $documents = $this->db->find(self::COLLECTION, [
+                    Query::lessThan('time', $timestamp),
                 ]);
 
                 foreach ($documents as $document) {
-                    $this->db->deleteDocument(TimeLimit::COLLECTION, $document->getId());
+                    $this->db->deleteDocument(self::COLLECTION, $document->getId());
                 }
             } while (! empty($documents));
         });
 
         return true;
+    }
+
+    protected function toDateTime(int $timestamp): string
+    {
+        return DateTime::format((new \DateTime())->setTimestamp($timestamp));
     }
 }

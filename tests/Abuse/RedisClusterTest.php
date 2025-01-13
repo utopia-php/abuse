@@ -2,14 +2,13 @@
 
 namespace Utopia\Tests;
 
-use Redis;
 use Utopia\Abuse\Adapters\TimeLimit;
-use Utopia\Abuse\Adapters\TimeLimit\Redis as AdapterRedis;
+use Utopia\Abuse\Adapters\TimeLimit\RedisCluster as AdapterRedisCluster;
 use Utopia\Exception;
 
-class RedisTest extends Base
+class RedisClusterTest extends Base
 {
-    protected static \Redis $redis;
+    protected static \RedisCluster $redis;
 
     /**
      * @throws Exception
@@ -24,16 +23,19 @@ class RedisTest extends Base
         self::$redis = self::initialiseRedis();
     }
 
-    private static function initialiseRedis(): \Redis
+    private static function initialiseRedis(): \RedisCluster
     {
-        $redis = new \Redis();
-        $redis->connect('redis', 6379);
-        return $redis;
+        return new \RedisCluster(null, [
+            'redis-cluster-0:6379',
+            'redis-cluster-1:6379',
+            'redis-cluster-2:6379',
+            'redis-cluster-3:6379'
+        ]);
     }
 
     public function getAdapter(string $key, int $limit, int $seconds): TimeLimit
     {
-        return new AdapterRedis($key, $limit, $seconds, self::$redis);
+        return new AdapterRedisCluster($key, $limit, $seconds, self::$redis);
     }
 
     /**
