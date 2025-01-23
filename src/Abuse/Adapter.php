@@ -39,23 +39,23 @@ abstract class Adapter
         return $this;
     }
 
-     /**
-     * Get Params
-     *
-     * Return array of all key params
-     *
-     * @return array<string, string>
-     */
+    /**
+    * Get Params
+    *
+    * Return array of all key params
+    *
+    * @return array<string, string>
+    */
     protected function getParams(): array
     {
         return $this->params;
     }
 
-     /**
-     * Parse key with all custom attached params
-     *
-     * @return string
-     */
+    /**
+    * Parse key with all custom attached params
+    *
+    * @return string
+    */
     protected function parseKey(): string
     {
         foreach ($this->getParams() as $key => $value) {

@@ -12,7 +12,7 @@
         "psr-4": {"Utopia\\Tests\\": "tests/Abuse"}
     },
     "scripts": {
-        "check": "./vendor/bin/phpstan analyse --level max src tests",
+        "check": "./vendor/bin/phpstan analyse --level max --memory-limit=2G src tests",
         "lint": "./vendor/bin/pint --test",
         "format": "./vendor/bin/pint",
         "bench": "vendor/bin/phpbench run --report=aggregate"
@@ -22,13 +22,13 @@
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*",
-        "utopia-php/database": "0.56.*"
+        "utopia-php/database": "0.57.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.4",
-        "phpstan/phpstan": "^1.9",
-        "laravel/pint": "1.5.*",
-        "phpbench/phpbench": "^1.2"
+        "phpunit/phpunit": "9.*",
+        "phpstan/phpstan": "1.*",
+        "laravel/pint": "1.*",
+        "phpbench/phpbench": "1.*"
     },
     "config": {
         "allow-plugins": {
