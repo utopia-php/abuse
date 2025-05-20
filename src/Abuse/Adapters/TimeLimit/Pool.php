@@ -5,38 +5,34 @@ namespace Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Pools\Pool as UtopiaPool;
 use Utopia\Abuse\Adapters\TimeLimit\Redis as RedisAdapter;
-use Redis;
 
-class Pool extends TimeLimit
+class Pool extends RedisAdapter
 {
     /**
-    * @var UtopiaPool<covariant Redis>
+    * @var UtopiaPool<covariant RedisAdapter>
     */
     protected UtopiaPool $pool;
-
-    protected string $key;
-    protected int $limit;
-    protected int $seconds;
 
     /**
      * @param string $key
      * @param int $limit
      * @param int $seconds
-     * @param  UtopiaPool<covariant Redis>  $pool The pool to use for connections. Must contain instances of TimeLimit.
+     * @param  UtopiaPool<covariant RedisAdapter>  $pool The pool to use for connections. Must contain instances of TimeLimit.
      *
      * @throws \Exception
      */
     public function __construct(string $key, int $limit, int $seconds, UtopiaPool $pool)
     {
         $this->pool = $pool;
-        $this->key = $key;
-        $this->limit = $limit;
-        $this->seconds = $seconds;
 
-        $this->pool->use(function (mixed $resource) {
-            if (! ($resource instanceof Redis)) {
-                throw new \Exception('Pool must contain instances of '.Redis::class);
+        $this->pool->use(function (mixed $adapter) use ($key, $limit, $seconds) {
+            if (! ($adapter instanceof RedisAdapter)) {
+                throw new \Exception('Pool must contain instances of '.RedisAdapter::class);
             }
+
+            $this->setKey($key);
+            $this->setLimit($limit);
+            $this->setTtl($seconds);
         });
     }
 
@@ -51,8 +47,11 @@ class Pool extends TimeLimit
      */
     public function delegate(string $method, array $args): mixed
     {
-        return $this->pool->use(function (Redis $redis) use ($method, $args) {
-            $adapter = new RedisAdapter($this->key, $this->limit, $this->seconds, $redis);
+        return $this->pool->use(function (RedisAdapter $adapter) use ($method, $args) {
+            $adapter
+                ->setTtl($this->getTtl())
+                ->setKey($this->getKey())
+                ->setLimit($this->limit());
             return $adapter->{$method}(...$args);
         });
     }

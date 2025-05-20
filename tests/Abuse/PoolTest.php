@@ -3,18 +3,23 @@
 namespace Utopia\Tests;
 
 use Utopia\Abuse\Adapters\TimeLimit\Pool;
+use Utopia\Abuse\Adapters\TimeLimit\Redis;
 use Utopia\Abuse\Adapters\TimeLimit;
 
 class PoolTest extends RedisTest
 {
+    /**
+     * @var \Utopia\Pools\Pool<covariant Redis> $pool
+     */
     protected static \Utopia\Pools\Pool $pool;
     public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
+
         self::$pool = new \Utopia\Pools\Pool('test', 10, function () {
             $redis = RedisTest::initialiseRedis();
-            return $redis;
+            return new Redis('', 10, 60, $redis);
         });
     }
 

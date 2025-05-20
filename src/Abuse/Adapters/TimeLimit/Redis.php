@@ -113,4 +113,22 @@ class Redis extends TimeLimit
         // No need for manual cleanup - Redis TTL handles this automatically
         return true;
     }
+
+    /**
+     * set ttl
+     * @param int $seconds
+     * @return static
+     */
+    public function setTtl(int $seconds): static
+    {
+        $now = \time();
+        $this->timestamp = (int)($now - ($now % $seconds));
+        $this->ttl = $seconds;
+        return $this;
+    }
+
+    public function getTtl(): int
+    {
+        return $this->ttl;
+    }
 }

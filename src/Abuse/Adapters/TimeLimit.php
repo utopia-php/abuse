@@ -79,6 +79,39 @@ abstract class TimeLimit extends Adapter
         return (0 > $left) ? 0 : $left;
     }
 
+
+    /**
+     * Set key
+     * @param string $key
+     * @return static
+     */
+    public function setKey(string $key): static
+    {
+        $this->key = $key;
+        return $this;
+    }
+
+    /**
+     * Set limit
+     * @param int $limit
+     * @return static
+     */
+    public function setLimit(int $limit): static
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    /**
+     * Get key
+     * @return string
+     */
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+
     /**
      * Limit
      *
