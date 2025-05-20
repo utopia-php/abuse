@@ -5,9 +5,9 @@ use Utopia\Pools\Pool as UtopiaPool;
 
 class Pool extends TimeLimit
 {
-     /**
-     * @var UtopiaPool<covariant TimeLimit>
-     */
+    /**
+    * @var UtopiaPool<covariant TimeLimit>
+    */
     protected UtopiaPool $pool;
 
     /**
