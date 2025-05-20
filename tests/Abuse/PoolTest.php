@@ -12,7 +12,6 @@ class PoolTest extends RedisTest
     {
         parent::setUpBeforeClass();
 
-
         self::$pool = new \Utopia\Pools\Pool('test', 10, function () {
             $redis = RedisTest::initialiseRedis();
             return $redis;
