@@ -1,5 +1,7 @@
 <?php
 
+namespace Utopia\Abuse\Adapters\TimeLimit;
+
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Pools\Pool as UtopiaPool;
 use Utopia\Abuse\Adapters\TimeLimit\Redis as RedisAdapter;
