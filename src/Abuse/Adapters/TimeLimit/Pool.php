@@ -5,10 +5,13 @@ use Utopia\Pools\Pool as UtopiaPool;
 
 class Pool extends TimeLimit
 {
+     /**
+     * @var UtopiaPool<covariant TimeLimit>
+     */
     protected UtopiaPool $pool;
 
     /**
-     * @param  UtopiaPool<covariant TimeLimit>  $pool The pool to use for connections. Must contain instances of Adapter.
+     * @param  UtopiaPool<covariant TimeLimit>  $pool The pool to use for connections. Must contain instances of TimeLimit.
      *
      * @throws \Exception
      */
@@ -41,7 +44,11 @@ class Pool extends TimeLimit
 
     protected function count(string $key, int $timestamp): int
     {
-        return $this->delegate(__FUNCTION__, \func_get_args());
+        /**
+         * @var int $result
+         */
+        $result = $this->delegate(__FUNCTION__, \func_get_args());
+        return $result;
     }
 
     protected function hit(string $key, int $timestamp): void
@@ -51,11 +58,19 @@ class Pool extends TimeLimit
 
     public function cleanup(int $timestamp): bool
     {
-        return $this->delegate(__FUNCTION__, \func_get_args());
+        /**
+         * @var bool $result
+         */
+        $result = $this->delegate(__FUNCTION__, \func_get_args());
+        return $result;
     }
 
     public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
-        return $this->delegate(__FUNCTION__, \func_get_args());
+        /**
+         * @var array<string, mixed> $result
+         */
+        $result = $this->delegate(__FUNCTION__, \func_get_args());
+        return $result;
     }
 }
