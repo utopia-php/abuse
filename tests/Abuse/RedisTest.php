@@ -24,7 +24,7 @@ class RedisTest extends Base
         self::$redis = self::initialiseRedis();
     }
 
-    private static function initialiseRedis(): \Redis
+    protected static function initialiseRedis(): \Redis
     {
         $redis = new \Redis();
         $redis->connect('redis', 6379);

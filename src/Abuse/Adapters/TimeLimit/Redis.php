@@ -41,19 +41,15 @@ class Redis extends TimeLimit
             return 0;
         }
 
-        if (! \is_null($this->count)) { // Get fetched result
-            return $this->count;
-        }
-
         /** @var string $count */
         $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $timestamp);
         if (!$count) {
-            $this->count = 0;
+            $count = 0;
         } else {
-            $this->count = intval($count);
+            $count = intval($count);
         }
 
-        return $this->count;
+        return $count;
     }
 
     /**
@@ -73,8 +69,6 @@ class Redis extends TimeLimit
             ->incr($key)
             ->expire($key, $this->ttl)
             ->exec();
-
-        $this->count = ($this->count ?? 0) + 1;
     }
 
     /**
