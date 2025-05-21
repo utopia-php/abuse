@@ -2,11 +2,10 @@
 
 namespace Utopia\Tests;
 
-use Utopia\Abuse\Adapters\TimeLimit\Pool;
-use Utopia\Abuse\Adapters\TimeLimit\Redis;
+use Utopia\Abuse\Adapters\TimeLimit\PoolRedis;
 use Utopia\Abuse\Adapters\TimeLimit;
 
-class PoolTest extends RedisTest
+class PoolRedisTest extends RedisTest
 {
     /**
      * @var \Utopia\Pools\Pool<covariant Redis> $pool
@@ -19,12 +18,12 @@ class PoolTest extends RedisTest
 
         self::$pool = new \Utopia\Pools\Pool('test', 10, function () {
             $redis = RedisTest::initialiseRedis();
-            return new Redis('', 10, 60, $redis);
+            return $redis;
         });
     }
 
     public function getAdapter(string $key, int $limit, int $seconds): TimeLimit
     {
-        return new Pool($key, $limit, $seconds, self::$pool);
+        return new PoolRedis($key, $limit, $seconds, self::$pool);
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-use Utopia\Abuse\Adapters\TimeLimit;
+namespace Utopia\Abuse\Adapters\TimeLimit;
+
 use Utopia\Pools\Pool as UtopiaPool;
 use Utopia\Abuse\Adapters\TimeLimit\Redis as RedisAdapter;
 use Redis;
 
-class Pool extends RedisAdapter
+class PoolRedis extends RedisAdapter
 {
     /**
     * @var UtopiaPool<covariant Redis>
