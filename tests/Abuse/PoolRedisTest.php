@@ -8,7 +8,7 @@ use Utopia\Abuse\Adapters\TimeLimit;
 class PoolRedisTest extends RedisTest
 {
     /**
-     * @var \Utopia\Pools\Pool<covariant Redis> $pool
+     * @var \Utopia\Pools\Pool<covariant \Redis> $pool
      */
     protected static \Utopia\Pools\Pool $pool;
     public static function setUpBeforeClass(): void
