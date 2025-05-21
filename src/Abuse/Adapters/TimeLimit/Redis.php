@@ -41,19 +41,15 @@ class Redis extends TimeLimit
             return 0;
         }
 
-        if (! \is_null($this->count)) { // Get fetched result
-            return $this->count;
-        }
-
         /** @var string $count */
         $count = $this->redis->get(self::NAMESPACE . '__'. $key .'__'. $timestamp);
         if (!$count) {
-            $this->count = 0;
+            $count = 0;
         } else {
-            $this->count = intval($count);
+            $count = intval($count);
         }
 
-        return $this->count;
+        return $count;
     }
 
     /**
@@ -73,8 +69,6 @@ class Redis extends TimeLimit
             ->incr($key)
             ->expire($key, $this->ttl)
             ->exec();
-
-        $this->count = ($this->count ?? 0) + 1;
     }
 
     /**
@@ -112,23 +106,5 @@ class Redis extends TimeLimit
     {
         // No need for manual cleanup - Redis TTL handles this automatically
         return true;
-    }
-
-    /**
-     * set ttl
-     * @param int $seconds
-     * @return static
-     */
-    public function setTtl(int $seconds): static
-    {
-        $now = \time();
-        $this->timestamp = (int)($now - ($now % $seconds));
-        $this->ttl = $seconds;
-        return $this;
-    }
-
-    public function getTtl(): int
-    {
-        return $this->ttl;
     }
 }
