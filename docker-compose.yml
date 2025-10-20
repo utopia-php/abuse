@@ -8,15 +8,6 @@ services:
     ports:
       - "9307:3306"
 
-  adminer:
-    image: adminer
-    container_name: abuse-adminer
-    restart: always
-    ports:
-      - 9506:8080
-    networks:
-      - abuse
-
   redis:
     image: redis:6.0-alpine
     container_name: redis
