@@ -8,15 +8,6 @@ services:
     ports:
       - "9307:3306"
 
-  adminer:
-    image: adminer
-    container_name: abuse-adminer
-    restart: always
-    ports:
-      - 9506:8080
-    networks:
-      - abuse
-
   redis:
     image: redis:6.0-alpine
     container_name: redis
@@ -50,7 +41,7 @@ services:
       - redisinsight:/data
 
   redis-cluster-0:
-    image: docker.io/bitnami/redis-cluster:7.4
+    image: bitnamilegacy/redis-cluster:7.4
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2 redis-cluster-3
@@ -64,7 +55,7 @@ services:
       - redis-cluster-3
 
   redis-cluster-1:
-    image: docker.io/bitnami/redis-cluster:7.4
+    image: bitnamilegacy/redis-cluster:7.4
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2 redis-cluster-3
@@ -72,7 +63,7 @@ services:
       - abuse
 
   redis-cluster-2:
-    image: docker.io/bitnami/redis-cluster:7.4
+    image: bitnamilegacy/redis-cluster:7.4
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2 redis-cluster-3
@@ -80,7 +71,7 @@ services:
       - abuse
 
   redis-cluster-3:
-    image: docker.io/bitnami/redis-cluster:7.4
+    image: bitnamilegacy/redis-cluster:7.4
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
       - REDIS_NODES=redis-cluster-0 redis-cluster-1 redis-cluster-2 redis-cluster-3
