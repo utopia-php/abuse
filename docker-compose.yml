@@ -23,6 +23,10 @@ services:
     depends_on:
       - redis
       - mysql
+    environment:
+      - APPWRITE_ENDPOINT
+      - APPWRITE_PROJECT_ID
+      - APPWRITE_API_KEY
     volumes:
       - ./phpunit.xml:/code/phpunit.xml
       - ./src:/code/src

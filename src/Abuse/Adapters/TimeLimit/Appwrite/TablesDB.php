@@ -1,18 +1,18 @@
 <?php
 
-namespace Utopia\Abuse\Adapters\TimeLimit;
+namespace Utopia\Abuse\Adapters\TimeLimit\Appwrite;
 
 use Appwrite\AppwriteException;
 use Appwrite\Client;
 use Appwrite\Enums\IndexType;
 use Appwrite\ID;
 use Appwrite\Query;
-use Appwrite\Services\TablesDB;
+use Appwrite\Services\TablesDB as TablesDBService;
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Database\Document;
 use Utopia\Exception;
 
-class AppwriteTablesDB extends TimeLimit
+class TablesDB extends TimeLimit
 {
     public const DATABASE_NAME = 'Utopia';
     // Datbaase ID configurable in constructor
@@ -20,7 +20,7 @@ class AppwriteTablesDB extends TimeLimit
     public const TABLE_ID = 'Abuse';
     public const TABLE_LOCK = 'lock'; // Lock table created to allow performant check of setup
 
-    protected TablesDB $tablesDB;
+    protected TablesDBService $tablesDB;
     protected string $databaseId;
     protected ?int $count = null;
 
@@ -30,7 +30,7 @@ class AppwriteTablesDB extends TimeLimit
         $now = \time();
         $this->timestamp = (int)($now - ($now % $seconds));
         $this->limit = $limit;
-        $this->tablesDB = new TablesDB($client);
+        $this->tablesDB = new TablesDBService($client);
         $this->databaseId = $databaseId;
     }
 
