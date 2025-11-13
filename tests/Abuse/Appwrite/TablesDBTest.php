@@ -24,9 +24,9 @@ class AppwriteTablesDBTest extends Base
     {
         self::$databaseId = 'abuse-cicd-' . \uniqid();
         self::$client = (new Client())
-            ->setEndpoint(\getenv('APPWRITE_ENDPOINT'))
-            ->setProject(\getenv('APPWRITE_PROJECT_ID'))
-            ->setKey(\getenv('APPWRITE_API_KEY'));
+            ->setEndpoint(\getenv('APPWRITE_ENDPOINT') ?: '')
+            ->setProject(\getenv('APPWRITE_PROJECT_ID') ?: '')
+            ->setKey(\getenv('APPWRITE_API_KEY') ?: '');
 
         $adapter = new TablesDB('', 1, 1, self::$client, self::$databaseId);
         $adapter->setup();
