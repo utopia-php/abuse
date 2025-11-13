@@ -39,139 +39,109 @@ class AppwriteTablesDB extends TimeLimit
      */
     public function setup(): void
     {
+        if ($this->isSetupComplete()) {
+            return;
+        }
+
+        $this->createDatabase();
+        $this->createTable();
+        $this->createColumns();
+        $this->waitForResourcesReady('columns');
+        $this->createIndexes();
+        $this->waitForResourcesReady('indexes');
+        $this->createLockTable();
+    }
+
+    protected function isSetupComplete(): bool
+    {
         try {
             $this->tablesDB->getTable($this->databaseId, self::TABLE_LOCK);
-            // Schema indication table exists, we can safely assume database is setup
-            return;
+            return true;
         } catch (\Throwable $err) {
-            // Error occured, we do in-depth setup
+            return false;
         }
+    }
 
-        try {
-            $this->tablesDB->create($this->databaseId, self::DATABASE_NAME);
-        } catch (AppwriteException $err) {
-            // Silence error if database is already present
-            if ($err->getType() !== 'database_already_exists') {
-                throw $err;
-            }
+    protected function createDatabase(): void
+    {
+        $this->executeWithSilentError(
+            fn () => $this->tablesDB->create($this->databaseId, self::DATABASE_NAME),
+            'database_already_exists'
+        );
+    }
+
+    protected function createTable(): void
+    {
+        $this->executeWithSilentError(
+            fn () => $this->tablesDB->createTable($this->databaseId, self::TABLE_ID, self::TABLE_NAME),
+            'table_already_exists'
+        );
+    }
+
+    protected function createColumns(): void
+    {
+        $columns = [
+            fn () => $this->tablesDB->createStringColumn($this->databaseId, self::TABLE_ID, 'key', 255, true),
+            fn () => $this->tablesDB->createDatetimeColumn($this->databaseId, self::TABLE_ID, 'time', true),
+            fn () => $this->tablesDB->createIntegerColumn($this->databaseId, self::TABLE_ID, 'count', true, 0, PHP_INT_MAX)
+        ];
+
+        foreach ($columns as $createColumnFunction) {
+            $this->executeWithSilentError($createColumnFunction, 'column_already_exists');
         }
+    }
 
-        try {
-            $this->tablesDB->createTable($this->databaseId, self::TABLE_ID, self::TABLE_NAME);
-        } catch (AppwriteException $err) {
-            // Silence error if table is already present
-            if ($err->getType() !== 'table_already_exists') {
-                throw $err;
-            }
+    protected function createIndexes(): void
+    {
+        $indexes = [
+            fn () => $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'unique1', IndexType::UNIQUE(), ['key', 'time']),
+            fn () => $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'index2', IndexType::KEY(), ['time'])
+        ];
+
+        foreach ($indexes as $createIndexFunction) {
+            $this->executeWithSilentError($createIndexFunction, 'index_already_exists');
         }
+    }
 
-        try {
-            $this->tablesDB->createStringColumn($this->databaseId, self::TABLE_ID, 'key', 255, true);
-        } catch (AppwriteException $err) {
-            // Silence error if column is already present
-            if ($err->getType() !== 'column_already_exists') {
-                throw $err;
-            }
-        }
-
-        try {
-            $this->tablesDB->createDatetimeColumn($this->databaseId, self::TABLE_ID, 'time', true);
-        } catch (AppwriteException $err) {
-            // Silence error if column is already present
-            if ($err->getType() !== 'column_already_exists') {
-                throw $err;
-            }
-        }
-
-        try {
-            $this->tablesDB->createIntegerColumn($this->databaseId, self::TABLE_ID, 'count', true, 0, PHP_INT_MAX);
-        } catch (AppwriteException $err) {
-            // Silence error if column is already present
-            if ($err->getType() !== 'column_already_exists') {
-                throw $err;
-            }
-        }
-
-        // Await till all attributes are ready
-        $ready = false;
+    protected function waitForResourcesReady(string $resourceType): void
+    {
         $attempts = 0;
-        while ($attempts < 15) {
+        $maxAttempts = 15;
+
+        while ($attempts < $maxAttempts) {
             $attempts++;
 
-            $response = $this->tablesDB->listColumns($this->databaseId, self::TABLE_ID, [
-                Query::notEqual('status', 'available'),
-                Query::limit(1)
-            ]);
+            $response = $resourceType === 'columns'
+                ? $this->tablesDB->listColumns($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)])
+                : $this->tablesDB->listIndexes($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)]);
 
-            $columns = $response['columns'];
+            $resources = $response[$resourceType];
+            $resources = \array_filter($resources, fn ($resource) => $resource['status'] !== 'available');
 
-            // Temporary fix due to bug in Appwrite listColumns queries
-            $columns = \array_filter($columns, fn ($column) => $column['status'] !== 'available');
-
-            if (\count($columns) === 0) {
-                $ready = true;
-                break;
+            if (\count($resources) === 0) {
+                return;
             }
 
             \sleep(1);
         }
 
-        if (!$ready) {
-            throw new \Exception('Failed to setup tables.');
-        }
+        throw new \Exception("Failed to setup {$resourceType}.");
+    }
 
+    protected function createLockTable(): void
+    {
+        $this->executeWithSilentError(
+            fn () => $this->tablesDB->createTable($this->databaseId, self::TABLE_LOCK, name: self::TABLE_LOCK),
+            'table_already_exists'
+        );
+    }
+
+    protected function executeWithSilentError(callable $callback, string $allowedErrorType): void
+    {
         try {
-            $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'unique1', IndexType::UNIQUE(), ['key', 'time']);
+            $callback();
         } catch (AppwriteException $err) {
-            // Silence error if index is already present
-            if ($err->getType() !== 'index_already_exists') {
-                throw $err;
-            }
-        }
-
-        try {
-            $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'index2', IndexType::KEY(), ['time']);
-        } catch (AppwriteException $err) {
-            // Silence error if index is already present
-            if ($err->getType() !== 'index_already_exists') {
-                throw $err;
-            }
-        }
-
-        // Await till all indexes are ready
-        $ready = false;
-        $attempts = 0;
-        while ($attempts < 15) {
-            $attempts++;
-
-            $response = $this->tablesDB->listIndexes($this->databaseId, self::TABLE_ID, [
-                Query::notEqual('status', 'available'),
-                Query::limit(1)
-            ]);
-
-            $indexes = $response['indexes'];
-
-            // Temporary fix due to bug in Appwrite listColumns queries
-            $indexes = \array_filter($indexes, fn ($index) => $index['status'] !== 'available');
-
-            if (\count($indexes) === 0) {
-                $ready = true;
-                break;
-            }
-
-            \sleep(1);
-        }
-
-        if (!$ready) {
-            throw new \Exception('Failed to setup tables.');
-        }
-
-        // Optimize future setup checks
-        try {
-            $this->tablesDB->createTable($this->databaseId, self::TABLE_LOCK, name: self::TABLE_LOCK);
-        } catch (AppwriteException $err) {
-            // Silence error if table is already present
-            if ($err->getType() !== 'table_already_exists') {
+            if ($err->getType() !== $allowedErrorType) {
                 throw $err;
             }
         }
