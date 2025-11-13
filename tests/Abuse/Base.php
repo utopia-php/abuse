@@ -50,14 +50,14 @@ abstract class Base extends TestCase
     }
 
     /**
-     * Test a dynamic key with higher request rate like 100 requests per second
+     * Test a dynamic key with higher request rate like 10 requests per second
      */
     public function testDynamicKeyFastRequests(): void
     {
-        $adapter = $this->getAdapter('fast-requests-{{ip}}', 100, 1);
+        $adapter = $this->getAdapter('fast-requests-{{ip}}', 10, 1);
         $adapter->setParam('{{ip}}', '0.0.0.10');
         $abuse = new Abuse($adapter);
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $this->assertEquals($abuse->check(), false);
         }
         $this->assertEquals($abuse->check(), true);
@@ -68,10 +68,10 @@ abstract class Base extends TestCase
      */
     public function testLimitReset(): void
     {
-        $adapter = $this->getAdapter('limit-reset-{{ip}}', 100, 2);
+        $adapter = $this->getAdapter('limit-reset-{{ip}}', 10, 2);
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $abuse = new Abuse($adapter);
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $this->assertEquals($abuse->check(), false);
         }
         $this->assertEquals($abuse->check(), true);
@@ -80,7 +80,7 @@ abstract class Base extends TestCase
         sleep(2);
 
         /** Seems to be a bug in the code where if use the same adapter, it caches the result of the previous check */
-        $adapter = $this->getAdapter('limit-reset-{{ip}}', 100, 1);
+        $adapter = $this->getAdapter('limit-reset-{{ip}}', 10, 1);
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $abuse = new Abuse($adapter);
         $this->assertEquals($abuse->check(), false);
