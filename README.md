@@ -21,6 +21,8 @@ composer require utopia-php/abuse
 The time limit abuse allow each key (action) to be performed [X] times in given time frame.
 This adapter uses a MySQL / MariaDB to store usage attempts. Before using it create the table schema as documented in this repository (./data/schema.sql)
 
+### Database adapter
+
 ```php
 <?php
 
@@ -58,6 +60,38 @@ $adapter->setParam('{{ip}}', '127.0.0.1')
 ;
 
 $abuse      = new Abuse($adapter);
+
+// Use vars to resolve adapter key
+
+if($abuse->check()) {
+    throw new Exception('Service was abused!'); // throw error and return X-Rate limit headers here
+}
+```
+
+### Appwrite TablesDB adapter
+
+```php
+<?php
+
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use Utopia\Abuse\Abuse;
+use Utopia\Abuse\Adapters\TimeLimit\Appwrite\TablesDB as TablesDBAdapter;
+use Appwrite\Client;
+
+$client = (new Client())
+    ->setEndpoint('[YOUR_ENDPOINT]')
+    ->setProject('[YOUR_PROJECT_ID]')
+    ->setKey('[YOUR_API_KEY]');
+$databaseId = 'abuse';
+
+// Limit login attempts to 10 time in 5 minutes time frame
+$adapter = new TablesDBAdapter('login-attempt-from-{{ip}}', 10, (60 * 5), $client, $databaseId);
+
+$adapter->setup(); //setup database as required
+$adapter->setParam('{{ip}}', '127.0.0.1');
+
+$abuse = new Abuse($adapter);
 
 // Use vars to resolve adapter key
 
