@@ -17,9 +17,9 @@ abstract class Base extends TestCase
     {
         $adapter = $this->getAdapter('static-key', 2, 1);
         $abuse = new Abuse($adapter);
-        $this->assertEquals($abuse->check(), false);
-        $this->assertEquals($abuse->check(), false);
-        $this->assertEquals($abuse->check(), true);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), true);
     }
 
     /**
@@ -30,9 +30,9 @@ abstract class Base extends TestCase
         $adapter = $this->getAdapter('dynamic-key-{{ip}}', 2, 1);
         $adapter->setParam('{{ip}}', '0.0.0.10');
         $abuse = new Abuse($adapter);
-        $this->assertEquals($abuse->check(), false);
-        $this->assertEquals($abuse->check(), false);
-        $this->assertEquals($abuse->check(), true);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), true);
     }
 
     /**
@@ -44,9 +44,9 @@ abstract class Base extends TestCase
         $adapter->setParam('{{ip}}', '0.0.0.10');
         $adapter->setParam('{{email}}', 'test@test.com');
         $abuse = new Abuse($adapter);
-        $this->assertEquals($abuse->check(), false);
-        $this->assertEquals($abuse->check(), false);
-        $this->assertEquals($abuse->check(), true);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), true);
     }
 
     /**
@@ -58,9 +58,9 @@ abstract class Base extends TestCase
         $adapter->setParam('{{ip}}', '0.0.0.10');
         $abuse = new Abuse($adapter);
         for ($i = 0; $i < 10; $i++) {
-            $this->assertEquals($abuse->check(), false);
+            $this->assertSame($abuse->check(), false);
         }
-        $this->assertEquals($abuse->check(), true);
+        $this->assertSame($abuse->check(), true);
     }
 
     /**
@@ -72,9 +72,9 @@ abstract class Base extends TestCase
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $abuse = new Abuse($adapter);
         for ($i = 0; $i < 10; $i++) {
-            $this->assertEquals($abuse->check(), false);
+            $this->assertSame($abuse->check(), false);
         }
-        $this->assertEquals($abuse->check(), true);
+        $this->assertSame($abuse->check(), true);
 
         // Wait for the limit to reset
         sleep(2);
@@ -83,7 +83,7 @@ abstract class Base extends TestCase
         $adapter = $this->getAdapter('limit-reset-{{ip}}', 10, 1);
         $adapter->setParam('{{ip}}', '127.0.0.1');
         $abuse = new Abuse($adapter);
-        $this->assertEquals($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class Base extends TestCase
     {
         $now = time();
         $adapter = $this->getAdapter('', 1, 1);
-        $this->assertEquals($adapter->time(), $now);
-        $this->assertEquals(true, \is_int($adapter->time()));
+        $this->assertSame($adapter->time(), $now);
+        $this->assertSame(true, \is_int($adapter->time()));
     }
 }
