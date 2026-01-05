@@ -53,4 +53,16 @@ class Abuse
     {
         return $this->adapter->cleanup($timestamp);
     }
+
+    /**
+     * Reset
+     *
+     * Reset the count to 0 for the current adapter
+     *
+     * @return void
+     */
+    public function reset(): void
+    {
+        $this->adapter->reset();
+    }
 }

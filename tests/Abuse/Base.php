@@ -96,4 +96,33 @@ abstract class Base extends TestCase
         $this->assertSame($adapter->time(), $now);
         $this->assertSame(true, \is_int($adapter->time()));
     }
+
+    /**
+     * Test the reset functionality
+     */
+    public function testReset(): void
+    {
+        $adapter = $this->getAdapter('reset-test-{{ip}}', 5, 1);
+        $adapter->setParam('{{ip}}', '192.168.1.1');
+        $abuse = new Abuse($adapter);
+        
+        // Make 3 checks
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        
+        // Reset the count
+        $abuse->reset();
+        
+        // Should be able to make 5 checks again
+        $adapter = $this->getAdapter('reset-test-{{ip}}', 5, 1);
+        $adapter->setParam('{{ip}}', '192.168.1.1');
+        $abuse = new Abuse($adapter);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), true);
+    }
 }

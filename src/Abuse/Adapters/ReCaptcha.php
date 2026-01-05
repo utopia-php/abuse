@@ -117,4 +117,18 @@ class ReCaptcha extends Adapter
     {
         throw new Exception('Method not supported');
     }
+
+    /**
+     * Reset
+     *
+     * Reset is not applicable for ReCaptcha adapter
+     *
+     * @return void
+     *
+     * @throws Exception
+     */
+    public function reset(): void
+    {
+        throw new Exception('Method not supported');
+    }
 }
