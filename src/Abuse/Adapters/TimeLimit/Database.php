@@ -225,9 +225,6 @@ class Database extends TimeLimit
      */
     protected function set(string $key, int $timestamp, int $value): void
     {
-        if (0 == $this->limit) { // No limit no point for counting
-            return;
-        }
 
         $timestamp = $this->toDateTime($timestamp);
         Authorization::skip(function () use ($timestamp, $key, $value) {

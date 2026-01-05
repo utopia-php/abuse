@@ -260,10 +260,6 @@ class TablesDB extends TimeLimit
      */
     protected function set(string $key, int $timestamp, int $value): void
     {
-        if (0 == $this->limit) { // No limit no point for counting
-            return;
-        }
-
         $timestamp = $this->toDateTime($timestamp);
 
         $response = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [

@@ -102,27 +102,37 @@ abstract class Base extends TestCase
      */
     public function testReset(): void
     {
-        $adapter = $this->getAdapter('reset-test-{{ip}}', 5, 1);
+        $adapter = $this->getAdapter('reset-test-{{ip}}', 5, 600);
         $adapter->setParam('{{ip}}', '192.168.1.1');
         $abuse = new Abuse($adapter);
-        
-        // Make 3 checks
-        $this->assertSame($abuse->check(), false);
-        $this->assertSame($abuse->check(), false);
-        $this->assertSame($abuse->check(), false);
-        
-        // Reset the count
-        $abuse->reset();
-        
-        // Should be able to make 5 checks again
-        $adapter = $this->getAdapter('reset-test-{{ip}}', 5, 1);
-        $adapter->setParam('{{ip}}', '192.168.1.1');
-        $abuse = new Abuse($adapter);
+
+        // 5 OK, 6th has limit
         $this->assertSame($abuse->check(), false);
         $this->assertSame($abuse->check(), false);
         $this->assertSame($abuse->check(), false);
         $this->assertSame($abuse->check(), false);
         $this->assertSame($abuse->check(), false);
         $this->assertSame($abuse->check(), true);
+
+        // Reset the count
+        $abuse->reset();
+
+        // Should be 5 more OK, then 6th limit
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), false);
+        $this->assertSame($abuse->check(), true);
+
+        // TO be sure, lets do bunch of requests with resets
+        // All should pass successfully
+        $adapter = $this->getAdapter('reset-test-{{ip}}', 2, 600);
+        $adapter->setParam('{{ip}}', '192.168.1.2');
+        $abuse = new Abuse($adapter);
+        for ($i = 0; $i < 15; $i++) {
+            $this->assertSame($abuse->check(), false);
+            $abuse->reset();
+        }
     }
 }

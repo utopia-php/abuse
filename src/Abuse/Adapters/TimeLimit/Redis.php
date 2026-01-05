@@ -87,9 +87,6 @@ class Redis extends TimeLimit
      */
     protected function set(string $key, int $timestamp, int $value): void
     {
-        if (0 == $this->limit) { // No limit no point for counting
-            return;
-        }
 
         $key = self::NAMESPACE . '__' . $key . '__' . $timestamp;
         $this->redis->multi()
