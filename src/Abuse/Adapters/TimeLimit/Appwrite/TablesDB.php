@@ -298,7 +298,7 @@ class TablesDB extends TimeLimit
                 if (!is_null($data)) {
                     $this->tablesDB->updateRow($this->databaseId, self::TABLE_ID, $data['$id'], ['count' => $value]);
                 } else {
-                    throw new \Exception('Document Not Found');
+                    throw new \Exception('Unable to find abuse tracking row after race condition handling');
                 }
             }
         } else {

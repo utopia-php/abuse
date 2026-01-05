@@ -260,7 +260,7 @@ class Database extends TimeLimit
                             'count' => $value,
                         ]));
                     } else {
-                        throw new \Exception('Document Not Found');
+                        throw new \Exception('Unable to find abuse tracking document after race condition handling');
                     }
                 }
             } else {
