@@ -87,7 +87,6 @@ class Redis extends TimeLimit
      */
     protected function set(string $key, int $timestamp, int $value): void
     {
-
         $key = self::NAMESPACE . '__' . $key . '__' . $timestamp;
         $this->redis->multi()
             ->set($key, (string)$value)

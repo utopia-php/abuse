@@ -225,7 +225,6 @@ class Database extends TimeLimit
      */
     protected function set(string $key, int $timestamp, int $value): void
     {
-
         $timestamp = $this->toDateTime($timestamp);
         Authorization::skip(function () use ($timestamp, $key, $value) {
             $data = $this->db->findOne(self::COLLECTION, [
