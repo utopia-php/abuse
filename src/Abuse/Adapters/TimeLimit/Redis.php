@@ -78,6 +78,8 @@ class Redis extends TimeLimit
     }
 
     /**
+     * Set count for a key at specific timestamp
+     *
      * @param  string  $key
      * @param  int  $timestamp
      * @param  int  $value

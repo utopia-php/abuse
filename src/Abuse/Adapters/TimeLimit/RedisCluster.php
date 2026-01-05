@@ -93,7 +93,7 @@ class RedisCluster extends TimeLimit
             return;
         }
 
-        $key = self::NAMESPACE . '__'. $key .'__'. $timestamp;
+        $key = self::NAMESPACE . '__' . $key . '__' . $timestamp;
 
         $this->redis->multi();
         $this->redis->set($key, (string)$value);
