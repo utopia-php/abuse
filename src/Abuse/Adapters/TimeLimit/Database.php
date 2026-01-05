@@ -216,6 +216,61 @@ class Database extends TimeLimit
     }
 
     /**
+     * @param  string  $key
+     * @param  int  $timestamp
+     * @param  int  $value
+     * @return void
+     *
+     * @throws AuthorizationException|Structure|\Exception|\Throwable
+     */
+    protected function set(string $key, int $timestamp, int $value): void
+    {
+        $timestamp = $this->toDateTime($timestamp);
+        Authorization::skip(function () use ($timestamp, $key, $value) {
+            $data = $this->db->findOne(self::COLLECTION, [
+                Query::equal('key', [$key]),
+                Query::equal('time', [$timestamp]),
+            ]);
+
+            if ($data->isEmpty()) {
+                $data = [
+                    '$permissions' => [],
+                    'key' => $key,
+                    'time' => $timestamp,
+                    'count' => $value,
+                    '$collection' => self::COLLECTION,
+                ];
+
+                try {
+                    $this->db->createDocument(self::COLLECTION, new Document($data));
+                } catch (Duplicate $e) {
+                    // Duplicate in case of race condition - update existing document
+                    $data = $this->db->findOne(self::COLLECTION, [
+                        Query::equal('key', [$key]),
+                        Query::equal('time', [$timestamp]),
+                    ]);
+
+                    if (!$data->isEmpty()) {
+                        /** @var Document $data */
+                        $this->db->updateDocument(self::COLLECTION, $data->getId(), new Document([
+                            'count' => $value,
+                        ]));
+                    } else {
+                        throw new \Exception('Unable to find abuse tracking document after race condition handling');
+                    }
+                }
+            } else {
+                /** @var Document $data */
+                $this->db->updateDocument(self::COLLECTION, $data->getId(), new Document([
+                    'count' => $value,
+                ]));
+            }
+        });
+
+        $this->count = $value;
+    }
+
+    /**
      * Get abuse logs
      *
      * Return logs with an optional offset and limit

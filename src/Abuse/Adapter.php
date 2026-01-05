@@ -83,4 +83,13 @@ abstract class Adapter
      * @return bool
      */
     abstract public function cleanup(int $timestamp): bool;
+
+    /**
+     * Reset
+     *
+     * Reset the count to 0
+     *
+     * @return void
+     */
+    abstract public function reset(): void;
 }

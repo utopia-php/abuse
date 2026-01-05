@@ -80,6 +80,27 @@ class RedisCluster extends TimeLimit
     }
 
     /**
+     * Set count for a key at specific timestamp
+     *
+     * @param string $key
+     * @param int $timestamp
+     * @param int $value
+     * @return void
+     */
+    protected function set(string $key, int $timestamp, int $value): void
+    {
+
+        $key = self::NAMESPACE . '__' . $key . '__' . $timestamp;
+
+        $this->redis->multi();
+        $this->redis->set($key, (string)$value);
+        $this->redis->expire($key, $this->ttl);
+        $this->redis->exec();
+
+        $this->count = $value;
+    }
+
+    /**
      * Get abuse logs with proper cursor-based pagination
      *
      * @param int|null $offset

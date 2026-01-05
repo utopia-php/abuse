@@ -37,6 +37,8 @@ abstract class TimeLimit extends Adapter
 
     abstract protected function hit(string $key, int $timestamp): void;
 
+    abstract protected function set(string $key, int $timestamp, int $value): void;
+
     /**
      * Check
      *
@@ -101,5 +103,19 @@ abstract class TimeLimit extends Adapter
     public function time(): int
     {
         return $this->timestamp;
+    }
+
+    /**
+     * Reset
+     *
+     * Reset the count to 0 for the current key and timestamp
+     *
+     * @return void
+     *
+     * @throws \Exception
+     */
+    public function reset(): void
+    {
+        $this->set($this->parseKey(), $this->timestamp, 0);
     }
 }

@@ -78,6 +78,25 @@ class Redis extends TimeLimit
     }
 
     /**
+     * Set count for a key at specific timestamp
+     *
+     * @param  string  $key
+     * @param  int  $timestamp
+     * @param  int  $value
+     * @return void
+     */
+    protected function set(string $key, int $timestamp, int $value): void
+    {
+        $key = self::NAMESPACE . '__' . $key . '__' . $timestamp;
+        $this->redis->multi()
+            ->set($key, (string)$value)
+            ->expire($key, $this->ttl)
+            ->exec();
+
+        $this->count = $value;
+    }
+
+    /**
      * Get abuse logs
      *
      * Return logs with an offset and limit

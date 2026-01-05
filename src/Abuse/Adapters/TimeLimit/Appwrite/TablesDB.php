@@ -251,6 +251,60 @@ class TablesDB extends TimeLimit
     }
 
     /**
+     * @param  string  $key
+     * @param  int  $timestamp
+     * @param  int  $value
+     * @return void
+     *
+     * @throws \Throwable
+     */
+    protected function set(string $key, int $timestamp, int $value): void
+    {
+        $timestamp = $this->toDateTime($timestamp);
+
+        $response = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
+            Query::equal('key', [$key]),
+            Query::equal('time', [$timestamp]),
+        ]);
+        $rows = $response['rows'];
+        $data = $rows[0] ?? null;
+
+        if (\is_null($data)) {
+            $data = [
+                'key' => $key,
+                'time' => $timestamp,
+                'count' => $value,
+            ];
+
+            try {
+                $this->tablesDB->createRow($this->databaseId, self::TABLE_ID, ID::unique(), $data);
+            } catch (AppwriteException $err) {
+                if ($err->getType() !== 'row_already_exists') {
+                    throw $err;
+                }
+
+                $response = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
+                    Query::equal('key', [$key]),
+                    Query::equal('time', [$timestamp]),
+                ]);
+                $rows = $response['rows'];
+
+                $data = $rows[0] ?? null;
+
+                if (!is_null($data)) {
+                    $this->tablesDB->updateRow($this->databaseId, self::TABLE_ID, $data['$id'], ['count' => $value]);
+                } else {
+                    throw new \Exception('Unable to find abuse tracking row after race condition handling');
+                }
+            }
+        } else {
+            $this->tablesDB->updateRow($this->databaseId, self::TABLE_ID, $data['$id'], ['count' => $value]);
+        }
+
+        $this->count = $value;
+    }
+
+    /**
      * Get abuse logs
      *
      * Return logs with an optional offset and limit
