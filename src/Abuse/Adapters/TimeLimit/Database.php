@@ -139,7 +139,7 @@ class Database extends TimeLimit
         $timestamp = $this->toDateTime($timestamp);
 
         /** @var array<Document> $result */
-        $result = Authorization::skip(function () use ($key, $timestamp) {
+        $result = $this->db->getAuthorization()->skip(function () use ($key, $timestamp) {
             return $this->db->find(self::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$timestamp]),
@@ -172,7 +172,7 @@ class Database extends TimeLimit
         }
 
         $timestamp = $this->toDateTime($timestamp);
-        Authorization::skip(function () use ($timestamp, $key) {
+        $this->db->getAuthorization()->skip(function () use ($timestamp, $key) {
             $data = $this->db->findOne(self::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$timestamp]),
@@ -226,7 +226,7 @@ class Database extends TimeLimit
     protected function set(string $key, int $timestamp, int $value): void
     {
         $timestamp = $this->toDateTime($timestamp);
-        Authorization::skip(function () use ($timestamp, $key, $value) {
+        $this->db->getAuthorization()->skip(function () use ($timestamp, $key, $value) {
             $data = $this->db->findOne(self::COLLECTION, [
                 Query::equal('key', [$key]),
                 Query::equal('time', [$timestamp]),
@@ -284,7 +284,7 @@ class Database extends TimeLimit
     public function getLogs(?int $offset = null, ?int $limit = 25): array
     {
         /** @var array<Document> $results */
-        $results = Authorization::skip(function () use ($offset, $limit) {
+        $results = $this->db->getAuthorization()->skip(function () use ($offset, $limit) {
             $queries = [];
             $queries[] = Query::orderDesc('');
 
@@ -312,7 +312,7 @@ class Database extends TimeLimit
     public function cleanup(int $timestamp): bool
     {
         $timestamp = $this->toDateTime($timestamp);
-        Authorization::skip(function () use ($timestamp) {
+        $this->db->getAuthorization()->skip(function () use ($timestamp) {
             do {
                 $documents = $this->db->find(self::COLLECTION, [
                     Query::lessThan('time', $timestamp),
