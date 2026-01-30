@@ -22,7 +22,7 @@
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*",
-        "utopia-php/database": "4.*",
+        "utopia-php/database": "5.*",
         "appwrite/appwrite": "19.*"
     },
     "require-dev": {
