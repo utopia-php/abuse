@@ -81,7 +81,6 @@ class ReCaptcha extends Adapter
         $result = \json_decode((string) \curl_exec($ch), true);
 
         //close connection
-        \curl_close($ch);
         if ($result['success'] && $result['score'] >= $score) {
             return true;
         } else {
