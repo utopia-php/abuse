@@ -80,7 +80,6 @@ class ReCaptcha extends Adapter
         /** @var array<string, mixed> $result */
         $result = \json_decode((string) \curl_exec($ch), true);
 
-        //close connection
         if ($result['success'] && $result['score'] >= $score) {
             return true;
         } else {
