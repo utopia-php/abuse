@@ -10,14 +10,12 @@ use Utopia\Cache\Cache;
 use Utopia\Database\Adapter\MySQL;
 use Utopia\Database\Adapter\SQL;
 use Utopia\Database\Database as UtopiaDatabase;
-use Utopia\Exception;
 
 final class Database extends Base
 {
     protected UtopiaDatabase $db;
 
     /**
-     * @throws Exception
      * @throws \Exception
      */
     public function setUp(): void

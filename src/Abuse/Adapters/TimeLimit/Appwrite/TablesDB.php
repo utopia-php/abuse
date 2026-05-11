@@ -11,7 +11,6 @@ use Appwrite\Query;
 use Appwrite\Services\TablesDB as TablesDBService;
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Database\Document;
-use Utopia\Exception;
 
 class TablesDB extends TimeLimit
 {
@@ -36,7 +35,7 @@ class TablesDB extends TimeLimit
     }
 
     /**
-     * @throws Exception|\Exception
+     * @throws \Exception
      */
     public function setup(): void
     {

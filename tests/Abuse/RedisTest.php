@@ -5,14 +5,12 @@ namespace Utopia\Tests;
 use Redis;
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Abuse\Adapters\TimeLimit\Redis as AdapterRedis;
-use Utopia\Exception;
 
 class RedisTest extends Base
 {
     protected static \Redis $redis;
 
     /**
-     * @throws Exception
      * @throws \Exception
      */
     public static function setUpBeforeClass(): void
