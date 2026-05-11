@@ -116,7 +116,8 @@ class TablesDB extends TimeLimit
                 ? $this->tablesDB->listColumns($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)])->columns
                 : $this->tablesDB->listIndexes($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)])->indexes;
 
-            $resources = \array_filter($resources, fn ($resource) => $resource->status !== 'available');
+            // Column models expose status as a ColumnStatus enum; index models as a plain string. Cast for both.
+            $resources = \array_filter($resources, fn ($resource) => (string) $resource->status !== 'available');
 
             if (\count($resources) === 0) {
                 return;

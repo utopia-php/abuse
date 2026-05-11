@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2818364d7546938e790828df5ee307d1",
+    "content-hash": "b04b14bd2ea9045a6b56b7aa930aea9f",
     "packages": [
         {
             "name": "appwrite/appwrite",
-            "version": "23.0.0",
+            "version": "23.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appwrite/sdk-for-php.git",
-                "reference": "d22b36167931294bec4259f0803aba14537030ec"
+                "reference": "2f275921f10ceb7cff99f2d463f7328b296234fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appwrite/sdk-for-php/zipball/d22b36167931294bec4259f0803aba14537030ec",
-                "reference": "d22b36167931294bec4259f0803aba14537030ec",
+                "url": "https://api.github.com/repos/appwrite/sdk-for-php/zipball/2f275921f10ceb7cff99f2d463f7328b296234fa",
+                "reference": "2f275921f10ceb7cff99f2d463f7328b296234fa",
                 "shasum": ""
             },
             "require": {
@@ -43,10 +43,10 @@
             "support": {
                 "email": "team@appwrite.io",
                 "issues": "https://github.com/appwrite/sdk-for-php/issues",
-                "source": "https://github.com/appwrite/sdk-for-php/tree/23.0.0",
+                "source": "https://github.com/appwrite/sdk-for-php/tree/23.1.0",
                 "url": "https://appwrite.io/support"
             },
-            "time": "2026-04-16T12:38:44+00:00"
+            "time": "2026-05-08T13:44:58+00:00"
         },
         {
             "name": "brick/math",
@@ -2076,16 +2076,16 @@
         },
         {
             "name": "utopia-php/cache",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/cache.git",
-                "reference": "05ceba981436a4022553f7aaa2a05fa049d0f71c"
+                "reference": "d36f9050c39c02e09a7763389c9e71258e74af1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/cache/zipball/05ceba981436a4022553f7aaa2a05fa049d0f71c",
-                "reference": "05ceba981436a4022553f7aaa2a05fa049d0f71c",
+                "url": "https://api.github.com/repos/utopia-php/cache/zipball/d36f9050c39c02e09a7763389c9e71258e74af1f",
+                "reference": "d36f9050c39c02e09a7763389c9e71258e74af1f",
                 "shasum": ""
             },
             "require": {
@@ -2122,9 +2122,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/cache/issues",
-                "source": "https://github.com/utopia-php/cache/tree/1.0.1"
+                "source": "https://github.com/utopia-php/cache/tree/1.0.2"
             },
-            "time": "2026-03-12T03:39:09+00:00"
+            "time": "2026-05-08T11:40:20+00:00"
         },
         {
             "name": "utopia-php/console",
@@ -5544,7 +5544,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.0",
+        "php": ">=8.2",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*"
