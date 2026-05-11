@@ -4,14 +4,12 @@ namespace Utopia\Tests;
 
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Abuse\Adapters\TimeLimit\RedisCluster as AdapterRedisCluster;
-use Utopia\Exception;
 
 class RedisClusterTest extends Base
 {
     protected static \RedisCluster $redis;
 
     /**
-     * @throws Exception
      * @throws \Exception
      */
     public static function setUpBeforeClass(): void

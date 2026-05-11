@@ -10,7 +10,6 @@ use Utopia\Database\Exception\Authorization as AuthorizationException;
 use Utopia\Database\Exception\Duplicate;
 use Utopia\Database\Exception\Structure;
 use Utopia\Database\Query;
-use Utopia\Exception;
 
 class Database extends TimeLimit
 {
@@ -87,12 +86,12 @@ class Database extends TimeLimit
 
     /**
      * @throws Duplicate
-     * @throws Exception|\Exception
+     * @throws \Exception
      */
     public function setup(): void
     {
         if (! $this->db->exists($this->db->getDatabase())) {
-            throw new Exception('You need to create database before running timelimit setup');
+            throw new \Exception('You need to create database before running timelimit setup');
         }
 
         $attributes = \array_map(function ($attribute) {

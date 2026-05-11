@@ -4,13 +4,13 @@ namespace Utopia\Abuse\Adapters\TimeLimit\Appwrite;
 
 use Appwrite\AppwriteException;
 use Appwrite\Client;
-use Appwrite\Enums\IndexType;
+use Appwrite\Enums\TablesDBIndexType;
 use Appwrite\ID;
+use Appwrite\Models\Row;
 use Appwrite\Query;
 use Appwrite\Services\TablesDB as TablesDBService;
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Database\Document;
-use Utopia\Exception;
 
 class TablesDB extends TimeLimit
 {
@@ -35,7 +35,7 @@ class TablesDB extends TimeLimit
     }
 
     /**
-     * @throws Exception|\Exception
+     * @throws \Exception
      */
     public function setup(): void
     {
@@ -94,8 +94,8 @@ class TablesDB extends TimeLimit
     protected function createIndexes(): void
     {
         $indexes = [
-            fn () => $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'unique1', IndexType::UNIQUE(), ['key', 'time']),
-            fn () => $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'index2', IndexType::KEY(), ['time'])
+            fn () => $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'unique1', TablesDBIndexType::UNIQUE(), ['key', 'time']),
+            fn () => $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'index2', TablesDBIndexType::KEY(), ['time'])
         ];
 
         foreach ($indexes as $createIndexFunction) {
@@ -111,12 +111,12 @@ class TablesDB extends TimeLimit
         while ($attempts < $maxAttempts) {
             $attempts++;
 
-            $response = $resourceType === 'columns'
-                ? $this->tablesDB->listColumns($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)])
-                : $this->tablesDB->listIndexes($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)]);
+            $resources = $resourceType === 'columns'
+                ? $this->tablesDB->listColumns($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)])->columns
+                : $this->tablesDB->listIndexes($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)])->indexes;
 
-            $resources = $response[$resourceType];
-            $resources = \array_filter($resources, fn ($resource) => $resource['status'] !== 'available');
+            // Column models expose status as a ColumnStatus enum; index models as a plain string. Cast for both.
+            $resources = \array_filter($resources, fn ($resource) => (string) $resource->status !== 'available');
 
             if (\count($resources) === 0) {
                 return;
@@ -170,16 +170,15 @@ class TablesDB extends TimeLimit
 
         $timestamp = $this->toDateTime($timestamp);
 
-        $response = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
+        $rows = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
             Query::equal('key', [$key]),
             Query::equal('time', [$timestamp]),
-        ]);
-        $rows = $response['rows'];
+        ])->rows;
 
         $this->count = 0;
 
         if (\count($rows) === 1) { // Unique Index
-            $count = $rows[0]['count'] ?? 0;
+            $count = $rows[0]->data['count'] ?? 0;
             if (\is_numeric($count)) {
                 $this->count = intval($count);
             }
@@ -203,14 +202,13 @@ class TablesDB extends TimeLimit
 
         $timestamp = $this->toDateTime($timestamp);
 
-        $response = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
+        $rows = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
             Query::equal('key', [$key]),
             Query::equal('time', [$timestamp]),
-        ]);
-        $rows = $response['rows'];
-        $data = $rows[0] ?? null;
+        ])->rows;
+        $row = $rows[0] ?? null;
 
-        if (\is_null($data)) {
+        if (\is_null($row)) {
             $data = [
                 'key' => $key,
                 'time' => $timestamp,
@@ -224,27 +222,26 @@ class TablesDB extends TimeLimit
                     throw $err;
                 }
 
-                $response = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
+                $rows = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
                     Query::equal('key', [$key]),
                     Query::equal('time', [$timestamp]),
-                ]);
-                $rows = $response['rows'];
+                ])->rows;
 
-                $data = $rows[0] ?? null;
+                $row = $rows[0] ?? null;
 
-                if (!is_null($data)) {
-                    $count = $data['count'] ?? 0;
+                if (!is_null($row)) {
+                    $count = $row->data['count'] ?? 0;
                     if (\is_numeric($count)) {
                         $this->count = intval($count);
                     }
 
-                    $this->tablesDB->incrementRowColumn($this->databaseId, self::TABLE_ID, $data['$id'], 'count', 1);
+                    $this->tablesDB->incrementRowColumn($this->databaseId, self::TABLE_ID, $row->id, 'count', 1);
                 } else {
                     throw new \Exception('Document Not Found');
                 }
             }
         } else {
-            $this->tablesDB->incrementRowColumn($this->databaseId, self::TABLE_ID, $data['$id'], 'count', 1);
+            $this->tablesDB->incrementRowColumn($this->databaseId, self::TABLE_ID, $row->id, 'count', 1);
         }
 
         $this->count++;
@@ -262,14 +259,13 @@ class TablesDB extends TimeLimit
     {
         $timestamp = $this->toDateTime($timestamp);
 
-        $response = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
+        $rows = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
             Query::equal('key', [$key]),
             Query::equal('time', [$timestamp]),
-        ]);
-        $rows = $response['rows'];
-        $data = $rows[0] ?? null;
+        ])->rows;
+        $row = $rows[0] ?? null;
 
-        if (\is_null($data)) {
+        if (\is_null($row)) {
             $data = [
                 'key' => $key,
                 'time' => $timestamp,
@@ -283,22 +279,21 @@ class TablesDB extends TimeLimit
                     throw $err;
                 }
 
-                $response = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
+                $rows = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, [
                     Query::equal('key', [$key]),
                     Query::equal('time', [$timestamp]),
-                ]);
-                $rows = $response['rows'];
+                ])->rows;
 
-                $data = $rows[0] ?? null;
+                $row = $rows[0] ?? null;
 
-                if (!is_null($data)) {
-                    $this->tablesDB->updateRow($this->databaseId, self::TABLE_ID, $data['$id'], ['count' => $value]);
+                if (!is_null($row)) {
+                    $this->tablesDB->updateRow($this->databaseId, self::TABLE_ID, $row->id, ['count' => $value]);
                 } else {
                     throw new \Exception('Unable to find abuse tracking row after race condition handling');
                 }
             }
         } else {
-            $this->tablesDB->updateRow($this->databaseId, self::TABLE_ID, $data['$id'], ['count' => $value]);
+            $this->tablesDB->updateRow($this->databaseId, self::TABLE_ID, $row->id, ['count' => $value]);
         }
 
         $this->count = $value;
@@ -328,9 +323,9 @@ class TablesDB extends TimeLimit
             $queries[] = Query::limit($limit);
         }
 
-        $response = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, $queries);
+        $rows = $this->tablesDB->listRows($this->databaseId, self::TABLE_ID, $queries)->rows;
 
-        return \array_map(fn ($document) => new Document($document), $response['documents']);
+        return \array_map(fn (Row $row) => new Document($row->toArray()), $rows);
     }
 
     /**
@@ -349,7 +344,7 @@ class TablesDB extends TimeLimit
             $response = $this->tablesDB->deleteRows($this->databaseId, self::TABLE_ID, [
                 Query::lessThan('time', $timestamp),
             ]);
-        } while ($response['total'] > 0);
+        } while ($response->total > 0);
 
         return true;
     }

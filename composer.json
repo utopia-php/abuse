@@ -18,12 +18,12 @@
         "bench": "vendor/bin/phpbench run --report=aggregate"
     },
     "require": {
-        "php": ">=8.0",
+        "php": ">=8.2",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*",
         "utopia-php/database": "5.*",
-        "appwrite/appwrite": "19.*"
+        "appwrite/appwrite": "23.*"
     },
     "require-dev": {
         "phpunit/phpunit": "9.*",
