@@ -23,7 +23,7 @@
         "ext-curl": "*",
         "ext-redis": "*",
         "utopia-php/database": "5.*",
-        "appwrite/appwrite": "23.*"
+        "appwrite/appwrite": "24.*"
     },
     "require-dev": {
         "phpunit/phpunit": "9.*",
