@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5a86c0dbd34a49a1f91118323c731c1",
+    "content-hash": "ef64d20a9770c8a5f5e7b514e5a26df0",
     "packages": [
         {
             "name": "appwrite/appwrite",
-            "version": "24.1.0",
+            "version": "26.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appwrite/sdk-for-php.git",
-                "reference": "dcb3550a3332de1c1665a015a09e9c73ff515e4f"
+                "reference": "bc26d0f0cfa4699de12d6af4df70ac0729ab7918"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appwrite/sdk-for-php/zipball/dcb3550a3332de1c1665a015a09e9c73ff515e4f",
-                "reference": "dcb3550a3332de1c1665a015a09e9c73ff515e4f",
+                "url": "https://api.github.com/repos/appwrite/sdk-for-php/zipball/bc26d0f0cfa4699de12d6af4df70ac0729ab7918",
+                "reference": "bc26d0f0cfa4699de12d6af4df70ac0729ab7918",
                 "shasum": ""
             },
             "require": {
@@ -27,7 +27,7 @@
             },
             "require-dev": {
                 "mockery/mockery": "1.6.12",
-                "phpunit/phpunit": "^10"
+                "phpunit/phpunit": "^12"
             },
             "type": "library",
             "autoload": {
@@ -43,10 +43,10 @@
             "support": {
                 "email": "team@appwrite.io",
                 "issues": "https://github.com/appwrite/sdk-for-php/issues",
-                "source": "https://github.com/appwrite/sdk-for-php/tree/24.1.0",
+                "source": "https://github.com/appwrite/sdk-for-php/tree/26.0.0",
                 "url": "https://appwrite.io/support"
             },
-            "time": "2026-05-20T09:37:03+00:00"
+            "time": "2026-06-17T04:32:07+00:00"
         },
         {
             "name": "brick/math",
