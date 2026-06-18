@@ -3,11 +3,11 @@
 namespace Utopia\Tests;
 
 use Utopia\Abuse\Adapters\TimeLimit;
-use Utopia\Abuse\Adapters\TimeLimit\Pool as AdapterPool;
+use Utopia\Abuse\Adapters\TimeLimit\RedisPool as AdapterRedisPool;
 use Utopia\Pools\Adapter\Stack;
 use Utopia\Pools\Pool;
 
-class PoolTest extends Base
+class RedisPoolTest extends Base
 {
     /**
      * @var Pool<\Redis>|null
@@ -34,7 +34,7 @@ class PoolTest extends Base
         $this->assertInstanceOf(Pool::class, $pool);
 
         /** @var Pool<\Redis> $pool */
-        return new AdapterPool($key, $limit, $seconds, $pool);
+        return new AdapterRedisPool($key, $limit, $seconds, $pool);
     }
 
     public static function tearDownAfterClass(): void

@@ -6,7 +6,7 @@ use Throwable;
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Pools\Pool as UtopiaPool;
 
-class Pool extends TimeLimit
+class RedisPool extends TimeLimit
 {
     /**
      * @var int
