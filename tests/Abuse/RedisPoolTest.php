@@ -37,6 +37,29 @@ class RedisPoolTest extends Base
         return new AdapterRedisPool('redis-pool-' . $key, $limit, $seconds, $pool);
     }
 
+    public function testGetLogsSupportsNullableLimit(): void
+    {
+        $adapter = $this->getAdapter('logs-null-limit', 1, 60);
+        $abuse = new \Utopia\Abuse\Abuse($adapter);
+
+        $this->assertSame(false, $abuse->check());
+        $this->assertNotEmpty($adapter->getLogs(null, null));
+    }
+
+    public function testGetLogsAppliesOffset(): void
+    {
+        $this->clearRedisPoolLogs();
+        $adapter = $this->getAdapter('logs-offset', 1, 60);
+
+        $this->setRedisPoolLog('a', '1');
+        $this->setRedisPoolLog('b', '2');
+        $this->setRedisPoolLog('c', '3');
+
+        $logs = $adapter->getLogs(1, 1);
+
+        $this->assertSame(['abuse__redis-pool-logs-offset-b__1' => '2'], $logs);
+    }
+
     public static function tearDownAfterClass(): void
     {
         if (!isset(self::$pool)) {
@@ -49,5 +72,35 @@ class RedisPoolTest extends Base
             }
         });
         self::$pool = null;
+    }
+
+    private function clearRedisPoolLogs(): void
+    {
+        $pool = self::$pool;
+        $this->assertInstanceOf(Pool::class, $pool);
+
+        $pool->use(function (\Redis $redis): void {
+            $cursor = null;
+            do {
+                $keys = $redis->scan($cursor, 'abuse__*', 100);
+                if ($keys === false) {
+                    continue;
+                }
+
+                foreach ($keys as $key) {
+                    $redis->del($key);
+                }
+            } while ($cursor > 0);
+        });
+    }
+
+    private function setRedisPoolLog(string $key, string $value): void
+    {
+        $pool = self::$pool;
+        $this->assertInstanceOf(Pool::class, $pool);
+
+        $pool->use(function (\Redis $redis) use ($key, $value): void {
+            $redis->set('abuse__redis-pool-logs-offset-' . $key . '__1', $value);
+        });
     }
 }

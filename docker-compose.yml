@@ -17,7 +17,7 @@ services:
   tests:
     build:
       context: .
-      dockerfile: Dockerfile.php-${PHP_VERSION:-8.3}
+      dockerfile: Dockerfile.php-${PHP_VERSION:-8.4}
     networks:
       - abuse
     depends_on:
