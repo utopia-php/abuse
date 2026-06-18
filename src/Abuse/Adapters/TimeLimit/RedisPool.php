@@ -120,7 +120,7 @@ class RedisPool extends TimeLimit
                 if ($keys !== false) {
                     \array_push($matches, ...$keys);
                 }
-            } while ($cursor > 0 && \count($matches) < $offset + $limit);
+            } while ($cursor > 0);
 
             \sort($matches);
             $matches = \array_slice($matches, $offset, $limit);
