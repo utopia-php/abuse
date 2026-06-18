@@ -18,7 +18,7 @@
         "bench": "vendor/bin/phpbench run --report=aggregate"
     },
     "require": {
-        "php": ">=8.4",
+        "php": ">=8.4.1",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*",
