@@ -16,7 +16,7 @@ class RedisPool extends TimeLimit
     protected int $ttl;
 
     /**
-     * @param UtopiaPool<\Redis> $pool
+     * @param UtopiaPool<\Redis>|UtopiaPool<\RedisCluster> $pool
      */
     public function __construct(
         string $key,
@@ -42,7 +42,7 @@ class RedisPool extends TimeLimit
         }
 
         /** @var int $count */
-        $count = $this->useRedis(function (\Redis $redis) use ($key, $timestamp): int {
+        $count = $this->useRedis(function (\Redis|\RedisCluster $redis) use ($key, $timestamp): int {
             $count = $redis->get(Redis::NAMESPACE . '__' . $key . '__' . $timestamp);
 
             return \is_numeric($count) ? (int) $count : 0;
@@ -62,7 +62,7 @@ class RedisPool extends TimeLimit
         $ttl = $this->ttl;
         $key = Redis::NAMESPACE . '__' . $key . '__' . $timestamp;
 
-        $this->useRedis(function (\Redis $redis) use ($key, $ttl): void {
+        $this->useRedis(function (\Redis|\RedisCluster $redis) use ($key, $ttl): void {
             $redis->multi();
             $redis->incr($key);
             $redis->expire($key, $ttl);
@@ -81,7 +81,7 @@ class RedisPool extends TimeLimit
         $ttl = $this->ttl;
         $key = Redis::NAMESPACE . '__' . $key . '__' . $timestamp;
 
-        $this->useRedis(function (\Redis $redis) use ($key, $ttl, $value): void {
+        $this->useRedis(function (\Redis|\RedisCluster $redis) use ($key, $ttl, $value): void {
             $redis->multi();
             $redis->set($key, (string) $value);
             $redis->expire($key, $ttl);
@@ -110,7 +110,11 @@ class RedisPool extends TimeLimit
         $limit = $limit ?? 25;
 
         /** @var array<string, mixed> $result */
-        $result = $this->useRedis(function (\Redis $redis) use ($offset, $limit) {
+        $result = $this->useRedis(function (\Redis|\RedisCluster $redis) use ($offset, $limit): array {
+            if ($redis instanceof \RedisCluster) {
+                return $this->getRedisClusterLogs($redis, $offset, $limit);
+            }
+
             $cursor = null;
             $matches = [];
             $pattern = Redis::NAMESPACE . '__*';
@@ -153,13 +157,13 @@ class RedisPool extends TimeLimit
 
     /**
      * @template T
-     * @param callable(\Redis): T $callback
+     * @param callable(\Redis|\RedisCluster): T $callback
      * @return T
      * @throws Throwable
      */
     private function useRedis(callable $callback, bool $discardTransaction = false): mixed
     {
-        /** @var Connection<\Redis> $connection */
+        /** @var Connection<\Redis|\RedisCluster> $connection */
         $connection = $this->pool->pop();
         $redis = $connection->getResource();
 
@@ -181,11 +185,50 @@ class RedisPool extends TimeLimit
         return $result;
     }
 
-    private function discard(\Redis $redis): void
+    private function discard(\Redis|\RedisCluster $redis): void
     {
         try {
             $redis->discard();
         } catch (Throwable) {
         }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getRedisClusterLogs(\RedisCluster $redis, int $offset, int $limit): array
+    {
+        $matches = [];
+        $pattern = Redis::NAMESPACE . '__*';
+
+        foreach ($redis->_masters() as $master) {
+            $cursor = null;
+            do {
+                /** @phpstan-ignore-next-line */
+                $keys = $redis->scan($cursor, $master, $pattern, 100);
+                if ($keys !== false) {
+                    \array_push($matches, ...$keys);
+                }
+            } while ($cursor > 0);
+        }
+
+        \sort($matches);
+        $matches = \array_slice($matches, $offset, $limit);
+
+        if (empty($matches)) {
+            return [];
+        }
+
+        $values = $redis->mget($matches);
+        if (!\is_array($values)) {
+            return [];
+        }
+
+        $logs = \array_combine($matches, $values);
+        if (!\is_array($logs)) {
+            return [];
+        }
+
+        return $logs;
     }
 }

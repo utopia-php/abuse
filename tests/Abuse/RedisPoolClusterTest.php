@@ -3,11 +3,11 @@
 namespace Utopia\Tests;
 
 use Utopia\Abuse\Adapters\TimeLimit;
-use Utopia\Abuse\Adapters\TimeLimit\RedisClusterPool as AdapterRedisClusterPool;
+use Utopia\Abuse\Adapters\TimeLimit\RedisPool as AdapterRedisPool;
 use Utopia\Pools\Adapter\Stack;
 use Utopia\Pools\Pool;
 
-class RedisClusterPoolTest extends Base
+class RedisPoolClusterTest extends Base
 {
     /**
      * @var Pool<\RedisCluster>|null
@@ -36,7 +36,7 @@ class RedisClusterPoolTest extends Base
         $this->assertInstanceOf(Pool::class, $pool);
 
         /** @var Pool<\RedisCluster> $pool */
-        return new AdapterRedisClusterPool('redis-cluster-pool-' . $key, $limit, $seconds, $pool);
+        return new AdapterRedisPool('redis-cluster-pool-' . $key, $limit, $seconds, $pool);
     }
 
     public function testGetLogsSupportsNullableLimit(): void
