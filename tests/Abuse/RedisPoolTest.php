@@ -34,7 +34,7 @@ class RedisPoolTest extends Base
         $this->assertInstanceOf(Pool::class, $pool);
 
         /** @var Pool<\Redis> $pool */
-        return new AdapterRedisPool($key, $limit, $seconds, $pool);
+        return new AdapterRedisPool('redis-pool-' . $key, $limit, $seconds, $pool);
     }
 
     public static function tearDownAfterClass(): void
