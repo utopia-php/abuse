@@ -5,7 +5,6 @@ namespace Utopia\Abuse\Adapters\TimeLimit;
 use RuntimeException;
 use Throwable;
 use Utopia\Abuse\Adapters\TimeLimit;
-use Utopia\Pools\Connection;
 use Utopia\Pools\Pool as UtopiaPool;
 
 class RedisPool extends TimeLimit
@@ -42,7 +41,7 @@ class RedisPool extends TimeLimit
         }
 
         /** @var int $count */
-        $count = $this->useRedis(function (\Redis|\RedisCluster $redis) use ($key, $timestamp): int {
+        $count = $this->pool->use(function (\Redis|\RedisCluster $redis) use ($key, $timestamp): int {
             $count = $redis->get(Redis::NAMESPACE . '__' . $key . '__' . $timestamp);
 
             return \is_numeric($count) ? (int) $count : 0;
@@ -62,16 +61,22 @@ class RedisPool extends TimeLimit
         $ttl = $this->ttl;
         $key = Redis::NAMESPACE . '__' . $key . '__' . $timestamp;
 
-        $this->useRedis(function (\Redis|\RedisCluster $redis) use ($key, $ttl): void {
+        $this->pool->use(function (\Redis|\RedisCluster $redis) use ($key, $ttl): void {
             $redis->multi();
-            $redis->incr($key);
-            $redis->expire($key, $ttl);
-            $result = $redis->exec();
+            try {
+                $redis->incr($key);
+                $redis->expire($key, $ttl);
+                $result = $redis->exec();
+            } catch (Throwable $th) {
+                $this->discard($redis);
+                throw $th;
+            }
 
             if (!\is_array($result) || \in_array(false, $result, true)) {
+                $this->discard($redis);
                 throw new RuntimeException('Redis transaction failed.');
             }
-        }, true);
+        });
 
         $this->count = ($this->count ?? 0) + 1;
     }
@@ -81,16 +86,22 @@ class RedisPool extends TimeLimit
         $ttl = $this->ttl;
         $key = Redis::NAMESPACE . '__' . $key . '__' . $timestamp;
 
-        $this->useRedis(function (\Redis|\RedisCluster $redis) use ($key, $ttl, $value): void {
+        $this->pool->use(function (\Redis|\RedisCluster $redis) use ($key, $ttl, $value): void {
             $redis->multi();
-            $redis->set($key, (string) $value);
-            $redis->expire($key, $ttl);
-            $result = $redis->exec();
+            try {
+                $redis->set($key, (string) $value);
+                $redis->expire($key, $ttl);
+                $result = $redis->exec();
+            } catch (Throwable $th) {
+                $this->discard($redis);
+                throw $th;
+            }
 
             if (!\is_array($result) || \in_array(false, $result, true)) {
+                $this->discard($redis);
                 throw new RuntimeException('Redis transaction failed.');
             }
-        }, true);
+        });
 
         $this->count = $value;
     }
@@ -110,7 +121,7 @@ class RedisPool extends TimeLimit
         $limit = $limit ?? 25;
 
         /** @var array<string, mixed> $result */
-        $result = $this->useRedis(function (\Redis|\RedisCluster $redis) use ($offset, $limit): array {
+        $result = $this->pool->use(function (\Redis|\RedisCluster $redis) use ($offset, $limit): array {
             if ($redis instanceof \RedisCluster) {
                 return $this->getRedisClusterLogs($redis, $offset, $limit);
             }
@@ -153,36 +164,6 @@ class RedisPool extends TimeLimit
     public function cleanup(int $timestamp): bool
     {
         return true;
-    }
-
-    /**
-     * @template T
-     * @param callable(\Redis|\RedisCluster): T $callback
-     * @return T
-     * @throws Throwable
-     */
-    private function useRedis(callable $callback, bool $discardTransaction = false): mixed
-    {
-        /** @var Connection<\Redis|\RedisCluster> $connection */
-        $connection = $this->pool->pop();
-        $redis = $connection->getResource();
-
-        try {
-            $result = $callback($redis);
-        } catch (Throwable $th) {
-            if ($discardTransaction) {
-                $this->discard($redis);
-            }
-            try {
-                $connection->destroy();
-            } catch (Throwable) {
-            }
-            throw $th;
-        }
-
-        $connection->reclaim();
-
-        return $result;
     }
 
     private function discard(\Redis|\RedisCluster $redis): void
