@@ -5,6 +5,7 @@ namespace Utopia\Abuse\Adapters\TimeLimit;
 use RuntimeException;
 use Throwable;
 use Utopia\Abuse\Adapters\TimeLimit;
+use Utopia\CircuitBreaker\CircuitBreaker;
 use Utopia\Pools\Pool as UtopiaPool;
 
 class RedisPool extends TimeLimit
@@ -21,13 +22,32 @@ class RedisPool extends TimeLimit
         string $key,
         int $limit,
         int $seconds,
-        protected UtopiaPool $pool
+        protected UtopiaPool $pool,
+        protected ?CircuitBreaker $breaker = null
     ) {
         $this->key = $key;
         $this->ttl = $seconds;
         $now = \time();
         $this->timestamp = (int) ($now - ($now % $seconds));
         $this->limit = $limit;
+    }
+
+    /**
+     * @template T
+     * @param callable(\Redis|\RedisCluster): T $operation
+     * @param T $fallback
+     * @return T
+     */
+    private function guard(callable $operation, mixed $fallback): mixed
+    {
+        if ($this->breaker === null) {
+            return $this->pool->use($operation);
+        }
+
+        return $this->breaker->call(
+            open: fn (): mixed => $fallback,
+            close: fn (): mixed => $this->pool->use($operation),
+        );
     }
 
     protected function count(string $key, int $timestamp): int
@@ -41,11 +61,11 @@ class RedisPool extends TimeLimit
         }
 
         /** @var int $count */
-        $count = $this->pool->use(function (\Redis|\RedisCluster $redis) use ($key, $timestamp): int {
+        $count = $this->guard(function (\Redis|\RedisCluster $redis) use ($key, $timestamp): int {
             $count = $redis->get(Redis::NAMESPACE . '__' . $key . '__' . $timestamp);
 
             return \is_numeric($count) ? (int) $count : 0;
-        });
+        }, 0);
 
         $this->count = $count;
 
@@ -61,7 +81,7 @@ class RedisPool extends TimeLimit
         $ttl = $this->ttl;
         $key = Redis::NAMESPACE . '__' . $key . '__' . $timestamp;
 
-        $this->pool->use(function (\Redis|\RedisCluster $redis) use ($key, $ttl): void {
+        $this->guard(function (\Redis|\RedisCluster $redis) use ($key, $ttl): void {
             $redis->multi();
             try {
                 $redis->incr($key);
@@ -76,7 +96,7 @@ class RedisPool extends TimeLimit
                 $this->discard($redis);
                 throw new RuntimeException('Redis transaction failed.');
             }
-        });
+        }, null);
 
         $this->count = ($this->count ?? 0) + 1;
     }
@@ -86,7 +106,7 @@ class RedisPool extends TimeLimit
         $ttl = $this->ttl;
         $key = Redis::NAMESPACE . '__' . $key . '__' . $timestamp;
 
-        $this->pool->use(function (\Redis|\RedisCluster $redis) use ($key, $ttl, $value): void {
+        $this->guard(function (\Redis|\RedisCluster $redis) use ($key, $ttl, $value): void {
             $redis->multi();
             try {
                 $redis->set($key, (string) $value);
@@ -101,7 +121,7 @@ class RedisPool extends TimeLimit
                 $this->discard($redis);
                 throw new RuntimeException('Redis transaction failed.');
             }
-        });
+        }, null);
 
         $this->count = $value;
     }
@@ -121,7 +141,7 @@ class RedisPool extends TimeLimit
         $limit = $limit ?? 25;
 
         /** @var array<string, mixed> $result */
-        $result = $this->pool->use(function (\Redis|\RedisCluster $redis) use ($offset, $limit): array {
+        $result = $this->guard(function (\Redis|\RedisCluster $redis) use ($offset, $limit): array {
             if ($redis instanceof \RedisCluster) {
                 return $this->getRedisClusterLogs($redis, $offset, $limit);
             }
@@ -150,7 +170,7 @@ class RedisPool extends TimeLimit
             }
 
             return $logs;
-        });
+        }, []);
 
         return $result;
     }
