@@ -23,6 +23,7 @@
         "ext-curl": "*",
         "ext-redis": "*",
         "utopia-php/database": "^6.0.0",
+        "utopia-php/circuit-breaker": "0.3.*",
         "utopia-php/pools": "1.*",
         "appwrite/appwrite": "^26.0"
     },

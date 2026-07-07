@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb890a101e6cacd0317970c692b16083",
+    "content-hash": "081f7ab870b7ac0f095032dc2c42a78e",
     "packages": [
         {
             "name": "appwrite/appwrite",
