@@ -36,6 +36,11 @@
         "laravel/pint": "1.*",
         "phpbench/phpbench": "1.*"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-feat-captcha-facade": "1.4.x-dev"
+        }
+    },
     "config": {
         "allow-plugins": {
             "php-http/discovery": true,
