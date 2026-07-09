@@ -68,7 +68,7 @@ final class Captcha
         int $gap,
         ?int $clearanceTtl = null,
     ): array {
-        return $this->interactive->issue($context, $gap, $clearanceTtl);
+        return $this->interactive->issue($context, ['gap' => $gap], $clearanceTtl);
     }
 
     /**
