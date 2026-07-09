@@ -17,6 +17,9 @@
         "format": "./vendor/bin/pint",
         "bench": "vendor/bin/phpbench run --report=aggregate"
     },
+    "repositories": [
+        {"type": "vcs", "url": "https://github.com/premtsd-code/captcha", "no-api": true}
+    ],
     "require": {
         "php": ">=8.4.1",
         "ext-pdo": "*",
@@ -24,7 +27,8 @@
         "ext-redis": "*",
         "utopia-php/database": "^6.0.0",
         "utopia-php/pools": "1.*",
-        "appwrite/appwrite": "^26.0"
+        "appwrite/appwrite": "^26.0",
+        "premtsd-code/captcha": "dev-main"
     },
     "require-dev": {
         "phpunit/phpunit": "9.*",
