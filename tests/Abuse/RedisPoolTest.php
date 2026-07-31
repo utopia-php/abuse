@@ -25,7 +25,7 @@ class RedisPoolTest extends Base
             $redis->connect('redis', 6379);
 
             return $redis;
-        });
+        }, timeout: 0.0);
     }
 
     public function getAdapter(string $key, int $limit, int $seconds): TimeLimit

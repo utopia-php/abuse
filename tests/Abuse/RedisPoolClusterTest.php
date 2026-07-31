@@ -27,7 +27,7 @@ class RedisPoolClusterTest extends Base
                 'redis-cluster-2:6379',
                 'redis-cluster-3:6379',
             ]);
-        });
+        }, timeout: 0.0);
     }
 
     public function getAdapter(string $key, int $limit, int $seconds): TimeLimit
