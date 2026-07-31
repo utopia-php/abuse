@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb890a101e6cacd0317970c692b16083",
+    "content-hash": "4aff8f896ffc6d7981242fdf9ce459cc",
     "packages": [
         {
             "name": "appwrite/appwrite",
@@ -2075,16 +2075,16 @@
         },
         {
             "name": "utopia-php/cache",
-            "version": "3.0.2",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/cache.git",
-                "reference": "086687d7ae23dd1dae67b943161e8cef143539e1"
+                "reference": "2ab50440114a7699b8a017ee2ecd8bcd9d54ac5e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/cache/zipball/086687d7ae23dd1dae67b943161e8cef143539e1",
-                "reference": "086687d7ae23dd1dae67b943161e8cef143539e1",
+                "url": "https://api.github.com/repos/utopia-php/cache/zipball/2ab50440114a7699b8a017ee2ecd8bcd9d54ac5e",
+                "reference": "2ab50440114a7699b8a017ee2ecd8bcd9d54ac5e",
                 "shasum": ""
             },
             "require": {
@@ -2093,7 +2093,7 @@
                 "ext-redis": "*",
                 "php": ">=8.3",
                 "utopia-php/circuit-breaker": "0.3.*",
-                "utopia-php/pools": "1.*",
+                "utopia-php/pools": "2.*",
                 "utopia-php/telemetry": "*"
             },
             "require-dev": {
@@ -2123,9 +2123,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/cache/issues",
-                "source": "https://github.com/utopia-php/cache/tree/3.0.2"
+                "source": "https://github.com/utopia-php/cache/tree/4.0.0"
             },
-            "time": "2026-05-19T22:38:16+00:00"
+            "time": "2026-07-31T13:04:45+00:00"
         },
         {
             "name": "utopia-php/circuit-breaker",
@@ -2239,16 +2239,16 @@
         },
         {
             "name": "utopia-php/database",
-            "version": "6.0.0",
+            "version": "7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "fff9f0effbd40359ff925741ff9424856d8b4fde"
+                "reference": "40185b100f92c402a189d6f4f0962c63bbe5726b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/fff9f0effbd40359ff925741ff9424856d8b4fde",
-                "reference": "fff9f0effbd40359ff925741ff9424856d8b4fde",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/40185b100f92c402a189d6f4f0962c63bbe5726b",
+                "reference": "40185b100f92c402a189d6f4f0962c63bbe5726b",
                 "shasum": ""
             },
             "require": {
@@ -2256,12 +2256,12 @@
                 "ext-mongodb": "*",
                 "ext-pdo": "*",
                 "ext-redis": "*",
-                "php": ">=8.4",
-                "utopia-php/cache": "^3.0",
+                "php": ">=8.5",
+                "utopia-php/cache": "^4.0.0",
                 "utopia-php/console": "0.1.*",
                 "utopia-php/mongo": "1.*",
-                "utopia-php/pools": "1.*",
-                "utopia-php/validators": "0.2.*"
+                "utopia-php/pools": "2.*",
+                "utopia-php/validators": "0.3.*"
             },
             "require-dev": {
                 "fakerphp/faker": "1.23.*",
@@ -2293,22 +2293,22 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/database/issues",
-                "source": "https://github.com/utopia-php/database/tree/6.0.0"
+                "source": "https://github.com/utopia-php/database/tree/7.0.0"
             },
-            "time": "2026-06-18T10:37:40+00:00"
+            "time": "2026-07-31T13:33:10+00:00"
         },
         {
             "name": "utopia-php/mongo",
-            "version": "1.2.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/mongo.git",
-                "reference": "0b0aac1cd2772bcafed2d4540d74c15cac9a2d44"
+                "reference": "78818fd295f2829aaad5b74c9094e8c6f603550d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/mongo/zipball/0b0aac1cd2772bcafed2d4540d74c15cac9a2d44",
-                "reference": "0b0aac1cd2772bcafed2d4540d74c15cac9a2d44",
+                "url": "https://api.github.com/repos/utopia-php/mongo/zipball/78818fd295f2829aaad5b74c9094e8c6f603550d",
+                "reference": "78818fd295f2829aaad5b74c9094e8c6f603550d",
                 "shasum": ""
             },
             "require": {
@@ -2354,22 +2354,22 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/mongo/issues",
-                "source": "https://github.com/utopia-php/mongo/tree/1.2.0"
+                "source": "https://github.com/utopia-php/mongo/tree/1.4.0"
             },
-            "time": "2026-06-07T13:02:18+00:00"
+            "time": "2026-07-30T05:24:58+00:00"
         },
         {
             "name": "utopia-php/pools",
-            "version": "1.0.5",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/pools.git",
-                "reference": "e66e498d59cf3ac48c1f4c70be46f7eb6df7a63b"
+                "reference": "48905dac1b8f8050c2e07bdda32a018ca33982fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/pools/zipball/e66e498d59cf3ac48c1f4c70be46f7eb6df7a63b",
-                "reference": "e66e498d59cf3ac48c1f4c70be46f7eb6df7a63b",
+                "url": "https://api.github.com/repos/utopia-php/pools/zipball/48905dac1b8f8050c2e07bdda32a018ca33982fc",
+                "reference": "48905dac1b8f8050c2e07bdda32a018ca33982fc",
                 "shasum": ""
             },
             "require": {
@@ -2380,7 +2380,10 @@
                 "swoole/ide-helper": "6.*"
             },
             "suggest": {
-                "ext-swoole": "Required to use the Swoole pool adapter"
+                "ext-mongodb": "Needed to support MongoDB database pools",
+                "ext-pdo": "Needed to support MariaDB, MySQL or SQLite database pools",
+                "ext-redis": "Needed to support Redis cache pools",
+                "ext-swoole": "Needed to support Swoole based pool adapter"
             },
             "type": "library",
             "autoload": {
@@ -2407,26 +2410,25 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/pools/issues",
-                "source": "https://github.com/utopia-php/pools/tree/1.0.5"
+                "source": "https://github.com/utopia-php/pools/tree/2.0.1"
             },
-            "time": "2026-06-10T15:14:31+00:00"
+            "time": "2026-07-31T12:19:18+00:00"
         },
         {
             "name": "utopia-php/telemetry",
-            "version": "0.4.1",
+            "version": "0.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/telemetry.git",
-                "reference": "028f3a85bb987b1e9357fb1632aa40f020d1b86e"
+                "reference": "139943bffcd4f6dd8fb9ed247f946a1d151b006a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/telemetry/zipball/028f3a85bb987b1e9357fb1632aa40f020d1b86e",
-                "reference": "028f3a85bb987b1e9357fb1632aa40f020d1b86e",
+                "url": "https://api.github.com/repos/utopia-php/telemetry/zipball/139943bffcd4f6dd8fb9ed247f946a1d151b006a",
+                "reference": "139943bffcd4f6dd8fb9ed247f946a1d151b006a",
                 "shasum": ""
             },
             "require": {
-                "ext-opentelemetry": "*",
                 "ext-protobuf": "*",
                 "nyholm/psr7": "1.*",
                 "open-telemetry/exporter-otlp": "1.*",
@@ -2435,7 +2437,6 @@
                 "symfony/http-client": "7.*"
             },
             "require-dev": {
-                "phpbench/phpbench": "1.*",
                 "swoole/ide-helper": "6.*"
             },
             "suggest": {
@@ -2460,26 +2461,26 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/telemetry/issues",
-                "source": "https://github.com/utopia-php/telemetry/tree/0.4.1"
+                "source": "https://github.com/utopia-php/telemetry/tree/0.4.5"
             },
-            "time": "2026-06-10T15:48:26+00:00"
+            "time": "2026-07-08T11:07:25+00:00"
         },
         {
             "name": "utopia-php/validators",
-            "version": "0.2.6",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/validators.git",
-                "reference": "f1ac4f08d6876daf117a1d9af53a4c7b752c2c0b"
+                "reference": "d9c2269ebd2596a09681ccd2fd133eeedfcdf9ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/validators/zipball/f1ac4f08d6876daf117a1d9af53a4c7b752c2c0b",
-                "reference": "f1ac4f08d6876daf117a1d9af53a4c7b752c2c0b",
+                "url": "https://api.github.com/repos/utopia-php/validators/zipball/d9c2269ebd2596a09681ccd2fd133eeedfcdf9ba",
+                "reference": "d9c2269ebd2596a09681ccd2fd133eeedfcdf9ba",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.0"
+                "php": ">=8.5"
             },
             "type": "library",
             "autoload": {
@@ -2500,9 +2501,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/validators/issues",
-                "source": "https://github.com/utopia-php/validators/tree/0.2.6"
+                "source": "https://github.com/utopia-php/validators/tree/0.3.1"
             },
-            "time": "2026-06-10T14:45:13+00:00"
+            "time": "2026-07-14T11:55:48+00:00"
         }
     ],
     "packages-dev": [
