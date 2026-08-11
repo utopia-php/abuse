@@ -198,9 +198,9 @@ class TablesDB extends TimeLimit
     /**
      * Read the status off a listed column or index.
      *
-     * List responses carry the raw payloads rather than hydrated models, so
-     * both an array and a model exposing a status are accepted. Column models
-     * hold a ColumnStatus enum, index models a plain string.
+     * A listed column arrives as the raw payload, since the SDK has no single
+     * model to hydrate the union of column types into, while a listed index
+     * arrives as a ColumnIndex. Accept either shape.
      */
     protected function resourceStatus(mixed $resource): string
     {

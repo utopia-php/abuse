@@ -3,6 +3,7 @@
 namespace Utopia\Tests;
 
 use Appwrite\Client;
+use Appwrite\Models\ColumnIndex;
 use Appwrite\Services\TablesDB as TablesDBService;
 use Utopia\Abuse\Abuse;
 use Utopia\Abuse\Adapters\TimeLimit;
@@ -47,7 +48,7 @@ class AppwriteTablesDBTest extends Base
     {
         $tablesDB = new TablesDBService(self::$client);
 
-        $columns = $this->indexByKey($tablesDB->listColumns(self::$databaseId, TablesDB::TABLE_ID)->columns);
+        $columns = $this->columnsByKey($tablesDB->listColumns(self::$databaseId, TablesDB::TABLE_ID)->columns);
 
         $this->assertCount(3, $columns);
 
@@ -63,15 +64,15 @@ class AppwriteTablesDBTest extends Base
         $this->assertEquals(0, $columns['count']['min']);
         $this->assertEquals(PHP_INT_MAX, $columns['count']['max']);
 
-        $indexes = $this->indexByKey($tablesDB->listIndexes(self::$databaseId, TablesDB::TABLE_ID)->indexes);
+        $indexes = $this->indexesByKey($tablesDB->listIndexes(self::$databaseId, TablesDB::TABLE_ID)->indexes);
 
         $this->assertCount(2, $indexes);
 
-        $this->assertSame('unique', $indexes['unique1']['type']);
-        $this->assertSame(['key', 'time'], $indexes['unique1']['columns']);
+        $this->assertSame('unique', $indexes['unique1']->type);
+        $this->assertSame(['key', 'time'], $indexes['unique1']->columns);
 
-        $this->assertSame('key', $indexes['index2']['type']);
-        $this->assertSame(['time'], $indexes['index2']['columns']);
+        $this->assertSame('key', $indexes['index2']->type);
+        $this->assertSame(['time'], $indexes['index2']->columns);
     }
 
     /**
@@ -92,8 +93,8 @@ class AppwriteTablesDBTest extends Base
             $adapter = new TablesDB('repair-{{ip}}', 2, 60, self::$client, $databaseId);
             $adapter->setup();
 
-            $columns = $this->indexByKey($tablesDB->listColumns($databaseId, TablesDB::TABLE_ID)->columns);
-            $indexes = $this->indexByKey($tablesDB->listIndexes($databaseId, TablesDB::TABLE_ID)->indexes);
+            $columns = $this->columnsByKey($tablesDB->listColumns($databaseId, TablesDB::TABLE_ID)->columns);
+            $indexes = $this->indexesByKey($tablesDB->listIndexes($databaseId, TablesDB::TABLE_ID)->indexes);
 
             $this->assertCount(3, $columns);
             $this->assertArrayHasKey('key', $columns);
@@ -129,21 +130,44 @@ class AppwriteTablesDBTest extends Base
     }
 
     /**
-     * @param  array<mixed>  $resources
+     * A listed column arrives as the raw payload: the SDK has no single model
+     * to hydrate the union of column types into.
+     *
+     * @param  array<mixed>  $columns
      * @return array<string, array<string, mixed>>
      */
-    private function indexByKey(array $resources): array
+    private function columnsByKey(array $columns): array
     {
         $byKey = [];
 
-        foreach ($resources as $resource) {
-            $this->assertIsArray($resource);
-            $this->assertSame('available', $resource['status']);
+        foreach ($columns as $column) {
+            $this->assertIsArray($column);
+            $this->assertSame('available', $column['status']);
 
-            $key = $resource['key'];
+            $key = $column['key'];
             $this->assertIsString($key);
 
-            $byKey[$key] = $resource;
+            $byKey[$key] = $column;
+        }
+
+        return $byKey;
+    }
+
+    /**
+     * A listed index, unlike a column, arrives hydrated.
+     *
+     * @param  array<mixed>  $indexes
+     * @return array<string, ColumnIndex>
+     */
+    private function indexesByKey(array $indexes): array
+    {
+        $byKey = [];
+
+        foreach ($indexes as $index) {
+            $this->assertInstanceOf(ColumnIndex::class, $index);
+            $this->assertSame('available', $index->status);
+
+            $byKey[$index->key] = $index;
         }
 
         return $byKey;
