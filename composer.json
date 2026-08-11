@@ -24,7 +24,7 @@
         "ext-redis": "*",
         "utopia-php/database": "^7.0.0",
         "utopia-php/pools": "2.*",
-        "appwrite/appwrite": "^26.0"
+        "appwrite/appwrite": "^27.1"
     },
     "require-dev": {
         "phpunit/phpunit": "9.*",
