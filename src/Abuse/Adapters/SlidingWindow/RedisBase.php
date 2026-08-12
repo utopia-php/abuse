@@ -9,6 +9,10 @@ use Utopia\Abuse\Adapters\SlidingWindow;
  * (Redis, RedisCluster, RedisPool). Owns the atomic Lua script, the window
  * math and the check/count/reset flow. Subclasses only implement how they
  * talk to storage via the eval()/get()/delete() seams, plus their own getLogs().
+ *
+ * The window (start timestamp + elapsed fraction) is recomputed from the clock
+ * on every operation, so an adapter instance stays correct even if it is reused
+ * across a window boundary.
  */
 abstract class RedisBase extends SlidingWindow
 {
@@ -59,9 +63,11 @@ abstract class RedisBase extends SlidingWindow
     protected int $ttl;
 
     /**
-     * @var float
+     * Window start the cached $count was computed for (null when no cache).
+     *
+     * @var int|null
      */
-    protected float $elapsed;
+    protected ?int $countTimestamp = null;
 
     /**
      * Run a Lua script against the storage backend.
@@ -90,14 +96,9 @@ abstract class RedisBase extends SlidingWindow
     abstract protected function delete(string ...$keys): void;
 
     /**
-     * Initialise the window boundaries from the configured window size and ttl.
-     * Both `timestamp` (window start) and `elapsed` are derived from a single
-     * `now` so they stay consistent with the bucket being written.
-     *
-     * The window is captured once, at construction. An adapter instance is meant
-     * to be short-lived (created per request); reusing one across a window
-     * boundary keeps operating on the construction-time window. This matches the
-     * TimeLimit adapters' behaviour - construct a fresh adapter per check.
+     * Validate and store the window configuration. The window itself is derived
+     * live in window(); here we only seed $timestamp so the inherited property is
+     * initialised before remaining()/time() read it.
      *
      * @param  int  $windowSize
      * @param  int  $ttl
@@ -117,11 +118,22 @@ abstract class RedisBase extends SlidingWindow
             throw new \InvalidArgumentException('ttl must be at least twice the windowSize so the previous window bucket outlives the current window');
         }
 
-        $now = \time();
         $this->windowSize = $windowSize;
         $this->ttl = $ttl;
-        $this->timestamp = (int)($now - ($now % $windowSize)); // start of the current window
-        $this->elapsed = ($now - $this->timestamp) / $windowSize; // always in [0,1)
+        [$this->timestamp] = $this->window();
+    }
+
+    /**
+     * Compute the live window from the current time.
+     *
+     * @return array{0:int,1:float}  [window start timestamp, elapsed fraction in [0,1)]
+     */
+    private function window(): array
+    {
+        $now = \time();
+        $timestamp = (int)($now - ($now % $this->windowSize)); // start of the current window
+
+        return [$timestamp, ($now - $timestamp) / $this->windowSize];
     }
 
     /**
@@ -139,6 +151,20 @@ abstract class RedisBase extends SlidingWindow
     }
 
     /**
+     * Time
+     *
+     * Start timestamp of the current window, recomputed from the clock.
+     *
+     * @return int
+     */
+    public function time(): int
+    {
+        [$this->timestamp] = $this->window();
+
+        return $this->timestamp;
+    }
+
+    /**
      * Check
      *
      * @return bool
@@ -152,18 +178,20 @@ abstract class RedisBase extends SlidingWindow
         }
 
         $key = $this->parseKey();
+        [$timestamp, $elapsed] = $this->window();
+        $this->timestamp = $timestamp;
 
         /** @var array{0:int,1:int,2:int} $result */
         $result = $this->eval(
             self::LIMIT_CHECK_SCRIPT,
             [
-                $this->bucketKey($key, $this->timestamp),                       // KEYS[1] current bucket
-                $this->bucketKey($key, $this->timestamp - $this->windowSize),   // KEYS[2] previous bucket
+                $this->bucketKey($key, $timestamp),                       // KEYS[1] current bucket
+                $this->bucketKey($key, $timestamp - $this->windowSize),   // KEYS[2] previous bucket
             ],
             [
-                $this->limit,    // ARGV[1] max_requests
-                $this->elapsed,  // ARGV[2] elapsed fraction
-                $this->ttl,      // ARGV[3] ttl seconds
+                $this->limit,  // ARGV[1] max_requests
+                $elapsed,      // ARGV[2] elapsed fraction
+                $this->ttl,    // ARGV[3] ttl seconds
             ],
         );
 
@@ -171,6 +199,7 @@ abstract class RedisBase extends SlidingWindow
         // remaining() call stays consistent with what check() decided on.
         [$allowed, , $estimate] = $result;
         $this->count = $estimate;
+        $this->countTimestamp = $timestamp;
 
         return $allowed === 0;
     }
@@ -191,17 +220,21 @@ abstract class RedisBase extends SlidingWindow
             return 0;
         }
 
-        if (! \is_null($this->count)) {
+        [$windowStart, $elapsed] = $this->window();
+        $this->timestamp = $windowStart;
+
+        if ($this->count !== null && $this->countTimestamp === $windowStart) {
             return $this->count;
         }
 
-        $currentRaw = $this->get($this->bucketKey($key, $timestamp));
-        $previousRaw = $this->get($this->bucketKey($key, $timestamp - $this->windowSize));
+        $currentRaw = $this->get($this->bucketKey($key, $windowStart));
+        $previousRaw = $this->get($this->bucketKey($key, $windowStart - $this->windowSize));
 
         $current = \is_numeric($currentRaw) ? (int) $currentRaw : 0;
         $previous = \is_numeric($previousRaw) ? (int) $previousRaw : 0;
 
-        $this->count = (int) \floor($current + $previous * (1 - $this->elapsed));
+        $this->count = (int) \floor($current + $previous * (1 - $elapsed));
+        $this->countTimestamp = $windowStart;
 
         return $this->count;
     }
@@ -216,13 +249,16 @@ abstract class RedisBase extends SlidingWindow
     public function reset(): void
     {
         $key = $this->parseKey();
+        [$windowStart] = $this->window();
+        $this->timestamp = $windowStart;
 
         $this->delete(
-            $this->bucketKey($key, $this->timestamp),
-            $this->bucketKey($key, $this->timestamp - $this->windowSize),
+            $this->bucketKey($key, $windowStart),
+            $this->bucketKey($key, $windowStart - $this->windowSize),
         );
 
         $this->count = 0;
+        $this->countTimestamp = $windowStart;
     }
 
     /**
