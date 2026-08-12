@@ -44,11 +44,17 @@ class TablesDB extends TimeLimit
         }
 
         $this->createDatabase();
-        $this->createTable();
-        $this->createColumns();
-        $this->waitForResourcesReady('columns');
-        $this->createIndexes();
-        $this->waitForResourcesReady('indexes');
+
+        if (! $this->createTable()) {
+            // The table is left over from a setup that did not run to completion,
+            // so some of its columns or indexes may be missing. Inline definitions
+            // only apply while the table is being created, so add them one by one.
+            $this->createColumns();
+            $this->waitForResourcesReady('columns');
+            $this->createIndexes();
+            $this->waitForResourcesReady('indexes');
+        }
+
         $this->createLockTable();
     }
 
@@ -70,36 +76,98 @@ class TablesDB extends TimeLimit
         );
     }
 
-    protected function createTable(): void
+    /**
+     * Create the abuse table along with its columns and indexes in one request.
+     *
+     * Inline columns and indexes are created synchronously and come back
+     * available, so there is nothing to poll for afterwards.
+     *
+     * @return bool false when the table already existed
+     */
+    protected function createTable(): bool
     {
-        $this->executeWithSilentError(
-            fn () => $this->tablesDB->createTable($this->databaseId, self::TABLE_ID, self::TABLE_NAME),
+        return $this->executeWithSilentError(
+            fn () => $this->tablesDB->createTable(
+                $this->databaseId,
+                self::TABLE_ID,
+                self::TABLE_NAME,
+                columns: $this->columnDefinitions(),
+                indexes: $this->indexDefinitions(),
+            ),
             'table_already_exists'
         );
     }
 
+    /**
+     * Columns sent inline when the table is created.
+     *
+     * createColumns() repairs a table that already exists from the same list.
+     *
+     * @return array<array{key: string, type: string, required: bool, size?: int, min?: int, max?: int}>
+     */
+    protected function columnDefinitions(): array
+    {
+        return [
+            ['key' => 'key', 'type' => 'string', 'size' => 255, 'required' => true],
+            ['key' => 'time', 'type' => 'datetime', 'required' => true],
+            ['key' => 'count', 'type' => 'integer', 'required' => true, 'min' => 0, 'max' => PHP_INT_MAX],
+        ];
+    }
+
+    /**
+     * Indexes sent inline when the table is created.
+     *
+     * createIndexes() repairs a table that already exists from the same list.
+     *
+     * An inline definition names its columns under 'attributes', even though
+     * the index that comes back reports them under 'columns'.
+     *
+     * @return array<array{key: string, type: string, attributes: array<string>}>
+     */
+    protected function indexDefinitions(): array
+    {
+        return [
+            ['key' => 'unique1', 'type' => (string) TablesDBIndexType::UNIQUE(), 'attributes' => ['key', 'time']],
+            ['key' => 'index2', 'type' => (string) TablesDBIndexType::KEY(), 'attributes' => ['time']],
+        ];
+    }
+
+    /**
+     * Add the columns to a table that already exists, one endpoint per type.
+     */
     protected function createColumns(): void
     {
-        $columns = [
-            fn () => $this->tablesDB->createStringColumn($this->databaseId, self::TABLE_ID, 'key', 255, true),
-            fn () => $this->tablesDB->createDatetimeColumn($this->databaseId, self::TABLE_ID, 'time', true),
-            fn () => $this->tablesDB->createIntegerColumn($this->databaseId, self::TABLE_ID, 'count', true, 0, PHP_INT_MAX)
-        ];
+        foreach ($this->columnDefinitions() as $column) {
+            $key = $column['key'];
+            $required = $column['required'];
 
-        foreach ($columns as $createColumnFunction) {
+            $createColumnFunction = match ($column['type']) {
+                'string' => fn () => $this->tablesDB->createStringColumn($this->databaseId, self::TABLE_ID, $key, $column['size'] ?? 0, $required),
+                'datetime' => fn () => $this->tablesDB->createDatetimeColumn($this->databaseId, self::TABLE_ID, $key, $required),
+                'integer' => fn () => $this->tablesDB->createIntegerColumn($this->databaseId, self::TABLE_ID, $key, $required, $column['min'] ?? null, $column['max'] ?? null),
+                default => throw new \Exception("No endpoint for column '{$key}'."),
+            };
+
             $this->executeWithSilentError($createColumnFunction, 'column_already_exists');
         }
     }
 
+    /**
+     * Add the indexes to a table that already exists.
+     */
     protected function createIndexes(): void
     {
-        $indexes = [
-            fn () => $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'unique1', TablesDBIndexType::UNIQUE(), ['key', 'time']),
-            fn () => $this->tablesDB->createIndex($this->databaseId, self::TABLE_ID, 'index2', TablesDBIndexType::KEY(), ['time'])
-        ];
-
-        foreach ($indexes as $createIndexFunction) {
-            $this->executeWithSilentError($createIndexFunction, 'index_already_exists');
+        foreach ($this->indexDefinitions() as $index) {
+            $this->executeWithSilentError(
+                fn () => $this->tablesDB->createIndex(
+                    $this->databaseId,
+                    self::TABLE_ID,
+                    $index['key'],
+                    TablesDBIndexType::from($index['type']),
+                    $index['attributes'],
+                ),
+                'index_already_exists'
+            );
         }
     }
 
@@ -115,8 +183,7 @@ class TablesDB extends TimeLimit
                 ? $this->tablesDB->listColumns($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)])->columns
                 : $this->tablesDB->listIndexes($this->databaseId, self::TABLE_ID, [Query::notEqual('status', 'available'), Query::limit(1)])->indexes;
 
-            // Column models expose status as a ColumnStatus enum; index models as a plain string. Cast for both.
-            $resources = \array_filter($resources, fn ($resource) => (string) $resource->status !== 'available');
+            $resources = \array_filter($resources, fn ($resource) => $this->resourceStatus($resource) !== 'available');
 
             if (\count($resources) === 0) {
                 return;
@@ -128,6 +195,26 @@ class TablesDB extends TimeLimit
         throw new \Exception("Failed to setup {$resourceType}.");
     }
 
+    /**
+     * Read the status off a listed column or index.
+     *
+     * A listed column arrives as the raw payload, since the SDK has no single
+     * model to hydrate the union of column types into, while a listed index
+     * arrives as a ColumnIndex. Accept either shape.
+     */
+    protected function resourceStatus(mixed $resource): string
+    {
+        $status = null;
+
+        if (\is_array($resource)) {
+            $status = $resource['status'] ?? null;
+        } elseif (\is_object($resource) && \property_exists($resource, 'status')) {
+            $status = $resource->status;
+        }
+
+        return \is_scalar($status) || $status instanceof \Stringable ? (string) $status : '';
+    }
+
     protected function createLockTable(): void
     {
         $this->executeWithSilentError(
@@ -136,14 +223,21 @@ class TablesDB extends TimeLimit
         );
     }
 
-    protected function executeWithSilentError(callable $callback, string $allowedErrorType): void
+    /**
+     * @return bool false when the call failed with the tolerated error
+     */
+    protected function executeWithSilentError(callable $callback, string $allowedErrorType): bool
     {
         try {
             $callback();
+
+            return true;
         } catch (AppwriteException $err) {
             if ($err->getType() !== $allowedErrorType) {
                 throw $err;
             }
+
+            return false;
         }
     }
 

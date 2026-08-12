@@ -4,23 +4,85 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4aff8f896ffc6d7981242fdf9ce459cc",
+    "content-hash": "bfae95b93046381a457db8b4f33d5b35",
     "packages": [
         {
-            "name": "appwrite/appwrite",
-            "version": "26.0.0",
+            "name": "adhocore/jwt",
+            "version": "v1.1.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/appwrite/sdk-for-php.git",
-                "reference": "bc26d0f0cfa4699de12d6af4df70ac0729ab7918"
+                "url": "https://github.com/adhocore/php-jwt.git",
+                "reference": "b7055ae9024a6627f19f9873b5db19b0f1dcc4e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appwrite/sdk-for-php/zipball/bc26d0f0cfa4699de12d6af4df70ac0729ab7918",
-                "reference": "bc26d0f0cfa4699de12d6af4df70ac0729ab7918",
+                "url": "https://api.github.com/repos/adhocore/php-jwt/zipball/b7055ae9024a6627f19f9873b5db19b0f1dcc4e7",
+                "reference": "b7055ae9024a6627f19f9873b5db19b0f1dcc4e7",
                 "shasum": ""
             },
             "require": {
+                "php": "^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.5 || ^8.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ahc\\Jwt\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jitendra Adhikari",
+                    "email": "jiten.adhikary@gmail.com"
+                }
+            ],
+            "description": "Ultra lightweight JSON web token (JWT) library for PHP5.5+.",
+            "keywords": [
+                "auth",
+                "json-web-token",
+                "jwt",
+                "jwt-auth",
+                "jwt-php",
+                "token"
+            ],
+            "support": {
+                "issues": "https://github.com/adhocore/php-jwt/issues",
+                "source": "https://github.com/adhocore/php-jwt/tree/v1.1.4"
+            },
+            "funding": [
+                {
+                    "url": "https://paypal.me/ji10",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/adhocore",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-05-30T07:58:15+00:00"
+        },
+        {
+            "name": "appwrite/appwrite",
+            "version": "27.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/appwrite/sdk-for-php.git",
+                "reference": "24685bc34928c0e5479d4977dc47ea4aa721f025"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/appwrite/sdk-for-php/zipball/24685bc34928c0e5479d4977dc47ea4aa721f025",
+                "reference": "24685bc34928c0e5479d4977dc47ea4aa721f025",
+                "shasum": ""
+            },
+            "require": {
+                "adhocore/jwt": "^1.1",
                 "ext-curl": "*",
                 "ext-json": "*",
                 "php": ">=8.2.0"
@@ -43,10 +105,10 @@
             "support": {
                 "email": "team@appwrite.io",
                 "issues": "https://github.com/appwrite/sdk-for-php/issues",
-                "source": "https://github.com/appwrite/sdk-for-php/tree/26.0.0",
+                "source": "https://github.com/appwrite/sdk-for-php/tree/27.1.0",
                 "url": "https://appwrite.io/support"
             },
-            "time": "2026-06-17T04:32:07+00:00"
+            "time": "2026-07-24T06:10:52+00:00"
         },
         {
             "name": "brick/math",
