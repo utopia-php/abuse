@@ -18,31 +18,27 @@ class Redis extends RedisBase
     }
 
     /**
+     * @param  string  $script
      * @param  list<string>  $keys
      * @param  list<int|float>  $argv
-     * @return array{0:int,1:int,2:int}
+     * @return mixed
      *
      * @throws \RedisException
      */
-    protected function evaluateLimit(array $keys, array $argv): array
+    protected function eval(string $script, array $keys, array $argv): mixed
     {
-        /** @var array{0:int,1:int,2:int} $result */
-        $result = $this->redis->eval(self::LIMIT_CHECK_SCRIPT, [...$keys, ...$argv], \count($keys));
-
-        return $result;
+        return $this->redis->eval($script, [...$keys, ...$argv], \count($keys));
     }
 
     /**
      * @param  string  $key
-     * @return int
+     * @return mixed
      *
      * @throws \RedisException
      */
-    protected function bucketCount(string $key): int
+    protected function get(string $key): mixed
     {
-        $raw = $this->redis->get($key);
-
-        return \is_numeric($raw) ? (int) $raw : 0;
+        return $this->redis->get($key);
     }
 
     /**
@@ -51,7 +47,7 @@ class Redis extends RedisBase
      *
      * @throws \RedisException
      */
-    protected function deleteBuckets(string ...$keys): void
+    protected function delete(string ...$keys): void
     {
         $this->redis->del(...$keys);
     }

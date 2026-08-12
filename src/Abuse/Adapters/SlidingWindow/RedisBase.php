@@ -8,8 +8,7 @@ use Utopia\Abuse\Adapters\SlidingWindow;
  * Shared implementation for the Redis-family sliding-window adapters
  * (Redis, RedisCluster, RedisPool). Owns the atomic Lua script, the window
  * math and the check/count/reset flow. Subclasses only implement how they
- * talk to storage via the evaluateLimit()/bucketCount()/deleteBuckets() seams, plus
- * their own getLogs().
+ * talk to storage via the eval()/get()/delete() seams, plus their own getLogs().
  */
 abstract class RedisBase extends SlidingWindow
 {
@@ -64,29 +63,30 @@ abstract class RedisBase extends SlidingWindow
     protected float $elapsed;
 
     /**
-     * Run the atomic check-and-increment script against the storage backend.
+     * Run a Lua script against the storage backend.
      *
-     * @param  list<string>  $keys  current + previous bucket keys
-     * @param  list<int|float>  $argv  max_requests, elapsed, ttl
-     * @return array{0:int,1:int,2:int}  { allowed, remaining, current_count }
+     * @param  string  $script
+     * @param  list<string>  $keys
+     * @param  list<int|float>  $argv
+     * @return mixed  the raw script result
      */
-    abstract protected function evaluateLimit(array $keys, array $argv): array;
+    abstract protected function eval(string $script, array $keys, array $argv): mixed;
 
     /**
-     * Read a bucket counter as an int (missing key => 0).
+     * Get the raw value stored at $key (null/false when missing).
      *
      * @param  string  $key
-     * @return int
+     * @return mixed
      */
-    abstract protected function bucketCount(string $key): int;
+    abstract protected function get(string $key): mixed;
 
     /**
-     * Delete the given bucket keys.
+     * Delete the given keys.
      *
      * @param  string  ...$keys
      * @return void
      */
-    abstract protected function deleteBuckets(string ...$keys): void;
+    abstract protected function delete(string ...$keys): void;
 
     /**
      * Initialise the window boundaries from the configured window size and ttl.
@@ -139,7 +139,9 @@ abstract class RedisBase extends SlidingWindow
 
         $key = $this->parseKey();
 
-        $result = $this->evaluateLimit(
+        /** @var array{0:int,1:int,2:int} $result */
+        $result = $this->eval(
+            self::LIMIT_CHECK_SCRIPT,
             [
                 $this->bucketKey($key, $this->timestamp),                       // KEYS[1] current bucket
                 $this->bucketKey($key, $this->timestamp - $this->windowSize),   // KEYS[2] previous bucket
@@ -177,8 +179,11 @@ abstract class RedisBase extends SlidingWindow
             return $this->count;
         }
 
-        $current = $this->bucketCount($this->bucketKey($key, $timestamp));
-        $previous = $this->bucketCount($this->bucketKey($key, $timestamp - $this->windowSize));
+        $currentRaw = $this->get($this->bucketKey($key, $timestamp));
+        $previousRaw = $this->get($this->bucketKey($key, $timestamp - $this->windowSize));
+
+        $current = \is_numeric($currentRaw) ? (int) $currentRaw : 0;
+        $previous = \is_numeric($previousRaw) ? (int) $previousRaw : 0;
 
         $this->count = (int) \floor($current + $previous * (1 - $this->elapsed));
 
@@ -196,7 +201,7 @@ abstract class RedisBase extends SlidingWindow
     {
         $key = $this->parseKey();
 
-        $this->deleteBuckets(
+        $this->delete(
             $this->bucketKey($key, $this->timestamp),
             $this->bucketKey($key, $this->timestamp - $this->windowSize),
         );

@@ -25,44 +25,30 @@ class RedisPool extends RedisBase
     }
 
     /**
+     * @param  string  $script
      * @param  list<string>  $keys
      * @param  list<int|float>  $argv
-     * @return array{0:int,1:int,2:int}
+     * @return mixed
      */
-    protected function evaluateLimit(array $keys, array $argv): array
+    protected function eval(string $script, array $keys, array $argv): mixed
     {
-        /** @var array{0:int,1:int,2:int} $result */
-        $result = $this->pool->use(function (\Redis|\RedisCluster $redis) use ($keys, $argv): array {
-            /** @var array{0:int,1:int,2:int} $result */
-            $result = $redis->eval(self::LIMIT_CHECK_SCRIPT, [...$keys, ...$argv], \count($keys));
-
-            return $result;
-        });
-
-        return $result;
+        return $this->pool->use(fn (\Redis|\RedisCluster $redis): mixed => $redis->eval($script, [...$keys, ...$argv], \count($keys)));
     }
 
     /**
      * @param  string  $key
-     * @return int
+     * @return mixed
      */
-    protected function bucketCount(string $key): int
+    protected function get(string $key): mixed
     {
-        /** @var int $value */
-        $value = $this->pool->use(function (\Redis|\RedisCluster $redis) use ($key): int {
-            $raw = $redis->get($key);
-
-            return \is_numeric($raw) ? (int) $raw : 0;
-        });
-
-        return $value;
+        return $this->pool->use(fn (\Redis|\RedisCluster $redis): mixed => $redis->get($key));
     }
 
     /**
      * @param  string  ...$keys
      * @return void
      */
-    protected function deleteBuckets(string ...$keys): void
+    protected function delete(string ...$keys): void
     {
         $this->pool->use(function (\Redis|\RedisCluster $redis) use ($keys): void {
             $redis->del(...$keys);
