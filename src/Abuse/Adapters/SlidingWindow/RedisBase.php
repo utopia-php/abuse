@@ -20,7 +20,8 @@ abstract class RedisBase extends SlidingWindow
      * KEYS[1] current bucket, KEYS[2] previous bucket.
      * ARGV[1] max_requests, ARGV[2] elapsed fraction of current window [0,1), ARGV[3] ttl seconds.
      *
-     * Returns { allowed (0|1), remaining, current_count }.
+     * Returns { allowed (0|1), remaining, estimate } where estimate is the
+     * weighted sliding-window count (current bucket + weighted previous bucket).
      */
     protected const string LIMIT_CHECK_SCRIPT = <<<'LUA'
         local current_key = KEYS[1]
@@ -36,7 +37,7 @@ abstract class RedisBase extends SlidingWindow
         local estimated = weighted_prev + current_count
 
         if estimated >= max_requests then
-          return { 0, 0, math.floor(current_count) }
+          return { 0, 0, math.floor(estimated) }
         end
 
         local new_count = redis.call('INCR', current_key)
@@ -44,7 +45,7 @@ abstract class RedisBase extends SlidingWindow
 
         local new_estimate = weighted_prev + new_count
         local remaining = math.max(0, math.floor(max_requests - new_estimate))
-        return { 1, remaining, new_count }
+        return { 1, remaining, math.floor(new_estimate) }
         LUA;
 
     /**
@@ -93,14 +94,27 @@ abstract class RedisBase extends SlidingWindow
      * Both `timestamp` (window start) and `elapsed` are derived from a single
      * `now` so they stay consistent with the bucket being written.
      *
+     * The window is captured once, at construction. An adapter instance is meant
+     * to be short-lived (created per request); reusing one across a window
+     * boundary keeps operating on the construction-time window. This matches the
+     * TimeLimit adapters' behaviour - construct a fresh adapter per check.
+     *
      * @param  int  $windowSize
      * @param  int  $ttl
      * @return void
      */
     protected function initWindow(int $windowSize, int $ttl): void
     {
-        if ($ttl < $windowSize) {
-            throw new \InvalidArgumentException('ttl must be greater than or equal to windowSize');
+        if ($windowSize <= 0) {
+            throw new \InvalidArgumentException('windowSize must be greater than 0');
+        }
+
+        // The previous bucket keeps contributing (weighted) throughout the whole
+        // current window, and its ttl is set from its last write - which in the
+        // worst case is at the very start of its own window. It therefore needs to
+        // survive up to two full windows, so ttl must be >= 2 * windowSize.
+        if ($ttl < $windowSize * 2) {
+            throw new \InvalidArgumentException('ttl must be at least twice the windowSize so the previous window bucket outlives the current window');
         }
 
         $now = \time();
@@ -153,8 +167,10 @@ abstract class RedisBase extends SlidingWindow
             ],
         );
 
-        [$allowed, , $count] = $result;
-        $this->count = $count;
+        // $estimate is the weighted sliding-window count, so a following
+        // remaining() call stays consistent with what check() decided on.
+        [$allowed, , $estimate] = $result;
+        $this->count = $estimate;
 
         return $allowed === 0;
     }
