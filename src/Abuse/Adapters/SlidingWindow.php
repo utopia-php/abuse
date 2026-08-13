@@ -14,11 +14,6 @@ abstract class SlidingWindow extends Adapter
     protected int $limit = 0;
 
     /**
-     * @var int|null
-     */
-    protected ?int $count = null;
-
-    /**
      * @var int
      */
     protected int $timestamp;

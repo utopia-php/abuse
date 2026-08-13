@@ -63,13 +63,6 @@ abstract class RedisBase extends SlidingWindow
     protected int $ttl;
 
     /**
-     * Window start the cached $count was computed for (null when no cache).
-     *
-     * @var int|null
-     */
-    protected ?int $countTimestamp = null;
-
-    /**
      * Run a Lua script against the storage backend.
      *
      * @param  string  $script
@@ -195,11 +188,7 @@ abstract class RedisBase extends SlidingWindow
             ],
         );
 
-        // $estimate is the weighted sliding-window count, so a following
-        // remaining() call stays consistent with what check() decided on.
-        [$allowed, , $estimate] = $result;
-        $this->count = $estimate;
-        $this->countTimestamp = $timestamp;
+        [$allowed] = $result;
 
         return $allowed === 0;
     }
@@ -223,20 +212,13 @@ abstract class RedisBase extends SlidingWindow
         [$windowStart, $elapsed] = $this->window();
         $this->timestamp = $windowStart;
 
-        if ($this->count !== null && $this->countTimestamp === $windowStart) {
-            return $this->count;
-        }
-
         $currentRaw = $this->get($this->bucketKey($key, $windowStart));
         $previousRaw = $this->get($this->bucketKey($key, $windowStart - $this->windowSize));
 
         $current = \is_numeric($currentRaw) ? (int) $currentRaw : 0;
         $previous = \is_numeric($previousRaw) ? (int) $previousRaw : 0;
 
-        $this->count = (int) \floor($current + $previous * (1 - $elapsed));
-        $this->countTimestamp = $windowStart;
-
-        return $this->count;
+        return (int) \floor($current + $previous * (1 - $elapsed));
     }
 
     /**
@@ -256,9 +238,6 @@ abstract class RedisBase extends SlidingWindow
             $this->bucketKey($key, $windowStart),
             $this->bucketKey($key, $windowStart - $this->windowSize),
         );
-
-        $this->count = 0;
-        $this->countTimestamp = $windowStart;
     }
 
     /**
