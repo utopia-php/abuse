@@ -11,6 +11,10 @@ class None extends SlidingWindow
      */
     public function __construct(string $key, int $limit, int $windowSize, int $ttl) // @phpstan-ignore constructor.unusedParameter
     {
+        if ($windowSize <= 0) {
+            throw new \InvalidArgumentException('windowSize must be greater than 0');
+        }
+
         $this->key = $key;
         $this->limit = $limit;
         $now = \time();
