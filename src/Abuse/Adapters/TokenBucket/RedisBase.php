@@ -165,7 +165,7 @@ abstract class RedisBase extends TokenBucket
         // consumed count so a following remaining() stays consistent with it.
         [$allowed, $available] = $result;
         $balance = \is_numeric($available) ? (float) $available : 0.0;
-        $this->count = (int) \floor($this->tokens - $balance);
+        $this->count = $this->tokens - (int) \floor($balance);
 
         return (int) $allowed === 0;
     }
@@ -207,7 +207,7 @@ abstract class RedisBase extends TokenBucket
         );
 
         $balance = \is_numeric($raw) ? (float) $raw : (float) $this->tokens;
-        $this->count = (int) \floor($this->tokens - $balance);
+        $this->count = $this->tokens - (int) \floor($balance);
 
         return $this->count;
     }
