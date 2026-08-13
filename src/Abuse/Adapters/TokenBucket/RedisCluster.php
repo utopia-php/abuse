@@ -61,7 +61,7 @@ class RedisCluster extends RedisBase
                 if ($keys !== false) {
                     $matches = array_merge($matches, $keys);
                 }
-            } while ($cursor > 0 && count($matches) < $offset + $limit);
+            } while ($cursor > 0);
         }
 
         sort($matches);
