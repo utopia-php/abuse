@@ -16,11 +16,6 @@ abstract class TokenBucket extends Adapter
     protected int $tokens = 0;
 
     /**
-     * @var int|null
-     */
-    protected ?int $count = null;
-
-    /**
      * @var int
      */
     protected int $timestamp;

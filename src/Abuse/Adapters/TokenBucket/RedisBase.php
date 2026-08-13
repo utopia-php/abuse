@@ -161,11 +161,7 @@ abstract class RedisBase extends TokenBucket
             ],
         );
 
-        // $available is the token balance left after consuming; store the
-        // consumed count so a following remaining() stays consistent with it.
-        [$allowed, $available] = $result;
-        $balance = \is_numeric($available) ? (float) $available : 0.0;
-        $this->count = $this->tokens - (int) \floor($balance);
+        [$allowed] = $result;
 
         return (int) $allowed === 0;
     }
@@ -175,8 +171,8 @@ abstract class RedisBase extends TokenBucket
      *
      * Read-only estimate of the tokens already consumed from the bucket
      * (capacity minus the tokens available after refilling). Used by remaining().
-     * Reuses the value recorded by the most recent check()/reset() this request;
-     * otherwise reads a fresh estimate from storage.
+     * The bucket refills continuously, so this always reads a fresh estimate
+     * rather than reusing a cached value that would go stale as tokens refill.
      *
      * @param  string  $key
      * @param  int  $timestamp
@@ -189,10 +185,6 @@ abstract class RedisBase extends TokenBucket
         }
 
         $this->timestamp = \time();
-
-        if ($this->count !== null) {
-            return $this->count;
-        }
 
         $raw = $this->eval(
             self::TOKENS_SCRIPT,
@@ -207,9 +199,8 @@ abstract class RedisBase extends TokenBucket
         );
 
         $balance = \is_numeric($raw) ? (float) $raw : (float) $this->tokens;
-        $this->count = $this->tokens - (int) \floor($balance);
 
-        return $this->count;
+        return $this->tokens - (int) \floor($balance);
     }
 
     /**
@@ -222,8 +213,6 @@ abstract class RedisBase extends TokenBucket
     public function reset(): void
     {
         $this->delete($this->bucketKey($this->parseKey()));
-
-        $this->count = 0;
     }
 
     /**
