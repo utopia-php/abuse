@@ -23,7 +23,7 @@
         "ext-curl": "*",
         "ext-redis": "*",
         "utopia-php/database": "dev-feat-query-lib as 7.0.0",
-        "utopia-php/query": "^0.4",
+        "utopia-php/query": "^0.4 || ^0.5",
         "utopia-php/pools": "^2.0",
         "appwrite/appwrite": "^27.1"
     },
