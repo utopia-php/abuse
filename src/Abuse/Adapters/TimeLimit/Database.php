@@ -12,8 +12,6 @@ use Utopia\Database\Exception\Duplicate;
 use Utopia\Database\Exception\Structure;
 use Utopia\Database\Index;
 use Utopia\Database\Query;
-use Utopia\Query\Schema\ColumnType;
-use Utopia\Query\Schema\IndexType;
 
 class Database extends TimeLimit
 {
@@ -55,13 +53,13 @@ class Database extends TimeLimit
         }
 
         $attributes = [
-            new Attribute(key: 'key', type: ColumnType::String, size: UtopiaDB::LENGTH_KEY, required: true, signed: true, array: false, filters: []),
-            new Attribute(key: 'time', type: ColumnType::Datetime, size: 0, required: true, signed: false, array: false, filters: ['datetime']),
-            new Attribute(key: 'count', type: ColumnType::Integer, size: 11, required: true, signed: false, array: false, filters: []),
+            Attribute::string(key: 'key', size: UtopiaDB::LENGTH_KEY, required: true),
+            Attribute::datetime(key: 'time', required: true, signed: false, filters: ['datetime']),
+            Attribute::integer(key: 'count', size: 11, required: true, signed: false),
         ];
         $indexes = [
-            new Index(key: 'unique1', type: IndexType::Unique, attributes: ['key', 'time']),
-            new Index(key: 'index2', type: IndexType::Key, attributes: ['time']),
+            Index::unique(key: 'unique1', attributes: ['key', 'time']),
+            Index::key(key: 'index2', attributes: ['time']),
         ];
 
         try {
