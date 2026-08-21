@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed8902c2e03a95d2a5f6a87d174dfa67",
+    "content-hash": "4cd2d86b645fa86705bc5efde4f815df",
     "packages": [
         {
             "name": "adhocore/jwt",
@@ -248,23 +248,23 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v5.35.1",
+            "version": "v5.36.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "55bb4a7d6739b5af0927b96213c1371a3afb7cfb"
+                "reference": "9c105104b54709ecd902494ab340ed2122789b2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/55bb4a7d6739b5af0927b96213c1371a3afb7cfb",
-                "reference": "55bb4a7d6739b5af0927b96213c1371a3afb7cfb",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/9c105104b54709ecd902494ab340ed2122789b2d",
+                "reference": "9c105104b54709ecd902494ab340ed2122789b2d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=11.5.0 <12.0.0"
+                "phpunit/phpunit": ">=11.5.50 <12.0.0"
             },
             "suggest": {
                 "ext-bcmath": "Need to support JSON deserialization"
@@ -286,9 +286,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v5.35.1"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v5.36.0"
             },
-            "time": "2026-06-11T21:19:23+00:00"
+            "time": "2026-08-20T13:06:50+00:00"
         },
         {
             "name": "mongodb/mongodb",
@@ -2493,12 +2493,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "e593b78c587e1f1d66b644979f5c4ff11dffcd31"
+                "reference": "798f294c1615102c92f8e8f7f8b3d18f36ad083b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/e593b78c587e1f1d66b644979f5c4ff11dffcd31",
-                "reference": "e593b78c587e1f1d66b644979f5c4ff11dffcd31",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/798f294c1615102c92f8e8f7f8b3d18f36ad083b",
+                "reference": "798f294c1615102c92f8e8f7f8b3d18f36ad083b",
                 "shasum": ""
             },
             "require": {
@@ -2507,13 +2507,13 @@
                 "ext-pdo": "*",
                 "ext-redis": "*",
                 "php": ">=8.5",
-                "utopia-php/async": "0.1.*",
-                "utopia-php/cache": "4.*",
-                "utopia-php/console": "0.1.*",
-                "utopia-php/mongo": "1.*",
-                "utopia-php/pools": "2.*",
-                "utopia-php/query": "0.4.*",
-                "utopia-php/validators": "0.4.*"
+                "utopia-php/async": "^0.1",
+                "utopia-php/cache": "^4.0",
+                "utopia-php/console": "^0.1",
+                "utopia-php/mongo": "^1.0",
+                "utopia-php/pools": "^2.0",
+                "utopia-php/query": "^0.4",
+                "utopia-php/validators": "^0.4 || ^0.5"
             },
             "require-dev": {
                 "brianium/paratest": "7.20.*",
@@ -2523,7 +2523,7 @@
                 "phpunit/phpunit": "12.5.*",
                 "rregeer/phpunit-coverage-check": "0.3.*",
                 "swoole/ide-helper": "5.1.3",
-                "utopia-php/cli": "0.22.*"
+                "utopia-php/cli": "^0.22"
             },
             "suggest": {
                 "ext-pdo": "Needed to support MariaDB, MySQL or SQLite Database Adapter",
@@ -2583,7 +2583,7 @@
                 "source": "https://github.com/utopia-php/database/tree/feat-query-lib",
                 "issues": "https://github.com/utopia-php/database/issues"
             },
-            "time": "2026-08-14T02:54:13+00:00"
+            "time": "2026-08-21T05:22:01+00:00"
         },
         {
             "name": "utopia-php/mongo",
@@ -2804,16 +2804,16 @@
         },
         {
             "name": "utopia-php/validators",
-            "version": "0.4.2",
+            "version": "0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/validators.git",
-                "reference": "a5b7b78b789e5af0a30f96da8355bbf48fb56699"
+                "reference": "ea6c1ad13019c8a088866cf422c232928de5a25e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/validators/zipball/a5b7b78b789e5af0a30f96da8355bbf48fb56699",
-                "reference": "a5b7b78b789e5af0a30f96da8355bbf48fb56699",
+                "url": "https://api.github.com/repos/utopia-php/validators/zipball/ea6c1ad13019c8a088866cf422c232928de5a25e",
+                "reference": "ea6c1ad13019c8a088866cf422c232928de5a25e",
                 "shasum": ""
             },
             "require": {
@@ -2838,9 +2838,9 @@
             ],
             "support": {
                 "issues": "https://github.com/utopia-php/validators/issues",
-                "source": "https://github.com/utopia-php/validators/tree/0.4.2"
+                "source": "https://github.com/utopia-php/validators/tree/0.5.0"
             },
-            "time": "2026-08-11T07:43:49+00:00"
+            "time": "2026-08-14T05:12:07+00:00"
         }
     ],
     "packages-dev": [
