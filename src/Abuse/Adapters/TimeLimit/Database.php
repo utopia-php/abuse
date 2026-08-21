@@ -4,6 +4,7 @@ namespace Utopia\Abuse\Adapters\TimeLimit;
 
 use Utopia\Abuse\Adapters\TimeLimit;
 use Utopia\Database\Attribute;
+use Utopia\Database\Collection;
 use Utopia\Database\Database as UtopiaDB;
 use Utopia\Database\DateTime;
 use Utopia\Database\Document;
@@ -63,7 +64,7 @@ class Database extends TimeLimit
         ];
 
         try {
-            $this->db->createCollection(self::COLLECTION, $attributes, $indexes);
+            $this->db->createCollection(new Collection(id: self::COLLECTION, attributes: $attributes, indexes: $indexes));
         } catch (Duplicate) {
             // Collection already exists
         }
