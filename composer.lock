@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aae0e33f82e72e2386b3005a5df36573",
+    "content-hash": "ed8902c2e03a95d2a5f6a87d174dfa67",
     "packages": [
         {
             "name": "adhocore/jwt",
@@ -5958,7 +5958,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.4.1",
+        "php": ">=8.5",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*"
