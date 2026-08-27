@@ -2493,12 +2493,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "3a49a6c5f8e2c6a362b806d164265bd567bf5ec9"
+                "reference": "c6ae48dbf0104ff4b6cb8a0ac173ab0dfcd23ef7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/3a49a6c5f8e2c6a362b806d164265bd567bf5ec9",
-                "reference": "3a49a6c5f8e2c6a362b806d164265bd567bf5ec9",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/c6ae48dbf0104ff4b6cb8a0ac173ab0dfcd23ef7",
+                "reference": "c6ae48dbf0104ff4b6cb8a0ac173ab0dfcd23ef7",
                 "shasum": ""
             },
             "require": {
@@ -2584,7 +2584,7 @@
                 "source": "https://github.com/utopia-php/database/tree/feat-query-lib",
                 "issues": "https://github.com/utopia-php/database/issues"
             },
-            "time": "2026-08-26T07:43:53+00:00"
+            "time": "2026-08-27T01:20:20+00:00"
         },
         {
             "name": "utopia-php/mongo",
