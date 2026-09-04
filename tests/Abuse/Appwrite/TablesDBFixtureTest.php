@@ -11,8 +11,6 @@ use RuntimeException;
 use Throwable;
 use Utopia\Tests\Appwrite\Cleanup;
 
-require_once __DIR__ . '/TablesDBTest.php';
-
 /**
  * The owned HTTP endpoint exercises the real SDK and fixture lifecycle, not the Appwrite backend.
  *
@@ -45,6 +43,8 @@ final class TablesDBFixtureTest extends TestCase
 
     private function start(): void
     {
+        require_once __DIR__ . '/TablesDBTest.php';
+
         $this->state = tempnam(sys_get_temp_dir(), 'abuse-state-') ?: throw new RuntimeException('Cannot create fixture state');
         $this->log = tempnam(sys_get_temp_dir(), 'abuse-http-') ?: throw new RuntimeException('Cannot create fixture log');
         $this->write(['databases' => ['foreign' => []], 'deletes' => [], 'createFailure' => 0, 'setupFailure' => 0, 'cleanupFailure' => 0]);
