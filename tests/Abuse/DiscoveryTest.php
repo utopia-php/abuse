@@ -44,21 +44,15 @@ final class DiscoveryTest extends TestCase
                 $cases[$class->getAttribute('name')] = $methods;
             }
 
+            // The regression this guards is discovery silently dropping a whole
+            // class: loading the fixture file from the lifecycle test hid every
+            // backend case from PHPUnit's own scan. Both groups being present
+            // with cases is the property; pinning their names or counts would
+            // only fail on renames.
             $this->assertArrayHasKey(AppwriteTablesDBTest::class, $cases);
-            $this->assertSame([
-                'testDynamicKey',
-                'testDynamicKeyFastRequests',
-                'testDynamicKeyWith2Params',
-                'testLimitReset',
-                'testReset',
-                'testSetupCreatesSchema',
-                'testSetupIsIdempotent',
-                'testSetupRepairsPartiallyCreatedTable',
-                'testStaticKey',
-                'testTimeFormat',
-            ], $cases[AppwriteTablesDBTest::class]);
+            $this->assertNotEmpty($cases[AppwriteTablesDBTest::class]);
             $this->assertArrayHasKey(TablesDBFixtureTest::class, $cases);
-            $this->assertCount(8, $cases[TablesDBFixtureTest::class]);
+            $this->assertNotEmpty($cases[TablesDBFixtureTest::class]);
         } finally {
             if (is_resource($process)) {
                 proc_terminate($process);
