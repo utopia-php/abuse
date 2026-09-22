@@ -111,13 +111,13 @@ final class TablesDBFixtureTest extends TestCase
     public function testSuccessfulFixtureDeletesOnlyItsDatabase(): void
     {
         AppwriteTablesDBTest::setUpBeforeClass();
-        $this->assertCount(2, $this->read()['databases']);
+        $created = array_values(array_diff(array_keys($this->read()['databases']), ['foreign']));
+        $this->assertCount(1, $created);
         AppwriteTablesDBTest::tearDownAfterClass();
         $this->assertSame(['foreign' => []], $this->read()['databases']);
-        $this->assertCount(1, $this->read()['deletes']);
-        $this->assertMatchesRegularExpression('/^abuse-[a-f0-9]{24}$/', $this->read()['deletes'][0]);
+        $this->assertSame($created, $this->read()['deletes']);
         AppwriteTablesDBTest::tearDownAfterClass();
-        $this->assertCount(1, $this->read()['deletes']);
+        $this->assertSame($created, $this->read()['deletes']);
     }
 
     public function testSetupFailureCleansTheCreatedDatabase(): void
