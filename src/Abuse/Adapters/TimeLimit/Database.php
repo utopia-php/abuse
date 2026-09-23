@@ -44,6 +44,29 @@ class Database extends TimeLimit
     }
 
     /**
+     * @return list<Attribute>
+     */
+    public static function attributes(): array
+    {
+        return [
+            Attribute::string(key: 'key', size: UtopiaDB::LENGTH_KEY, required: true),
+            Attribute::datetime(key: 'time', required: true, signed: false, filters: ['datetime']),
+            Attribute::integer(key: 'count', size: 11, required: true, signed: false),
+        ];
+    }
+
+    /**
+     * @return list<Index>
+     */
+    public static function indexes(): array
+    {
+        return [
+            Index::unique(key: 'unique1', attributes: ['key', 'time']),
+            Index::key(key: 'index2', attributes: ['time']),
+        ];
+    }
+
+    /**
      * @throws Duplicate
      * @throws \Exception
      */
@@ -53,18 +76,8 @@ class Database extends TimeLimit
             throw new \Exception('You need to create database before running timelimit setup');
         }
 
-        $attributes = [
-            Attribute::string(key: 'key', size: UtopiaDB::LENGTH_KEY, required: true),
-            Attribute::datetime(key: 'time', required: true, signed: false, filters: ['datetime']),
-            Attribute::integer(key: 'count', size: 11, required: true, signed: false),
-        ];
-        $indexes = [
-            Index::unique(key: 'unique1', attributes: ['key', 'time']),
-            Index::key(key: 'index2', attributes: ['time']),
-        ];
-
         try {
-            $this->db->createCollection(new Collection(id: self::COLLECTION, attributes: $attributes, indexes: $indexes));
+            $this->db->createCollection(new Collection(id: self::COLLECTION, attributes: self::attributes(), indexes: self::indexes()));
         } catch (Duplicate) {
             // Collection already exists
         }
