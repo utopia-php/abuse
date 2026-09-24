@@ -33,7 +33,7 @@
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*",
-        "utopia-php/database": "8.0.*",
+        "utopia-php/database": "8.*",
         "utopia-php/query": "0.6.*",
         "utopia-php/pools": "2.*",
         "appwrite/appwrite": "^27.1"
