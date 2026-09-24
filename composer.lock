@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a4ba10d06ea0de76bce5232d19aa3833",
+    "content-hash": "8fc423634c099764bae643b37499a049",
     "packages": [
         {
             "name": "adhocore/jwt",
@@ -2092,63 +2092,7 @@
                     "Utopia\\Async\\": "src/"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Utopia\\Tests\\": "tests/"
-                }
-            },
-            "scripts": {
-                "test-unit": [
-                    "vendor/bin/phpunit tests/Unit --exclude-group no-swoole"
-                ],
-                "test-promise-sync": [
-                    "vendor/bin/phpunit tests/E2e/Promise/SyncTest.php"
-                ],
-                "test-promise-swoole": [
-                    "vendor/bin/phpunit tests/E2e/Promise/Swoole"
-                ],
-                "test-promise-amp": [
-                    "vendor/bin/phpunit tests/E2e/Promise/Amp"
-                ],
-                "test-promise-react": [
-                    "vendor/bin/phpunit tests/E2e/Promise/React"
-                ],
-                "test-parallel-sync": [
-                    "vendor/bin/phpunit tests/E2e/Parallel/Sync"
-                ],
-                "test-parallel-swoole-thread": [
-                    "vendor/bin/phpunit tests/E2e/Parallel/Swoole/ThreadTest.php"
-                ],
-                "test-parallel-swoole-process": [
-                    "vendor/bin/phpunit tests/E2e/Parallel/Swoole/ProcessTest.php"
-                ],
-                "test-parallel-amp": [
-                    "vendor/bin/phpunit tests/E2e/Parallel/Amp"
-                ],
-                "test-parallel-react": [
-                    "vendor/bin/phpunit tests/E2e/Parallel/React"
-                ],
-                "test-parallel-ext": [
-                    "php -n -d extension=parallel.so -d extension=sockets.so vendor/bin/phpunit tests/E2e/Parallel/Parallel"
-                ],
-                "test-e2e": [
-                    "vendor/bin/phpunit tests/E2e --exclude-group ext-parallel"
-                ],
-                "test": [
-                    "@test-unit",
-                    "@test-e2e",
-                    "@test-parallel-ext"
-                ],
-                "lint": [
-                    "vendor/bin/pint"
-                ],
-                "format": [
-                    "php -d memory_limit=4G vendor/bin/pint"
-                ],
-                "check": [
-                    "vendor/bin/phpstan analyse src tests --level=max --memory-limit=4G"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2160,8 +2104,8 @@
             ],
             "description": "High-performance concurrent + parallel library with Promise and Parallel execution support for PHP.",
             "support": {
-                "source": "https://github.com/utopia-php/async/tree/0.1.1",
-                "issues": "https://github.com/utopia-php/async/issues"
+                "issues": "https://github.com/utopia-php/async/issues",
+                "source": "https://github.com/utopia-php/async/tree/0.1.1"
             },
             "time": "2026-06-08T05:10:34+00:00"
         },
@@ -2332,12 +2276,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/utopia-php/database.git",
-                "reference": "d82a7ec5454c8e5086d205b715ff4e9499533d80"
+                "reference": "8b716e3c1c21cf0a216b074ad670c30e21556cba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/utopia-php/database/zipball/d82a7ec5454c8e5086d205b715ff4e9499533d80",
-                "reference": "d82a7ec5454c8e5086d205b715ff4e9499533d80",
+                "url": "https://api.github.com/repos/utopia-php/database/zipball/8b716e3c1c21cf0a216b074ad670c30e21556cba",
+                "reference": "8b716e3c1c21cf0a216b074ad670c30e21556cba",
                 "shasum": ""
             },
             "require": {
@@ -2374,8 +2318,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-feat-query-lib": "8.0.x-dev",
-                    "dev-main": "8.0.x-dev"
+                    "dev-main": "8.0.x-dev",
+                    "dev-feat-query-lib": "8.0.x-dev"
                 }
             },
             "autoload": {
@@ -2383,39 +2327,7 @@
                     "Utopia\\Database\\": "src/Database"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Tests\\E2E\\": "tests/e2e",
-                    "Tests\\Unit\\": "tests/unit"
-                }
-            },
-            "scripts": {
-                "build": [
-                    "Composer\\Config::disableProcessTimeout",
-                    "docker compose build"
-                ],
-                "start": [
-                    "Composer\\Config::disableProcessTimeout",
-                    "docker compose up -d"
-                ],
-                "test": [
-                    "Composer\\Config::disableProcessTimeout",
-                    "docker compose exec tests vendor/bin/paratest --configuration phpunit.xml --functional --processes 4"
-                ],
-                "lint": [
-                    "php -d memory_limit=2G ./vendor/bin/pint --test"
-                ],
-                "format": [
-                    "php -d memory_limit=2G ./vendor/bin/pint"
-                ],
-                "check": [
-                    "./vendor/bin/phpstan analyse --memory-limit 2G",
-                    "./vendor/bin/phpstan analyse -c phpstan-bin.neon --memory-limit 2G"
-                ],
-                "coverage": [
-                    "./vendor/bin/coverage-check ./tmp/clover.xml 90"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2428,10 +2340,10 @@
                 "utopia"
             ],
             "support": {
-                "source": "https://github.com/utopia-php/database/tree/feat-query-lib",
-                "issues": "https://github.com/utopia-php/database/issues"
+                "issues": "https://github.com/utopia-php/database/issues",
+                "source": "https://github.com/utopia-php/database/tree/feat-query-lib"
             },
-            "time": "2026-09-24T03:03:02+00:00"
+            "time": "2026-09-24T05:48:44+00:00"
         },
         {
             "name": "utopia-php/mongo",
@@ -5870,19 +5782,10 @@
             "time": "2024-03-07T20:33:40+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "utopia-php/database",
-            "version": "dev-feat-query-lib",
-            "alias": "7.0.0",
-            "alias_normalized": "7.0.0.0"
-        }
-    ],
-    "minimum-stability": "stable",
-    "stability-flags": {
-        "utopia-php/database": 20
-    },
-    "prefer-stable": false,
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {},
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.5",
