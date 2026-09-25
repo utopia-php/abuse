@@ -2,14 +2,25 @@
     "name": "utopia-php/abuse",
     "description": "A simple abuse library to manage application usage limits",
     "type": "library",
-    "keywords": ["php","framework", "upf", "utopia", "abuse"],
+    "keywords": [
+        "php",
+        "framework",
+        "upf",
+        "utopia",
+        "abuse"
+    ],
     "license": "MIT",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
-        "psr-4": {"Utopia\\Abuse\\": "src/Abuse"}
+        "psr-4": {
+            "Utopia\\Abuse\\": "src/Abuse"
+        }
     },
     "autoload-dev": {
-        "psr-4": {"Utopia\\Tests\\": "tests/Abuse"}
+        "psr-4": {
+            "Utopia\\Tests\\": "tests/Abuse"
+        }
     },
     "scripts": {
         "check": "./vendor/bin/phpstan analyse --level max --memory-limit=2G src tests",
@@ -18,11 +29,12 @@
         "bench": "vendor/bin/phpbench run --report=aggregate"
     },
     "require": {
-        "php": ">=8.4.1",
+        "php": ">=8.5",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-redis": "*",
-        "utopia-php/database": "^7.0.0",
+        "utopia-php/database": "^8.0",
+        "utopia-php/query": "^0.6",
         "utopia-php/pools": "2.*",
         "appwrite/appwrite": "^27.1"
     },
@@ -36,6 +48,12 @@
         "allow-plugins": {
             "php-http/discovery": true,
             "tbachert/spi": true
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-feat-query-lib": "3.0.x-dev",
+            "dev-main": "3.0.x-dev"
         }
     }
 }
