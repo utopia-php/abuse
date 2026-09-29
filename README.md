@@ -1,6 +1,8 @@
 # Utopia Abuse
 
-[![Build Status](https://travis-ci.org/utopia-php/abuse.svg?branch=master)](https://travis-ci.com/utopia-php/abuse)
+> [!IMPORTANT]
+> This repository is a read-only mirror of [`packages/abuse`](https://github.com/appwrite/appwrite/tree/main/packages/abuse) in [appwrite/appwrite](https://github.com/appwrite/appwrite). Development happens there — please open issues and pull requests against appwrite/appwrite.
+
 ![Total Downloads](https://img.shields.io/packagist/dt/utopia-php/abuse.svg)
 [![Discord](https://img.shields.io/discord/564160730845151244)](https://appwrite.io/discord)
 
@@ -19,7 +21,7 @@ composer require utopia-php/abuse
 **Time Limit Abuse**
 
 The time limit abuse allow each key (action) to be performed [X] times in given time frame.
-This adapter uses a MySQL / MariaDB to store usage attempts. Before using it create the table schema as documented in this repository (./data/schema.sql)
+This adapter uses a MySQL / MariaDB to store usage attempts. Before using it, call `$adapter->setup()` once to create the collection it stores attempts in.
 
 ### Database adapter
 
